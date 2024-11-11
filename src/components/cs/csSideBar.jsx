@@ -1,4 +1,7 @@
+
+
 const Sidebar = () => {
+
   return (
     <div className=" w-[40%] flex">
       <div className=" w-[82px] bg-[#121638] h-[982px] col-auto justify-items-center ">

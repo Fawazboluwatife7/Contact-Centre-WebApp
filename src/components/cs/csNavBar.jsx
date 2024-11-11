@@ -23,7 +23,7 @@ const cSNavBar = () => {
         {/* Avatar with Notification */}
         <div className="relative flex items-center gap-2">
           <img
-            src="../assets/Avatars.svg"
+            src="../../assets/images/Avatars.svg"
             alt="avatar"
             className="w-6 h-6 rounded-full border-2 border-white"
           />
