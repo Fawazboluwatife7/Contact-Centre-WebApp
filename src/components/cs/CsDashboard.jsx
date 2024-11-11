@@ -2,10 +2,10 @@ import React from "react";
 
 function CsDashboard() {
   return (
-    <div className="w-full h-screen flex flex-col bg-slate-400 mt-10 p-5">
+    <div className="w-full h-screen flex flex-col  mt-10 p-5">
       {/* Stats Section */}
       <div className="flex gap-5 justify-between w-full ">
-        <div className="flex flex-col bg-red-500 w-full">
+        <div className="flex flex-col  w-full">
           <span>Hi, Favour,</span>
           <div className="flex w-full justify-between">
             <span> Your Dashboard</span>
@@ -14,7 +14,7 @@ function CsDashboard() {
         </div>
       </div>
       <div className="flex ">
-        <div className="h-2 bg-white grid grid-cols-2 gap-4 p-4">
+        <div className=" bg-white grid grid-cols-2 gap-4 p-4">
           {/* PA Request */}
           <div className="flex items-center space-x-2">
             <img
@@ -88,7 +88,7 @@ function CsDashboard() {
             ].map((escalation, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center p-4 bg-white shadow-sm border-b w-[531px] h-[50px] border-gray-300 rounded-md font-productSans"
+                className="flex justify-between items-center p-4 bg-white shadow-sm border-b w-[531px] h-[70px] border-gray-300 rounded-md font-productSans"
               >
                 <p className="text-[13px] font-normal leading-[15.7px]">
                   {escalation.description}
