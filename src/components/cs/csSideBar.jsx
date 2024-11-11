@@ -1,7 +1,6 @@
 
 
-const Sidebar = () => {
-
+const CsSidebar = () => {
   return (
     <div className=" w-[40%] flex">
       <div className=" w-[82px] bg-[#121638] h-[982px] col-auto justify-items-center ">
@@ -11,7 +10,7 @@ const Sidebar = () => {
         <div className=" cursor-pointer  hover:bg-[#C61531] p-2">
           <img src="Sales Menu@3x.svg" alt="" onClick={""} />
         </div>
-        <div className=" cursor-pointer hover:bg-[#C61531] p-2">
+        <div className="cursor-pointer hover:bg-[#C61531] p-2">
           <img src="Enrollment Menu@3x.svg" alt="" onClick={""} />
         </div>
         <div className=" cursor-pointer  hover:bg-[#C61531] p-2">
@@ -98,4 +97,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default CsSidebar;
