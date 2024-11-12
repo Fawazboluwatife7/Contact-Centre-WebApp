@@ -2,8 +2,8 @@
 
 const CsSidebar = () => {
   return (
-    <div className=" w-[40%] flex">
-      <div className=" w-[82px] bg-[#121638] h-[982px] col-auto justify-items-center ">
+    <div className="  flex">
+      <div className=" w-[82px] bg-[#121638] col-auto justify-items-center ">
         <div className=" cursor-pointer mt-8 group hover:bg-[#C61531] p-2 ">
           <img src="Underwriting@3x.svg" alt="" onClick={""} />
         </div>
@@ -51,7 +51,7 @@ const CsSidebar = () => {
           <img src="Vector@3x.svg" alt="" onClick={""} />
         </div>
       </div>
-      <div className=" bg-white w-[212] border  border-red-500 h-[982] justify-center items-center">
+      <div className=" bg-white w-[212] border  h-[982] justify-center items-center">
         <img
           src="SmallLogo.svg"
           alt=""
