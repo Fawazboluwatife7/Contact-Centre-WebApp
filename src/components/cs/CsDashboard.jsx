@@ -6,6 +6,7 @@ import bluebarchat from "../../assets/CSIMAGES/bluechat.svg";
 import skybluechart from "../../assets/CSIMAGES/skybluechat.svg";
 import orangechart from "../../assets/CSIMAGES/orangechat.svg";
 import search from "../../assets/CSIMAGES/Search.svg";
+import { useNavigate } from "react-router-dom";
 
 function CsDashboard() {
   const [data, setData] = useState([]);
@@ -16,6 +17,13 @@ function CsDashboard() {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const navigate = useNavigate(); // Initialize the navigate function
+
+  // Function to handle navigation
+  const handleNavigate = (path) => {
+    navigate(path);
   };
 
   // Simulate loading data (useEffect not needed for static data)
@@ -238,17 +246,26 @@ function CsDashboard() {
       {/* Buttons Section */}
       <div className="mt-8 flex justify-start space-x-4">
         {/* Search Enrollee Button */}
-        <button className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300">
+        <button
+          onClick={() => handleNavigate("/enrollees")}
+          className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300"
+        >
           Search Enrollee
         </button>
 
         {/* Manage PA Button */}
-        <button className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300">
+        <button
+          onClick={() => handleNavigate("/managepa")}
+          className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300"
+        >
           Manage PA
         </button>
 
         {/* Create Ticket Button with Image */}
-        <button className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300">
+        <button
+          onClick={() => handleNavigate("/createticket")}
+          className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300"
+        >
           <img src={plusbutton} alt="Create Ticket" className="w-5 h-5 mr-2" />
           Create Ticket
         </button>
@@ -276,60 +293,61 @@ function CsDashboard() {
 
         {/* Table Section */}
         <div className="overflow-x-auto bg-white rounded-md shadow-sm">
-          <table className="min-w-full table-auto">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                  Name
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                  Enrollee ID
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                  Date
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                  Hospital
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                  Diagnosis
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                  Status
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                  {!showAll && data.length > 7 && (
-                    <div className="flex justify-center mt-4">
-                      <button
-                        onClick={() => setShowAll(true)}
-                        className="text-blue-500 py-2 px-4 rounded-md hover:bg-blue-100"
-                      >
-                        See More
-                      </button>
-                    </div>
-                  )}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="pl-8 pr-8 bg-red-500 flex justify-between gap-4">
+            <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+              Name
+            </div>
+            <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+              Enrollee ID
+            </div>
+            <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+              Date
+            </div>
+            <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+              Hospital
+            </div>
+            <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+              Diagnosis
+            </div>
+            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+              Status
+            </th>
+          </div>
+
+          <div className="w-full">
+            <div className="w-full">
               {/* Render paginated data */}
               {paginateData.map((item, index) => (
-                <tr key={index} className="border-b">
-                  <td className="px-4 py-2">{item.name}</td>
-                  <td className="px-4 py-2">{item.enrolleeId}</td>
-                  <td className="px-4 py-2">{item.date}</td>
-                  <td className="px-4 py-2">{item.hospital}</td>
-                  <td className="px-4 py-2">{item.diagnosis}</td>
-                  <td className="px-4 py-2">{item.status}</td>
-                  <td className="px-4 py-2">
-                    <button className="text-blue-500 hover:bg-blue-100 py-1 px-3 rounded-md">
-                      See All
+                <div key={index} className="border-b bg-green-500 ">
+                  <div className="flex w-full justify-between items-center bg-white border-2 border-red-500">
+                    <p className="">
+                      <img
+                        src={item.image}
+                        className="w-10 h-10 rounded-full bg-red-500 object-cover"
+                      />
+                    </p>
+                    <p className="font-semibold text-sm flex-1">{item.name}</p>
+                    <p className="text-xs text-gray-500 flex-1">
+                      {item.enrolleeId}
+                    </p>
+                    <p className="text-xs text-gray-500 flex-1">{item.date}</p>
+                    <p className="text-xs text-gray-500 flex-1">
+                      {item.hospital}
+                    </p>
+                    <p className="text-xs text-gray-500 flex-1">
+                      {item.diagnosis}
+                    </p>
+                    <p className="text-xs text-gray-500 flex-1">
+                      {item.status}
+                    </p>
+                    <button className="text-blue-500 hover:bg-blue-100 rounded-md flex-shrink-0">
+                      ...
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

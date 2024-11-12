@@ -35,7 +35,7 @@ function Header() {
         </div>
         <img src={alarm} />
 
-        <div className="flex w-[52px] h-[38px] p-1 bg-red-500">
+        <div className="flex w-[52px] h-[38px] p-1">
           <img src={userimage} />
           <img className="w-[18px]" src={vangle} />
         </div>
