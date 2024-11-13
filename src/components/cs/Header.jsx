@@ -13,7 +13,7 @@ function Header() {
   };
 
   return (
-    <div className="flex justify-between  items-center w-full p-4">
+    <div className="flex justify-between  items-center w-[1150px] p-4 ">
       <div className="relative w-full max-w-md">
         <input
           type="text"
@@ -25,7 +25,7 @@ function Header() {
         <img
           src={search}
           alt="Search"
-          className="absolute  top-1/2 transform -translate-y-1/2 w-5 h-5"
+          className="absolute  top-1/2 ml-3 transform -translate-y-1/2 w-5 h-5"
         />
       </div>
       <div className="flex gap-2 ">
@@ -35,7 +35,7 @@ function Header() {
         </div>
         <img src={alarm} />
 
-        <div className="flex w-[52px] h-[38px] p-1 bg-red-500">
+        <div className="flex w-[52px] h-[38px] p-1">
           <img src={userimage} />
           <img className="w-[18px]" src={vangle} />
         </div>
