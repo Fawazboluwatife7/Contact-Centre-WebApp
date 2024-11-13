@@ -7,6 +7,7 @@ export default {
         lightblue: "#F0F2FA",
         lightred: '#C615311A',
 
+
       },
       fontSize: {
         13: "13px", // Add custom font size of 13px
