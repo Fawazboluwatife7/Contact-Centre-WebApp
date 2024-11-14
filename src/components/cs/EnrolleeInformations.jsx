@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import backIcon from "../../assets/csImages/eva_arrow-back-outline.svg";
 import avatar from "../../assets/csImages/Rectangle 896.svg";
 import svg from "../../assets/csImages/Ellipse 75.svg";
@@ -7,7 +7,17 @@ import React, { useState, useEffect } from "react";
 function EnrolleeInformations() {
   const [enrolleeData, setEnrolleeData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState("request"); 
+
+  const navigate = useNavigate(); // Updated to use `useNavigate`
+
+  const handleReject = () => {
+    navigate('/reject'); // Navigate to reject page
+  };
+
+  const handleApprove = () => {
+    navigate('/approve'); // Navigate to approve page
+  };
 
   const dummyData = {
     name: "John Doe",
@@ -19,7 +29,7 @@ function EnrolleeInformations() {
     scheme: "NGPRO",
     primaryProvider: "Crystal",
     age: "62",
-    memberType: " Age 0 - 60",
+    memberType: "Age 0 - 60",
     policyDate: "02/10/2021-02/10/2024.",
     amountSpent: "#102,000",
   };
@@ -27,23 +37,54 @@ function EnrolleeInformations() {
   const tableData = [
     {
       request: [
-        { id: 1, Date: "Data 1", column2: "Data 2", column3: "Data 3" },
-        { id: 2, column1: "Data 4", column2: "Data 5", column3: "Data 6" },
-        { id: 3, column1: "Data 7", column2: "Data 8", column3: "Data 9" },
-      ],
-      paHistory: [
-        { id: 1, column1: "History 1", column2: "History 2", column3: "History 3" },
-        { id: 2, column1: "History 4", column2: "History 5", column3: "History 6" },
-        { id: 3, column1: "History 7", column2: "History 8", column3: "History 9" },
+        {
+          id: 1,
+          date: "2024-11-01",
+          diagnosis: "Diagnosis 1",
+          benefits: "Benefit 1",
+          description: "Description 1",
+          chargeAmount: "$100",
+          qty: "1",
+          visitType: "In-person",
+          status: "Pending",
+        },
+        {
+          id: 2,
+          date: "2024-11-02",
+          diagnosis: "Diagnosis 2",
+          benefits: "Benefit 2",
+          description: "Description 2",
+          chargeAmount: "$200",
+          qty: "2",
+          visitType: "Online",
+          status: "Pending",
+        },
+        {
+          id: 3,
+          date: "2024-11-03",
+          diagnosis: "Diagnosis 3",
+          benefits: "Benefit 3",
+          description: "Description 3",
+          chargeAmount: "$300",
+          qty: "1",
+          visitType: "In-person",
+          status: "Pending",
+        },
       ],
     },
   ];
 
-
   const tableHeaders = [
-    "Date", "Diagnosis", "Benefits", "Description", "Charge Amount", "QTY", "Visit Type", "Status"
+    "Date",
+    "Diagnosis",
+    "Benefits",
+    "Description",
+    "Charge Amount",
+    "QTY",
+    "Visit Type",
+    "Status",
   ];
- 
+
   useEffect(() => {
     const fetchEnrolleeData = () => {
       setTimeout(() => {
@@ -64,16 +105,24 @@ function EnrolleeInformations() {
   }
 
   const renderTableData = () => {
-    const selectedData = tableData[0][activeTab.toLowerCase()] || [];
+    // Use tableData[0][activeTab] to get the correct data array for the active tab
+    const selectedData = tableData[0][activeTab] || [];
     return selectedData.map((item) => (
       <tr key={item.id}>
         <td><input type="checkbox" /></td>
-        <td>{item.column1}</td>
-        <td>{item.column2}</td>
-        <td>{item.column3}</td>
+        <td>{item.date}</td>
+        <td>{item.diagnosis}</td>
+        <td>{item.benefits}</td>
+        <td>{item.description}</td>
+        <td>{item.chargeAmount}</td>
+        <td>{item.qty}</td>
+        <td>{item.visitType}</td>
+        <td>{item.status}</td>
       </tr>
     ));
   };
+  
+  
 
   return (
     <div className="bg-lightblue">
@@ -178,41 +227,41 @@ function EnrolleeInformations() {
                 <span>{enrolleeData.amountSpent}</span>
               </div>
             </div>
+
           </div>
         </div>
       </div>
 
       <div className="flex space-x-1 mt-4 bg-lightblue-500 w-[577px] h-[43px] bg-white ml-6">
-  {['Request', 'PA History', 'Hospital Visits', 'Benefits'].map((tab) => (
-    <div
-      key={tab}
-      className={`p-2 cursor-pointer rounded w-[142px] h-[43px] text-[12px] flex items-center justify-center ${
-        activeTab === tab.toLowerCase() ? 'bg-white text-red-500' : 'bg-red-500 text-white'
-      }`}
-      onClick={() => handleTabClick(tab.toLowerCase())}
-    >
-      {tab}
-    </div>
-  ))}
-</div>
+        {["Request", "PA History", "Hospital Visits", "Benefits"].map((tab) => (
+          <div
+            key={tab}
+            className={`p-2 cursor-pointer rounded w-[142px] h-[43px] text-[12px] flex items-center justify-center ${
+              activeTab === tab.toLowerCase()
+                ? "bg-white text-red-500"
+                : "bg-red-500 text-white"
+            }`}
+            onClick={() => handleTabClick(tab.toLowerCase())}
+          >
+            {tab}
+          </div>
+        ))}
+      </div>
 
-
-      {activeTab && (
-        <div className="mt-6 bg-white mt-0.5 ml-6 text-[11.38px] text-[#1F4173] ">
-          <table className="min-w-full border border-white-500">
-            <thead>
-              <tr>
-                <th className="p-2 border-b"><input type="checkbox" /></th>
-                {tableHeaders.map((header, index) => (
-                  <th key={index} className="p-2 border-b">{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>{renderTableData()}</tbody>
-          </table>
+      <div className="flex justify-center space-x-8 mt-[50px] mb-10">
+        <div
+          className="text-red-500 bg-white border-2 border-red-500 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-red-500 hover:text-white"
+          onClick={handleReject}
+        >
+          Reject
         </div>
-      )}
-
+        <div
+          className="text-white bg-red-500 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-white hover:text-red-500 border-2 border-red-500"
+          onClick={handleApprove}
+        >
+          Approve
+        </div>
+      </div>
     </div>
   );
 }
