@@ -7,16 +7,15 @@ import React, { useState, useEffect } from "react";
 function EnrolleeInformations() {
   const [enrolleeData, setEnrolleeData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("request"); 
-
-  const navigate = useNavigate(); // Updated to use `useNavigate`
+  const [activeTab, setActiveTab] = useState("request");
+  const navigate = useNavigate();
 
   const handleReject = () => {
-    navigate('/reject'); // Navigate to reject page
+    navigate("/reject");
   };
 
   const handleApprove = () => {
-    navigate('/approve'); // Navigate to approve page
+    navigate("/approve");
   };
 
   const dummyData = {
@@ -29,7 +28,7 @@ function EnrolleeInformations() {
     scheme: "NGPRO",
     primaryProvider: "Crystal",
     age: "62",
-    memberType: "Age 0 - 60",
+    memberType: " Age 0 - 60",
     policyDate: "02/10/2021-02/10/2024.",
     amountSpent: "#102,000",
   };
@@ -105,11 +104,12 @@ function EnrolleeInformations() {
   }
 
   const renderTableData = () => {
-    // Use tableData[0][activeTab] to get the correct data array for the active tab
     const selectedData = tableData[0][activeTab] || [];
     return selectedData.map((item) => (
       <tr key={item.id}>
-        <td><input type="checkbox" /></td>
+        <td>
+          <input type="checkbox" />
+        </td>
         <td>{item.date}</td>
         <td>{item.diagnosis}</td>
         <td>{item.benefits}</td>
@@ -121,8 +121,6 @@ function EnrolleeInformations() {
       </tr>
     ));
   };
-  
-  
 
   return (
     <div className="bg-lightblue">
@@ -227,26 +225,40 @@ function EnrolleeInformations() {
                 <span>{enrolleeData.amountSpent}</span>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-
       <div className="flex space-x-1 mt-4 bg-lightblue-500 w-[577px] h-[43px] bg-white ml-6">
-        {["Request", "PA History", "Hospital Visits", "Benefits"].map((tab) => (
-          <div
-            key={tab}
-            className={`p-2 cursor-pointer rounded w-[142px] h-[43px] text-[12px] flex items-center justify-center ${
-              activeTab === tab.toLowerCase()
-                ? "bg-white text-red-500"
-                : "bg-red-500 text-white"
-            }`}
-            onClick={() => handleTabClick(tab.toLowerCase())}
-          >
-            {tab}
-          </div>
-        ))}
+        {["Request", "PA History", "Hospital Visits", "Benefits"].map(
+          (tab) => (
+            <div
+              key={tab}
+              className={`p-2 cursor-pointer rounded w-[142px] h-[43px] text-[12px] flex items-center justify-center ${
+                activeTab === tab.toLowerCase()
+                  ? "bg-white text-red-500"
+                  : "bg-red-500 text-white"
+              }`}
+              onClick={() => handleTabClick(tab.toLowerCase())}
+            >
+              {tab}
+            </div>
+          )
+        )}
       </div>
+
+      <table className="table-auto w-full bg-white shadow-md mt-6">
+        <thead>
+          <tr>
+            <th></th>
+            {tableHeaders.map((header) => (
+              <th key={header} className="px-4 py-2 text-left">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>{renderTableData()}</tbody>
+      </table>
 
       <div className="flex justify-center space-x-8 mt-[50px] mb-10">
         <div
