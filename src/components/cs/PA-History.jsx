@@ -346,7 +346,7 @@ function PaHistory() {
       </div>
 
       <div className="w-36 bg-lightgray rounded-[5px] mt-6">
-        <div className=" ml-6 flex relative inline-block w-full text-sm font-medium text-center">
+        <div className="flex space-x-1 mt-4 bg-lightblue-500 w-[577px] h-[43px] bg-white ml-6 rounded-[5px]">
           <button
             className={`px-4 py-2 w-[142px] h-[43px] ${
               selectedTab === "All"
@@ -390,10 +390,10 @@ function PaHistory() {
         </div>
       </div>
 
-      <div className="overflow-auto ml-6 w-[1179px] mb-10">
+      <div className="overflow-auto ml-6 mb-10 w-[1100px]">
         <table className="w-full bg-white table-auto border-collapse">
           <thead className="text-[#1F4173]">
-            <tr className="text-sm font-bold text-left">
+            <tr className="text-sm text-left">
               <th className="px-4 py-2 border">Date</th>
               <th className="px-4 py-2 border">Enrollee Name</th>
               <th className="px-4 py-2 border">Provider</th>

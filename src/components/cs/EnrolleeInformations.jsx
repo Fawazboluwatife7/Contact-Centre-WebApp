@@ -551,8 +551,8 @@ function EnrolleeInformations() {
             key={tab}
             className={`p-2 cursor-pointer rounded w-[142px] h-[43px] text-[12px] flex items-center justify-center ${
               activeTab === tab.toLowerCase()
-                ? "bg-white text-red-500"
-                : "bg-red-500 text-white"
+                ? "bg-white text-red-700"
+                : "bg-red-700 text-white"
             }`}
             onClick={() => handleTabClick(tab.toLowerCase())}
           >
@@ -578,13 +578,13 @@ function EnrolleeInformations() {
 
       <div className="flex justify-center space-x-8 mt-[50px] mb-10">
         <div
-          className="text-red-500 bg-white border-2 border-red-500 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-red-500 hover:text-white"
+          className="text-red-700 bg-white border-2 border-red-700 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white"
           onClick={handleReject}
         >
           Reject
         </div>
         <div
-          className="text-white bg-red-500 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-white hover:text-red-500 border-2 border-red-500"
+          className="text-white bg-red-700 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-white hover:text-red-700 border-2 border-red-700"
           onClick={handleApprove}
         >
           Approve
