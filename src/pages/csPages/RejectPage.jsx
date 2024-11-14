@@ -1,18 +1,18 @@
 import CsSidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
-import CsEnrolles from "../../components/cs/CsEnrollees";
+import Reject from "../../components/cs/Reject";
 
-function EnrolleesPage() {
+function RejectPage() {
   return (
     <div className="flex  ">
       <CsSidebar />
 
       <div className="flex flex-col ">
         <Header />
-        <CsEnrolles />
+        <Reject />
       </div>
     </div>
   );
 }
 
-export default EnrolleesPage;
+export default RejectPage;

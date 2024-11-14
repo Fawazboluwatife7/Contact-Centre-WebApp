@@ -9,6 +9,9 @@ import EnrolleesPage from "./pages/csPages/EnrolleesPage";
 import CreateNewTicketPage from "./pages/csPages/CreateNewTicketPage";
 import TicketPage from "./pages/csPages/TicketPage";
 import EnrolleeInformations from "./pages/csPages/EnrolleInformationsPage";
+import Reject from "./pages/csPages/RejectPage";
+import Approve from "./pages/csPages/ApprovePage";
+import History from "./pages/csPages/PA-HistoryPage";
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
         <Route path="/create-ticket" element={<CreateNewTicketPage />} />
         <Route path="/ticket" element={<TicketPage />} />
         <Route path="/enrolleInformations" element={<EnrolleeInformations />} />
+        <Route path="/approve" element={<Approve />} />
+        <Route path="/reject" element={<Reject />} />
+        <Route path="/history" element={<History />} />
       </Routes>
     </BrowserRouter>
   );

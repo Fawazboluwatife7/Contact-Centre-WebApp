@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import backIcon from "../../assets/csImages/eva_arrow-back-outline.svg";
 import avatar from "../../assets/csImages/Rectangle 896.svg";
 import svg from "../../assets/csImages/Ellipse 75.svg";
@@ -7,17 +7,19 @@ import React, { useState, useEffect } from "react";
 function EnrolleeInformations() {
   const [enrolleeData, setEnrolleeData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(null);
-  const YourComponent = () => {
-    const history = useHistory(); // To handle navigation on click
-  
-    const handleReject = () => {
-      history.push('/reject'); // Navigate to reject page
-    };
-  
-    const handleApprove = () => {
-      history.push('/approve'); // Navigate to approve page
-    };
+  const [activeTab, setActiveTab] = useState("request");
+  const navigate = useNavigate();
+//   const [currentPage, setCurrentPage] = useState(1); 
+//   const itemsPerPage = 5; // Constant to define items per page
+
+
+  const handleReject = () => {
+    navigate("/reject");
+  };
+
+  const handleApprove = () => {
+    navigate("/approve");
+  };
 
   const dummyData = {
     name: "John Doe",
@@ -59,6 +61,28 @@ function EnrolleeInformations() {
           visitType: "Online",
           status: "Pending",
         },
+        {
+            id: 2,
+            date: "2024-11-02",
+            diagnosis: "Diagnosis 2",
+            benefits: "Benefit 2",
+            description: "Description 2",
+            chargeAmount: "$200",
+            qty: "2",
+            visitType: "Online",
+            status: "Pending",
+          },
+          {
+            id: 2,
+            date: "2024-11-02",
+            diagnosis: "Diagnosis 2",
+            benefits: "Benefit 2",
+            description: "Description 2",
+            chargeAmount: "$200",
+            qty: "2",
+            visitType: "Online",
+            status: "Pending",
+          },
         {
           id: 3,
           date: "2024-11-03",
@@ -105,11 +129,11 @@ function EnrolleeInformations() {
   }
 
   const renderTableData = () => {
-    const selectedData = tableData[0][activeTab.toLowerCase()] || [];
+    const selectedData = tableData[0][activeTab] || [];
     return selectedData.map((item) => (
       <tr key={item.id}>
         <td>
-          <input type="checkbox" />
+          <input type="checkbox" className="ml-5 mb-3" />
         </td>
         <td>{item.date}</td>
         <td>{item.diagnosis}</td>
@@ -118,7 +142,7 @@ function EnrolleeInformations() {
         <td>{item.chargeAmount}</td>
         <td>{item.qty}</td>
         <td>{item.visitType}</td>
-        <td>{item.status}</td>
+        <td className="text-orange-500">{item.status}</td>
       </tr>
     ));
   };
@@ -229,7 +253,6 @@ function EnrolleeInformations() {
           </div>
         </div>
       </div>
-
       <div className="flex space-x-1 mt-4 bg-lightblue-500 w-[577px] h-[43px] bg-white ml-6">
         {["Request", "PA History", "Hospital Visits", "Benefits"].map((tab) => (
           <div
@@ -245,26 +268,42 @@ function EnrolleeInformations() {
           </div>
         ))}
       </div>
+      <div className=" h-[350px] ml-6 w-[1165px] bg-white shadow-md">
+        <table className="table-auto w-[1165px]">
+          <thead>
+            <tr>
+              <th></th>
+              {tableHeaders.map((header) => (
+                <th key={header} className="px-4 py-2 text-left text-[#1F4173]">
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>{renderTableData()}</tbody>
+        </table>
+      </div>
 
-      return (
-    <div className="flex justify-center space-x-8 mt-[50px] mb-10">
-      <div
-        className="text-red-500 bg-white border-2 border-red-500 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-red-500 hover:text-white"
-        onClick={handleReject}
-      >
-        Reject
+      <div className="flex justify-center space-x-8 mt-[50px] mb-10">
+        <div
+          className="text-red-500 bg-white border-2 border-red-500 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-red-500 hover:text-white"
+          onClick={handleReject}
+        >
+          Reject
+        </div>
+        <div
+          className="text-white bg-red-500 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-white hover:text-red-500 border-2 border-red-500"
+          onClick={handleApprove}
+        >
+          Approve
+        </div>
       </div>
-      <div
-        className="text-white bg-red-500 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-white hover:text-red-500 border-2 border-red-500"
-        onClick={handleApprove}
-      >
-        Approve
-      </div>
-    </div>);
-    
     </div>
   );
 }
-};
 
-export default EnrolleeInformations;  why is this not displaying
+export default EnrolleeInformations;
+
+
+
+

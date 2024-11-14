@@ -1,18 +1,18 @@
 import CsSidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
-import CsEnrolles from "../../components/cs/CsEnrollees";
+import History from "../../components/cs/PA-History";
 
-function EnrolleesPage() {
+function paHistory() {
   return (
     <div className="flex  ">
       <CsSidebar />
 
       <div className="flex flex-col ">
         <Header />
-        <CsEnrolles />
+        <History />
       </div>
     </div>
   );
 }
 
-export default EnrolleesPage;
+export default paHistory;
