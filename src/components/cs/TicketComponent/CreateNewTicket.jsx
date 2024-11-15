@@ -176,7 +176,6 @@ function CreateNewTicket() {
               >
                 <option value="">Select Priority</option>
                 <option value="high">High</option>
-                <option value="medium">Medium</option>
                 <option value="low">Low</option>
               </select>
             </div>
