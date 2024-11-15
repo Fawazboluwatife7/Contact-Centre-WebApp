@@ -9,9 +9,7 @@ function EnrolleeInformations() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("request");
   const navigate = useNavigate();
-//   const [currentPage, setCurrentPage] = useState(1); 
-//   const itemsPerPage = 5; // Constant to define items per page
-
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const handleReject = () => {
     navigate("/reject");
@@ -124,6 +122,17 @@ function EnrolleeInformations() {
     setActiveTab(tab);
   };
 
+  const handleCheckboxChange = (id) => {
+    setSelectedRows((prevSelectedRows) =>
+      prevSelectedRows.includes(id)
+        ? prevSelectedRows.filter((rowId) => rowId !== id)
+        : [...prevSelectedRows, id]
+    );
+  };
+
+
+  const isAnyRowSelected = selectedRows.length > 0;
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -132,8 +141,13 @@ function EnrolleeInformations() {
     const selectedData = tableData[0][activeTab] || [];
     return selectedData.map((item) => (
       <tr key={item.id}>
-        <td>
-          <input type="checkbox" className="ml-5 mb-3" />
+         <td>
+          <input
+            type="checkbox"
+            className="ml-5 mb-3"
+            checked={selectedRows.includes(item.id)}
+            onChange={() => handleCheckboxChange(item.id)}
+          />
         </td>
         <td>{item.date}</td>
         <td>{item.diagnosis}</td>
@@ -253,6 +267,7 @@ function EnrolleeInformations() {
           </div>
         </div>
       </div>
+
       <div className="flex space-x-1 mt-4 bg-lightblue-500 w-[577px] h-[43px] bg-white ml-6">
         {["Request", "PA History", "Hospital Visits", "Benefits"].map((tab) => (
           <div
@@ -284,16 +299,25 @@ function EnrolleeInformations() {
         </table>
       </div>
 
+
       <div className="flex justify-center space-x-8 mt-[50px] mb-10">
         <div
-          className="text-red-700 bg-white border-2 border-red-700 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-red-700 hover:text-white"
-          onClick={handleReject}
+          className={`${
+            isAnyRowSelected
+              ? "text-red-700 bg-white border-2 border-red-700 cursor-pointer"
+              : "text-gray-400 bg-gray-200 border-2 border-gray-400 cursor-not-allowed"
+          } w-[185.94px] h-[60px] flex items-center justify-center transition duration-300 ease-in-out`}
+          onClick={isAnyRowSelected ? handleReject : null}
         >
           Reject
         </div>
         <div
-          className="text-white bg-red-700 w-[185.94px] h-[60px] flex items-center justify-center cursor-pointer transition duration-300 ease-in-out transform hover:bg-white hover:text-red-700 border-2 border-red-700"
-          onClick={handleApprove}
+          className={`${
+            isAnyRowSelected
+              ? "text-white bg-red-700 cursor-pointer"
+              : "text-gray-400 bg-gray-200 cursor-not-allowed"
+          } w-[185.94px] h-[60px] flex items-center justify-center transition duration-300 ease-in-out border-2 border-red-700`}
+          onClick={isAnyRowSelected ? handleApprove : null}
         >
           Approve
         </div>
