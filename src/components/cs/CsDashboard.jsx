@@ -269,7 +269,7 @@ function CsDashboard() {
 
         {/* Manage PA Button */}
         <button
-          onClick={() => handleNavigate("/managepa")}
+          onClick={() => handleNavigate("/managePa")}
           className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300"
         >
           Manage PA

@@ -1,18 +1,18 @@
 import CsSidebar from "../../components/cs/csSideBar";
-import CsDashboard from "../../components/cs/csDashboard";
 import Header from "../../components/cs/Header";
+import ManagePA from "../../components/cs/managePA";
 
-function CsDashboardLayoutPage() {
+function ManagePaPage() {
   return (
     <div className="flex  ">
       <CsSidebar />
 
       <div className="flex flex-col ">
         <Header />
-        <CsDashboard />
+        <ManagePA />
       </div>
     </div>
   );
 }
 
-export default CsDashboardLayoutPage;
+export default ManagePaPage;
