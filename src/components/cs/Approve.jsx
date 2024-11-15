@@ -8,6 +8,11 @@ import { useState, useEffect } from "react";
 const Approve = () => {
   const [enrolleeData, setEnrolleeData] = useState(null);
   const navigate = useNavigate();
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded((prev) => !prev);
+  };
 
   useEffect(() => {
     setEnrolleeData({
@@ -72,7 +77,7 @@ const Approve = () => {
           </div>
 
           <div className="flex gap-4 w-[1168px] mx-auto mt-4 ml-auto">
-            <div className="">
+            <div>
               <div className="flex flex-col">
                 <span className="text-xs">Name</span>
                 <span>{enrolleeData.name}</span>
@@ -83,7 +88,7 @@ const Approve = () => {
               </div>
             </div>
 
-            <div className="">
+            <div>
               <div className="flex flex-col ml-10">
                 <span className="text-xs">Enrollee Id</span>
                 <span>{enrolleeData.enrolleeId}</span>
@@ -94,7 +99,7 @@ const Approve = () => {
               </div>
             </div>
 
-            <div className="">
+            <div>
               <div className="flex flex-col ml-10">
                 <span className="text-xs">Group</span>
                 <span>{enrolleeData.group}</span>
@@ -105,7 +110,7 @@ const Approve = () => {
               </div>
             </div>
 
-            <div className="">
+            <div>
               <div className="flex flex-col ml-10">
                 <span className="text-xs">Scheme</span>
                 <span>{enrolleeData.scheme}</span>
@@ -116,7 +121,7 @@ const Approve = () => {
               </div>
             </div>
 
-            <div className="">
+            <div>
               <div className="flex flex-col ml-10">
                 <span className="text-xs">Age</span>
                 <span>{enrolleeData.age}</span>
@@ -127,7 +132,7 @@ const Approve = () => {
               </div>
             </div>
 
-            <div className="">
+            <div>
               <div className="flex flex-col ml-10">
                 <span className="text-xs">Policy Date</span>
                 <span>{enrolleeData.policyDate}</span>
@@ -141,47 +146,149 @@ const Approve = () => {
         </div>
       </div>
 
-      <div className="ml-6 bg-white p-6 shadow-md rounded-lg">
-      <h2 className="ml-6 text-[22px] text-[#353535] font-bold mb-6">PA Generation Preview</h2>
+      <div className="ml-6 bg-white p-6 shadow-md rounded-lg w-[1168px]">
+        <h2 className="ml-6 text-[22px] text-[#353535] font-bold mb-6">
+          PA Generation Preview
+        </h2>
 
-      {/* Diagnosis Section */}
-      <div className="flex items-center gap-4 mb-6">
-        <input type="checkbox" className="rounded-full h-5 w-5 border-gray-300" />
-        <div>
-          <h4 className="text-lg font-semibold">Diagnosis 1</h4>
+        <div
+          className="flex items-center gap-4 mb-6 cursor-pointer"
+          onClick={toggleExpand}
+        >
+          <input
+            type="checkbox"
+            className="rounded-full h-5 w-5 border-gray-300"
+          />
+          <div className="flex-1">
+            <h4 className="text-lg font-semibold">Diagnosis 1</h4>
+          </div>
+
           <h6 className="text-gray-600">Hypertensive Retinopathy</h6>
+          <img
+            src={dropdown}
+            alt="Expand/Collapse"
+            className={`w-5 h-5 transition-transform duration-300 ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+          />
         </div>
-        <select className="ml-auto p-2 border rounded-md text-gray-600">
-          <option value="option1">Treatment Plan A</option>
-          <option value="option2">Treatment Plan B</option>
-          <option value="option3">Treatment Plan C</option>
-        </select>
-      </div>
 
-      {/* Total Cost Section */}
-      <div className="mb-8">
-        <h4 className="text-red-700 font-semibold">Total Cost</h4>
-        <h3 className="text-xl font-bold">₦135,000</h3>
-      </div>
+        {isExpanded && (
+          <div className="pl-10 mb-4 space-y-4">
+            <h5 className="text-lg font-bold">
+              Diagnosis
+              ___________________________________________________________________________________________________________________________________
+            </h5>
+            <div className="flex">
+              <div className="flex flex-col gap-2">
+                <label className="text-gray-1200 text-sm">Diagnosis Code</label>
+                <input
+                  type="text"
+                  placeholder="127876783"
+                  className="p-2 border rounded-md text-gray-600 w-[370.14px] h-[43.31px]"
+                />
+              </div>
+              <div className="flex flex-col gap-2 ml-10">
+                <label className="text-gray-1200 text-sm">
+                  Diagnosis Description
+                </label>
+                <input
+                  type="text"
+                  placeholder="Customer is suffering from artry blockage"
+                  className="p-2 border rounded-md text-gray-600 w-[370.14px] h-[43.31px]"
+                />
+              </div>
+            </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-4">
-        <button 
-          className="w-[131.78px] h-[37.65px] text-center text-red-700 border border-red-700 rounded-md" 
-          onClick={() => navigate("/enrolleInformations")} 
+            <h5 className="text-lg font-bold">
+              Procedures
+              ___________________________________________________________________________________________________________________________________
+            </h5>
+            <div className="flex">
+              <div className="flex flex-col gap-2">
+                <label className="text-gray-1200 text-sm">Procedure Code</label>
+                <input
+                  type="text"
+                  placeholder="127876783"
+                  className="p-2 border rounded-md text-gray-600 w-[210.39px] h-[43.31px]"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 ml-10">
+                <label className="text-gray-1200 text-sm">Units</label>
+                <input
+                  type="text"
+                  placeholder="1"
+                  className="  p-2 border rounded-md text-gray-600 w-[210.39px] h-[43.31px]"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 ml-10">
+                <label className="text-gray-1200 text-sm">
+                  Procedure Description
+                </label>
+                <input
+                  type="text"
+                  placeholder="A Chest X-ray to scan for other abnormal activities"
+                  className="p-2 border rounded-md text-gray-600 w-[370.14px] h-[43.31px]"
+                />
+              </div>
+            </div>
+
+            <h3 className="text-red-700">Remove</h3>
+          </div>
+
+          
+
+          
+        )}
+         <div
+          className="flex items-center gap-4 mb-6 cursor-pointer"
+          onClick={toggleExpand}
         >
-          Back
-        </button>
-        <button 
-          className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md" 
-          onClick={() => navigate("/")}
-        >
-          Confirm
-        </button>
+          <input
+            type="checkbox"
+            className="rounded-full h-5 w-5 border-gray-300"
+          />
+          <div className="flex-1">
+            <h4 className="text-lg font-semibold">Diagnosis 2</h4>
+          </div>
+
+          <h6 className="text-gray-600 ">Chest X-ray</h6>
+          <img
+            src={dropdown}
+            alt="Expand/Collapse"
+            className={`w-5 h-5 transition-transform duration-300 ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+          />
+        </div>
+
+        <div className="mb-8 mt-4">
+          <h4 className="text-red-700 font-semibold">Total Cost</h4>
+          <h3 className="text-xl font-bold">₦135,000</h3>
+        </div>
+
+        <div className="flex justify-between mt-8">
+          <div>
+            <button
+              className="w-[131.78px] h-[37.65px] text-center text-red-700 border border-red-700 rounded-md"
+              onClick={() => navigate("/enrolleInformations")}
+            >
+              Back
+            </button>
+          </div>
+          <div>
+            <button
+              className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
+              onClick={() => navigate("/")}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-    </div>
-    
   );
 };
 
