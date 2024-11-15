@@ -3,12 +3,15 @@ import search from "../../assets/CSIMAGES/Search.svg";
 import imageicon from "../../assets/csImages/Ellipse 47.svg";
 import filter from "../../assets/csImages/filter.svg";
 import sort from "../../assets/csImages/sort.svg";
+import { useNavigate } from "react-router-dom";
+
 
 function GeneratePaCode() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const navigate = useNavigate();
 
   // Search state variables
   const [searchName, setSearchName] = useState("");
@@ -74,6 +77,10 @@ function GeneratePaCode() {
     );
   }
 
+  const handleRowClick = (id) => {
+    navigate("/enrolleePaCode");
+  };
+  
   return (
     <div className="p-5 w-[1150px] bg-lightblue">
       <span className="w-[183px] h-[23px] text-[23px] font-bold mb-6">
@@ -196,8 +203,8 @@ function GeneratePaCode() {
         </div>
       </div>
 
-      {/* Table Display */}
-      <div className="overflow-x-auto w-full bg-white">
+          {/* Table Display */}
+          <div className="overflow-x-auto w-full bg-white">
         <table className="w-full text-sm text-gray-600">
           <thead className="bg-darkblue">
             <tr>
@@ -208,12 +215,15 @@ function GeneratePaCode() {
               <th className="py-2 px-4 text-left">Start Date</th>
               <th className="py-2 px-4 text-left">Termination Reason</th>
               <th className="py-2 px-4 text-left">Status</th>
-              <th className="py-2 px-4 text-left">Action</th>
             </tr>
           </thead>
           <tbody>
-            {paginateData.map((item, index) => (
-              <tr key={index} className="border-b">
+            {paginateData.map((item) => (
+              <tr
+                key={item.id}
+                className="border-b cursor-pointer hover:bg-gray-100"
+                onClick={() => handleRowClick(item.id)}
+              >
                 <td className="py-2 px-4 flex items-center">
                   <img src={imageicon} alt="" className="w-6 h-6 mr-2" />
                   {item.name}
@@ -224,7 +234,6 @@ function GeneratePaCode() {
                 <td className="py-2 px-4">{item.startDate}</td>
                 <td className="py-2 px-4">{item.terminationReason}</td>
                 <td className="py-2 px-4">{item.status}</td>
-                <td className="py-2 px-4">{item.action}</td>
               </tr>
             ))}
           </tbody>
