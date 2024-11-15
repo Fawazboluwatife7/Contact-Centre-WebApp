@@ -281,7 +281,7 @@ const Approve = () => {
           <div>
             <button
               className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/success")}
             >
               Confirm
             </button>

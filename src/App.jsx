@@ -12,6 +12,7 @@ import EnrolleeInformations from "./pages/csPages/EnrolleInformationsPage";
 import Reject from "./pages/csPages/RejectPage";
 import Approve from "./pages/csPages/ApprovePage";
 import History from "./pages/csPages/PA-HistoryPage";
+import Success from "./pages/csPages/SuccessPaCodePage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/approve" element={<Approve />} />
         <Route path="/reject" element={<Reject />} />
         <Route path="/history" element={<History />} />
+        <Route path="/success" element={<Success />} />
       </Routes>
     </BrowserRouter>
   );
