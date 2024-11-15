@@ -28,7 +28,7 @@ function App() {
         <Route path="/Enrollees" element={<EnrolleesPage />} />
         <Route path="/create-ticket" element={<CreateNewTicketPage />} />
         <Route path="/ticket" element={<TicketPage />} />
-        <Route path="/enrolleInformations" element={<EnrolleeInformations />} />
+        <Route path="/enrolleeInformations" element={<EnrolleeInformations />} />
         <Route path="/approve" element={<Approve />} />
         <Route path="/reject" element={<Reject />} />
         <Route path="/history" element={<History />} />

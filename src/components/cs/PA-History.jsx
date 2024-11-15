@@ -237,6 +237,13 @@ const PaHistory = () => {
     setSelectedTab(tab);
   };
 
+  // const handleRowClick = (enrolleeID) => {
+  //   navigate(`/enrolleeInformations/${enrolleeID}`);
+  // };
+  const handleRowClick = () => { //its not getting the userID yet
+    navigate("/enrolleeInformations");
+  };
+
   return (
     <div className="bg-lightblue">
       <div className="ml-6 w-90 p-1 bg-lightblue -mt-2 mr-4">
@@ -340,7 +347,11 @@ const PaHistory = () => {
           </thead>
           <tbody>
             {tableData[selectedTab.toLowerCase()].map((request, index) => (
-              <tr key={index} className="text-sm">
+              <tr
+                key={index}
+                className="text-sm cursor-pointer"
+                onClick={() => handleRowClick(request.enrolleeID)}
+              >
                 <td className="px-4 py-2 border">{request.date}</td>
                 <td className="px-4 py-2 border">{request.enrolleeName}</td>
                 <td className="px-4 py-2 border">{request.provider}</td>
