@@ -4,15 +4,26 @@ import avatar from "../../assets/csImages/Rectangle 896.svg";
 import svg from "../../assets/csImages/Ellipse 75.svg";
 import dropdown from "../../assets/csImages/Group 2398.svg";
 import { useState, useEffect } from "react";
+import search from "../../assets/csImages/Search.svg";
+import plusiconred from "../../assets/csImages/Group 2356.svg";
 
-const Approve = () => {
+const EnrollePaCode = () => {
   const [enrolleeData, setEnrolleeData] = useState(null);
   const navigate = useNavigate();
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const toggleExpand = () => {
-    setIsExpanded((prev) => !prev);
-  };
+  const [dropdownStates, setDropdownStates] = useState({
+    visitType: false,
+    benefits: false,
+  });
+  const [selectedItems, setSelectedItems] = useState({
+    visitType: "",
+    benefits: "",
+  });
+  const dropdownItemsVisitType = [
+    "Visit Type 1",
+    "Visit Type 2",
+    "Visit Type 3",
+  ];
+  const dropdownItemsBenefits = ["Benefit 1", "Benefit 2", "Benefit 3"];
 
   useEffect(() => {
     setEnrolleeData({
@@ -30,6 +41,24 @@ const Approve = () => {
       amountSpent: "$200",
     });
   }, []);
+
+  const toggleDropdown = (dropdownKey) => {
+    setDropdownStates((prev) => ({
+      ...prev,
+      [dropdownKey]: !prev[dropdownKey],
+    }));
+  };
+
+  const selectDropdownItem = (dropdownKey, item) => {
+    setSelectedItems((prev) => ({
+      ...prev,
+      [dropdownKey]: item,
+    }));
+    setDropdownStates((prev) => ({
+      ...prev,
+      [dropdownKey]: false,
+    }));
+  };
 
   if (!enrolleeData) {
     return <div>Loading...</div>;
@@ -152,6 +181,228 @@ const Approve = () => {
           Procedure Information
         </h2>
 
+        {/* First Row of Input Divs */}
+        <div className="flex ml-6 space-x-4">
+          <div className="relative w-[320px]">
+            <label className="block mb-2 text-gray-700 font-medium">
+              Visit Type
+            </label>
+            <div className="relative w-full h-[44px] border border-black rounded-lg">
+              <button
+                onClick={() => toggleDropdown("visitType")}
+                className="flex items-center justify-between w-full h-full px-3 text-gray-600 bg-white rounded-lg"
+              >
+                <span>{selectedItems.visitType || "- Select -"}</span>
+                <img
+                  src={dropdown}
+                  alt="Dropdown"
+                  className={`w-4 h-4 ${
+                    dropdownStates.visitType ? "transform rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {dropdownStates.visitType && (
+                <ul className="absolute left-0 w-full bg-white border border-black rounded-lg shadow-md mt-1 z-10">
+                  {dropdownItemsVisitType.map((item, index) => (
+                    <li
+                      key={index}
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                      onClick={() => selectDropdownItem("visitType", item)}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* Date Picker */}
+          <div className="relative w-[320px]">
+            <label className="block mb-2 text-gray-700 font-medium">
+              Encounter Start Date
+            </label>
+            <div className="relative w-full h-[44px] border border-black rounded-lg">
+              <input
+                type="date"
+                className="w-full h-full px-3 py-2 text-gray-600 bg-white rounded-lg placeholder-gray-400"
+              />
+            </div>
+          </div>
+
+          {/* Benefits Dropdown */}
+          <div className="relative w-[320px]">
+            <label className="block mb-2 text-gray-700 font-medium">
+              Benefits
+            </label>
+            <div className="relative w-full h-[44px] border border-black rounded-lg">
+              <button
+                onClick={() => toggleDropdown("benefits")}
+                className="flex items-center justify-between w-full h-full px-3 text-gray-600 bg-white rounded-lg"
+              >
+                <span>{selectedItems.benefits || "- Select -"}</span>
+                <img
+                  src={dropdown}
+                  alt="Dropdown"
+                  className={`w-4 h-4 ${
+                    dropdownStates.benefits ? "transform rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {dropdownStates.benefits && (
+                <ul className="absolute left-0 w-full bg-white border border-black rounded-lg shadow-md mt-1 z-10">
+                  {dropdownItemsBenefits.map((item, index) => (
+                    <li
+                      key={index}
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                      onClick={() => selectDropdownItem("benefits", item)}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Second Row of Input Divs */}
+        <div className="flex ml-6 space-x-4 mt-4">
+          {/* Requesting Provider Dropdown */}
+          <div className="relative w-[320px]">
+            <label className="block mb-2 text-gray-700 font-medium">
+              Requesting Provider
+            </label>
+            <div className="relative w-full h-[44px] border border-black rounded-lg">
+              <button
+                onClick={() => toggleDropdown("firstDropdown")}
+                className="flex items-center justify-between w-full h-full px-3 text-gray-600 bg-white rounded-lg"
+              >
+                <span>
+                  {selectedItems.firstDropdown || "- Select Another -"}
+                </span>
+                <img
+                  src={dropdown}
+                  alt="Dropdown"
+                  className={`w-4 h-4 ${
+                    dropdownStates.firstDropdown ? "transform rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {dropdownStates.firstDropdown && (
+                <ul className="absolute left-0 w-full bg-white border border-black rounded-lg shadow-md mt-1 z-10">
+                  {["Option 1", "Option 2", "Option 3"].map((item, index) => (
+                    <li
+                      key={index}
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                      onClick={() => selectDropdownItem("firstDropdown", item)}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* Provider Email Input */}
+          <div className="relative w-[320px]">
+            <label className="block mb-2 text-gray-700 font-medium">
+              Provider Email
+            </label>
+            <div className="relative w-full h-[44px] border border-black rounded-lg">
+              <input
+                type="email"
+                placeholder="Enter Email"
+                className="w-full h-full px-3 py-2 text-gray-600 bg-white rounded-lg placeholder-gray-400"
+              />
+            </div>
+          </div>
+
+          <div className="relative w-[320px]">
+            <label className="block mb-2 text-gray-700 font-medium">
+              Referral Provider
+            </label>
+            <div className="relative w-full h-[44px] border border-black rounded-lg">
+              <button
+                onClick={() => toggleDropdown("secondDropdown")}
+                className="flex items-center justify-between w-full h-full px-3 text-gray-600 bg-white rounded-lg"
+              >
+                <span>
+                  {selectedItems.secondDropdown || "- Select Another -"}
+                </span>
+                <img
+                  src={dropdown}
+                  alt="Dropdown"
+                  className={`w-4 h-4 ${
+                    dropdownStates.secondDropdown ? "transform rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {dropdownStates.secondDropdown && (
+                <ul className="absolute left-0 w-full bg-white border border-black rounded-lg shadow-md mt-1 z-10">
+                  {["Option 1", "Option 2", "Option 3"].map((item, index) => (
+                    <li
+                      key={index}
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                      onClick={() => selectDropdownItem("secondDropdown", item)}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="ml-6 mt-6 mb-6">
+          <h3 className="text-[23px] text-red-700 mt-6 font-bold">Services</h3>
+
+          <h3 className="text-gray-700 flex items-center">
+            Diagnosis
+            <hr className="flex-grow border-t-2 border-gray-700 mx-4" />
+          </h3>
+
+          <div className="flex space-x-4 mt-4">
+            <div className="flex flex-col mr-10">
+              <label htmlFor="diagnosis-code" className="font-semibold">
+                Diagnosis Code
+              </label>
+              <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                <img
+                  src={search}
+                  alt="Search Icon"
+                  className="h-6 w-6 absolute left-2"
+                />
+                <input
+                  type="text"
+                  id="diagnosis-code"
+                  placeholder="Enter diag code"
+                  className="w-full h-full outline-none border-none pl-10"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="diagnostic-description" className="font-semibold">
+                Diagnostic Description
+              </label>
+              <div className="w-[765px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                <input
+                  type="text"
+                  id="diagnostic-description"
+                  placeholder="Enter description"
+                  className="w-full h-full outline-none border-none px-2"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex ml-6 justify-end"> <img src={plusiconred} alt="" className="mr-2"/> Add Another Dianosis</div>
+
         <div className="flex justify-between mt-8">
           <div>
             <button
@@ -175,4 +426,4 @@ const Approve = () => {
   );
 };
 
-export default Approve;
+export default EnrollePaCode;
