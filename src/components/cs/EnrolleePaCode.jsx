@@ -521,7 +521,7 @@ const EnrollePaCode = () => {
           <div>
             <button
               className="w-[131.78px] h-[37.65px] text-center text-red-700 border border-red-700 rounded-md"
-              onClick={() => navigate("/enrolleInformations")}
+              onClick={() => navigate("/enrolleeInformations")}
             >
               Back
             </button>
