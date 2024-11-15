@@ -15,7 +15,7 @@ const PaHistory = () => {
   
 
   const handleGenerateClick = () => {
-    navigate("/enrolleInformations");
+    navigate("/generatePaCode");
   };
 
   const tableData = {

@@ -14,6 +14,7 @@ import Approve from "./pages/csPages/ApprovePage";
 import History from "./pages/csPages/PA-HistoryPage";
 import Success from "./pages/csPages/SuccessPaCodePage";
 import ManagePA from "./pages/csPages/ManagePaPage";
+import GeneratePaCode from "./pages/csPages/GeneratePaCodePage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/history" element={<History />} />
         <Route path="/success" element={<Success />} />
         <Route path="/managePa" element={<ManagePA />} />
+        <Route path="/generatePaCode" element={<GeneratePaCode />} />
       </Routes>
     </BrowserRouter>
   );
