@@ -168,7 +168,7 @@ function EnrolleeInformations() {
           Lagoon is requesting approval for Enrollee LH221121/0
         </h3>
         <div className="flex justify-end">
-          <Link to="/#">
+          <Link to="/history">
             <button>
               <img src={backIcon} alt="Icon" className="w-6 h-6" />
             </button>

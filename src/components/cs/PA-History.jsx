@@ -9,8 +9,7 @@ import { useState } from "react";
 const PaHistory = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("All");
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [itemsPerPage, setItemsPerPage] = useState(7);
+
 
   
 
