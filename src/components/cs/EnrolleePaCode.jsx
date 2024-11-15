@@ -10,6 +10,11 @@ import plusiconred from "../../assets/csImages/Group 2356.svg";
 const EnrollePaCode = () => {
   const [enrolleeData, setEnrolleeData] = useState(null);
   const navigate = useNavigate();
+  const [isChecked, setIsChecked] = useState(false);
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   const [dropdownStates, setDropdownStates] = useState({
     visitType: false,
     benefits: false,
@@ -400,8 +405,117 @@ const EnrollePaCode = () => {
             </div>
           </div>
         </div>
+        <div className="flex ml-6 justify-end">
+          {" "}
+          <img src={plusiconred} alt="" className="mr-2" /> Add Another Dianosis
+        </div>
 
-        <div className="flex ml-6 justify-end"> <img src={plusiconred} alt="" className="mr-2"/> Add Another Dianosis</div>
+        <div className="ml-6 mt-6 mb-6">
+          <h3 className="text-[23px] text-red-700 mt-6 font-bold">Services</h3>
+
+          <h3 className="text-gray-700 flex items-center">
+            Procedure
+            <hr className="flex-grow border-t-2 border-gray-700 mx-4" />
+          </h3>
+
+          <div className="flex space-x-4 mt-4">
+            <div className="flex flex-col mr-10">
+              <label htmlFor="diagnosis-code" className="font-semibold">
+                Diagnosis Code
+              </label>
+              <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                <img
+                  src={search}
+                  alt="Search Icon"
+                  className="h-6 w-6 absolute left-2"
+                />
+                <input
+                  type="text"
+                  id="diagnosis-code"
+                  placeholder="Enter diag code"
+                  className="w-full h-full outline-none border-none pl-10"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col mr-10">
+              <label htmlFor="diagnosis-code" className="font-semibold">
+                Price
+              </label>
+              <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                <input
+                  type="text"
+                  id="diagnosis-code"
+                  placeholder="Enter Price"
+                  className="w-full h-full outline-none border-none pl-10"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <label htmlFor="diagnostic-description" className="font-semibold">
+                Procedure Description
+              </label>
+              <div className="w-[502px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                <input
+                  type="text"
+                  id="diagnostic-description"
+                  placeholder="Enter description"
+                  className="w-full h-full outline-none border-none px-2"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex ml-6 justify-end">
+          {" "}
+          <img src={plusiconred} alt="" className="mr-2" /> Add Another Dianosis
+        </div>
+
+        <div className="ml-6">
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="escalation-checkbox"
+              checked={isChecked}
+              onChange={handleCheckboxChange}
+              className="h-4 w-4"
+            />
+            <div>Escalation</div>
+          </div>
+
+          {isChecked && (
+            <div className="flex flex-col mt-4">
+              <label htmlFor="diagnostic-description" className="font-semibold">
+                Exclusion Reason
+              </label>
+              <div className="w-[1060px] h-[44px] border-2 border-black rounded-md flex items-center px-2 mt-2">
+                <input
+                  type="text"
+                  id="diagnostic-description"
+                  placeholder="Enter Exclusion Reason"
+                  className="w-full h-full outline-none border-none px-2"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="ml-6 mt-10">
+          <h3 className="text-gray-700 flex items-center">
+            Notes
+            <hr className="flex-grow border-t-2 border-gray-700 mx-4" />
+          </h3>
+          <div className="flex flex-col mt-4">
+            <div className="w-[1060px] h-[167px] border-2 border-black rounded-md mt-2">
+              <textarea
+                id="diagnostic-description"
+                placeholder="Enter Text"
+                className="w-full h-full outline-none border-none px-2 pt-4 resize-none"
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="flex justify-between mt-8">
           <div>
@@ -415,9 +529,9 @@ const EnrollePaCode = () => {
           <div>
             <button
               className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
-              onClick={() => navigate("/success")}
+              onClick={() => navigate("/secondGenerate")}
             >
-              Confirm
+              Proceed
             </button>
           </div>
         </div>
