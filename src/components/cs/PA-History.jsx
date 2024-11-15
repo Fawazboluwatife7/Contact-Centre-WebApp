@@ -4,7 +4,7 @@ import plus from "../../assets/csImages/plusSign.svg";
 import filter from "../../assets/csImages/filter.svg";
 import exportIcon from "../../assets/csImages/export.svg";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const PaHistory = () => {
   const navigate = useNavigate();
