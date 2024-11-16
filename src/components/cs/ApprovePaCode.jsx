@@ -191,10 +191,10 @@ const ApprovePACode = () => {
                           Reason {index + 1}
                         </td>
                         <td className="border border-gray-300 p-2">
-                          <button className="bg-blue-500 text-white px-2 py-1 mr-2 rounded">
+                          <button className="bg-blue-700 text-white text-bold px-2 py-1 mr-2 rounded">
                             Edit
                           </button>
-                          <button className="bg-red-500 text-white px-2 py-1 rounded">
+                          <button className="bg-red-700 text-white text-bold px-2 py-1 rounded">
                             Delete
                           </button>
                         </td>
@@ -215,7 +215,7 @@ const ApprovePACode = () => {
           <div>
             <button
               className="w-[131.78px] h-[37.65px] text-center text-red-700 border border-red-700 rounded-md"
-              onClick={() => navigate("/enrolleInformations")}
+              onClick={() => navigate("/enrolleeInformations")}
             >
               Back
             </button>
@@ -223,9 +223,9 @@ const ApprovePACode = () => {
           <div>
             <button
               className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
-              onClick={() => navigate("/success")}
+              onClick={() => navigate("/successGen")}
             >
-              Confirm
+              Generate
             </button>
           </div>
         </div>
