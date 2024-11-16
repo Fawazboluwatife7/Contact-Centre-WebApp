@@ -1,5 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
-import backIcon from "../../assets/csImages/eva_arrow-back-outline.svg";
+import { useNavigate } from "react-router-dom";
 import avatar from "../../assets/csImages/Rectangle 896.svg";
 import svg from "../../assets/csImages/Ellipse 75.svg";
 import dropdown from "../../assets/csImages/Group 2398.svg";
@@ -8,10 +7,10 @@ import { useState, useEffect } from "react";
 const ApprovePACode = () => {
   const [enrolleeData, setEnrolleeData] = useState(null);
   const navigate = useNavigate();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [showTable, setShowTable] = useState(false);
 
-  const toggleExpand = () => {
-    setIsExpanded((prev) => !prev);
+  const toggleTable = () => {
+    setShowTable(!showTable);
   };
 
   useEffect(() => {
@@ -41,7 +40,7 @@ const ApprovePACode = () => {
         <h3 className="font-bold text-lg font-sans ml-6 mt-3 mb-3">
           Approve PA Request
         </h3>
-    
+
         <div className="p-1 mx-auto bg-white shadow-md space-y-4 w-[1168px] h-[47px] ml-5 mb-3">
           <h3 className="font-bold text-lg font-serif mt-1 ml-3">
             Enrollee Information
@@ -141,117 +140,73 @@ const ApprovePACode = () => {
           PA Generation Preview
         </h2>
 
-        <div
-          className="flex items-center gap-4 mb-6 cursor-pointer"
-          onClick={toggleExpand}
-        >
-          <input
-            type="checkbox"
-            className="rounded-full h-5 w-5 border-gray-300"
-          />
-          <div className="flex-1">
-            <h4 className="text-lg font-semibold">Diagnosis 1</h4>
+        <div className="ml-6 w-[1100px] h-auto border border-black p-4">
+          <div className="flex justify-between items-center">
+            <h2>Diagnosis 1</h2>
+            <h2>M20</h2>
+            <h2>Common Malaria</h2>
+            <img
+              src={dropdown}
+              alt="Toggle Dropdown"
+              className="cursor-pointer"
+              onClick={toggleTable}
+            />
           </div>
 
-          <h6 className="text-gray-600">Hypertensive Retinopathy</h6>
-          <img
-            src={dropdown}
-            alt="Expand/Collapse"
-            className={`w-5 h-5 transition-transform duration-300 ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-          />
+          {showTable && (
+            <div className="mt-4">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead className="bg-gray-200">
+                  <tr>
+                    <th className="border border-gray-300 p-2">Diag Code</th>
+                    <th className="border border-gray-300 p-2">Diag Desc</th>
+                    <th className="border border-gray-300 p-2">Proc Code</th>
+                    <th className="border border-gray-300 p-2">Proc Desc</th>
+                    <th className="border border-gray-300 p-2">Exclusions</th>
+                    <th className="border border-gray-300 p-2">Reason</th>
+                    <th className="border border-gray-300 p-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array(5)
+                    .fill(0)
+                    .map((_, index) => (
+                      <tr key={index} className="text-center">
+                        <td className="border border-gray-300 p-2">
+                          D{index + 1}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          Description {index + 1}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          P{index + 1}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          Procedure {index + 1}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          Exclusion {index + 1}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          Reason {index + 1}
+                        </td>
+                        <td className="border border-gray-300 p-2">
+                          <button className="bg-blue-500 text-white px-2 py-1 mr-2 rounded">
+                            Edit
+                          </button>
+                          <button className="bg-red-500 text-white px-2 py-1 rounded">
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
-        {isExpanded && (
-          <div className="pl-10 mb-4 space-y-4">
-            <h5 className="text-lg font-bold">
-              Diagnosis
-              ___________________________________________________________________________________________________________________________________
-            </h5>
-            <div className="flex">
-              <div className="flex flex-col gap-2">
-                <label className="text-gray-1200 text-sm">Diagnosis Code</label>
-                <input
-                  type="text"
-                  placeholder="127876783"
-                  className="p-2 border rounded-md text-gray-600 w-[370.14px] h-[43.31px]"
-                />
-              </div>
-              <div className="flex flex-col gap-2 ml-10">
-                <label className="text-gray-1200 text-sm">
-                  Diagnosis Description
-                </label>
-                <input
-                  type="text"
-                  placeholder="Customer is suffering from artry blockage"
-                  className="p-2 border rounded-md text-gray-600 w-[370.14px] h-[43.31px]"
-                />
-              </div>
-            </div>
-
-            <h5 className="text-lg font-bold">
-              Procedures
-              ___________________________________________________________________________________________________________________________________
-            </h5>
-            <div className="flex">
-              <div className="flex flex-col gap-2">
-                <label className="text-gray-1200 text-sm">Procedure Code</label>
-                <input
-                  type="text"
-                  placeholder="127876783"
-                  className="p-2 border rounded-md text-gray-600 w-[210.39px] h-[43.31px]"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2 ml-10">
-                <label className="text-gray-1200 text-sm">Units</label>
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="  p-2 border rounded-md text-gray-600 w-[210.39px] h-[43.31px]"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2 ml-10">
-                <label className="text-gray-1200 text-sm">
-                  Procedure Description
-                </label>
-                <input
-                  type="text"
-                  placeholder="A Chest X-ray to scan for other abnormal activities"
-                  className="p-2 border rounded-md text-gray-600 w-[370.14px] h-[43.31px]"
-                />
-              </div>
-            </div>
-
-            <h3 className="text-red-700">Remove</h3>
-          </div>
-          
-        )}
-         <div
-          className="flex items-center gap-4 mb-6 cursor-pointer"
-          onClick={toggleExpand}
-        >
-          <input
-            type="checkbox"
-            className="rounded-full h-5 w-5 border-gray-300"
-          />
-          <div className="flex-1">
-            <h4 className="text-lg font-semibold">Diagnosis 2</h4>
-          </div>
-
-          <h6 className="text-gray-600 ">Chest X-ray</h6>
-          <img
-            src={dropdown}
-            alt="Expand/Collapse"
-            className={`w-5 h-5 transition-transform duration-300 ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-          />
-        </div>
-
-        <div className="mb-8 mt-4">
+        <div className="mb-8 mt-4 ml-6">
           <h4 className="text-red-700 font-semibold">Total Cost</h4>
           <h3 className="text-xl font-bold">₦135,000</h3>
         </div>
