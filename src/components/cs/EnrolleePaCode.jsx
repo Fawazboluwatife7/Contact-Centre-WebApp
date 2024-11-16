@@ -529,7 +529,7 @@ const EnrollePaCode = () => {
           <div>
             <button
               className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
-              onClick={() => navigate("/secondGenerate")}
+              onClick={() => navigate("/approvePaCode")}
             >
               Proceed
             </button>
