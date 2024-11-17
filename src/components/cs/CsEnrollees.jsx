@@ -516,6 +516,8 @@
 
 import React, { useState, useEffect } from "react";
 import search from "../../assets/CSIMAGES/Search.svg";
+import angleupdown from "../../assets/CSIMAGES/angleupdown.svg";
+import eachuser from "../../assets/CSIMAGES/eachuser.svg";
 
 function CsEnrolles() {
   const [data, setData] = useState([]);
@@ -530,6 +532,8 @@ function CsEnrolles() {
   const [searchPlanType, setSearchPlanType] = useState("");
   const [searchBillingInfo, setSearchBillingInfo] = useState("");
   const [searchStartDate, setSearchStartDate] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [searchPhoneNumber, setSearchPhoneNumber] = useState("");
 
   // Simulate loading data (useEffect not needed for static data)
   useEffect(() => {
@@ -538,93 +542,49 @@ function CsEnrolles() {
         {
           name: "John Doe",
           enrolleeId: "ENR123456",
-          scheme: "Health",
-          planType: "Premium",
-          billingInfo: "Paid",
+          scheme: "Magnum",
+          planType: ".....",
+          billingInfo: "Annually",
           startDate: "2024-10-12",
+          phoneNumber: "0930797493",
+          email: "isamadesmond@gmail.com",
+          image: eachuser,
         },
 
         {
           name: "John Doe",
           enrolleeId: "ENR123456",
-          scheme: "Health",
-          planType: "Premium",
-          billingInfo: "Paid",
+          scheme: "Magnum",
+          planType: "....",
+          billingInfo: "Annually",
           startDate: "2024-10-12",
+          phoneNumber: "09130797494",
+          email: "isamamichael.com",
+          image: eachuser,
         },
         {
           name: "Jane Smith",
           enrolleeId: "ENR789101",
-          scheme: "Health",
-          planType: "Basic",
-          billingInfo: "Unpaid",
+          scheme: "Magnum",
+          planType: "....",
+          billingInfo: "Annually",
           startDate: "2024-10-10",
+          phoneNumber: "09230797495",
+          email: "isamafavour@gmail.com",
+          image: eachuser,
         },
         {
           name: "Mary Johnson",
           enrolleeId: "ENR112233",
-          scheme: "Dental",
-          planType: "Standard",
-          billingInfo: "Paid",
+          scheme: "Magnum",
+          planType: "....",
+          billingInfo: "Annually",
           startDate: "2024-10-11",
-        },
-        {
-          name: "James Brown",
-          enrolleeId: "ENR445566",
-          scheme: "Vision",
-          planType: "Premium",
-          billingInfo: "Unpaid",
-          startDate: "2024-10-09",
-        },
-        {
-          name: "Robert White",
-          enrolleeId: "ENR778899",
-          scheme: "Health",
-          planType: "Basic",
-          billingInfo: "Paid",
-          startDate: "2024-10-08",
-        },
-        {
-          name: "Linda Green",
-          enrolleeId: "ENR223344",
-          scheme: "Dental",
-          planType: "Premium",
-          billingInfo: "Unpaid",
-          startDate: "2024-10-07",
-        },
-        {
-          name: "Michael Black",
-          enrolleeId: "ENR556677",
-          scheme: "Vision",
-          planType: "Standard",
-          billingInfo: "Paid",
-          startDate: "2024-10-06",
+          phoneNumber: "09330797496",
+          email: "isamagrace@gmail.com",
+          image: eachuser,
         },
 
-        {
-          name: "Jane Smith",
-          enrolleeId: "ENR789101",
-          scheme: "Health",
-          planType: "Basic",
-          billingInfo: "Unpaid",
-          startDate: "2024-10-10",
-        },
-        {
-          name: "Mary Johnson",
-          enrolleeId: "ENR112233",
-          scheme: "Dental",
-          planType: "Standard",
-          billingInfo: "Paid",
-          startDate: "2024-10-11",
-        },
-        {
-          name: "James Brown",
-          enrolleeId: "ENR445566",
-          scheme: "Vision",
-          planType: "Premium",
-          billingInfo: "Unpaid",
-          startDate: "2024-10-09",
-        },
         // Add more data as needed...
       ]);
       setLoading(false);
@@ -641,7 +601,9 @@ function CsEnrolles() {
       item.billingInfo
         .toLowerCase()
         .includes(searchBillingInfo.toLowerCase()) &&
-      item.startDate.includes(searchStartDate)
+      item.startDate.includes(searchStartDate) &&
+      item.email.toLowerCase().includes(searchEmail.toLowerCase()) &&
+      item.phoneNumber.toLowerCase().includes(searchPhoneNumber.toLowerCase())
     );
   });
 
@@ -673,7 +635,7 @@ function CsEnrolles() {
         {/* Search Fields */}
         <div className="relative">
           <label htmlFor="searchName" className="block text-gray-700 mb-1">
-            Search by Name
+            First Name
           </label>
           <div className="flex flex-col border-2">
             <div className="ml-7">
@@ -681,7 +643,32 @@ function CsEnrolles() {
                 id="searchName"
                 type="text"
                 className="w-full p-2 border-gray-300 rounded-md focus:outline-none"
-                placeholder="Search by Name"
+                placeholder="Search"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+              />
+            </div>
+            <div className="absolute left-3 mt-3">
+              <img
+                src={search}
+                alt="Search"
+                className="w-4 h-4 text-gray-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="relative">
+          <label htmlFor="searchName" className="block text-gray-700 mb-1">
+            Last Name
+          </label>
+          <div className="flex flex-col border-2">
+            <div className="ml-7">
+              <input
+                id="searchName"
+                type="text"
+                className="w-full p-2 border-gray-300 rounded-md focus:outline-none"
+                placeholder="Search"
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
               />
@@ -701,7 +688,7 @@ function CsEnrolles() {
             htmlFor="searchEnrolleeId"
             className="block text-gray-700 mb-1"
           >
-            Search by Enrollee ID
+            Enrollee ID
           </label>
           <div className="flex flex-col border-2">
             <div className="ml-7">
@@ -709,7 +696,7 @@ function CsEnrolles() {
                 id="searchEnrolleeId"
                 type="text"
                 className="w-full p-2 border-gray-300 rounded-md focus:outline-none"
-                placeholder="Search by Enrollee ID"
+                placeholder="Search"
                 value={searchEnrolleeId}
                 onChange={(e) => setSearchEnrolleeId(e.target.value)}
               />
@@ -726,17 +713,17 @@ function CsEnrolles() {
 
         <div className="relative">
           <label htmlFor="searchScheme" className="block text-gray-700 mb-1">
-            Search by Scheme
+            phone Number
           </label>
           <div className="flex flex-col border-2">
             <div className="ml-7">
               <input
-                id="searchScheme"
+                id="searchPhoneNumber"
                 type="text"
                 className="w-full p-2 border-gray-300 rounded-md focus:outline-none"
-                placeholder="Search by Scheme"
-                value={searchScheme}
-                onChange={(e) => setSearchScheme(e.target.value)}
+                placeholder="Search"
+                value={searchPhoneNumber}
+                onChange={(e) => setSearchPhoneNumber(e.target.value)}
               />
             </div>
             <div className="absolute left-3 mt-3">
@@ -751,17 +738,17 @@ function CsEnrolles() {
 
         <div className="relative">
           <label htmlFor="searchPlanType" className="block text-gray-700 mb-1">
-            Search by Plan Type
+            Email
           </label>
           <div className="flex flex-col border-2">
             <div className="ml-7">
               <input
-                id="searchPlanType"
+                id="searchEmail"
                 type="text"
                 className="w-full p-2 border-gray-300 rounded-md focus:outline-none"
-                placeholder="Search by Plan Type"
-                value={searchPlanType}
-                onChange={(e) => setSearchPlanType(e.target.value)}
+                placeholder="Search"
+                value={searchEmail}
+                onChange={(e) => setSearchEmail(e.target.value)}
               />
             </div>
             <div className="absolute left-3 mt-3">
@@ -779,7 +766,7 @@ function CsEnrolles() {
             htmlFor="searchBillingInfo"
             className="block text-gray-700 mb-1"
           >
-            Search by Billing Info
+            Group
           </label>
           <div className="flex flex-col border-2">
             <div className="ml-7">
@@ -787,33 +774,9 @@ function CsEnrolles() {
                 id="searchBillingInfo"
                 type="text"
                 className="w-full p-2 border-gray-300 rounded-md focus:outline-none"
-                placeholder="Search by Billing Info"
+                placeholder="Search"
                 value={searchBillingInfo}
                 onChange={(e) => setSearchBillingInfo(e.target.value)}
-              />
-            </div>
-            <div className="absolute left-3 mt-3">
-              <img
-                src={search}
-                alt="Search"
-                className="w-4 h-4 text-gray-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="relative">
-          <label htmlFor="searchStartDate" className="block text-gray-700 mb-1">
-            Search by Start Date
-          </label>
-          <div className="flex flex-col border-2">
-            <div className="ml-7">
-              <input
-                id="searchStartDate"
-                type="date"
-                className="w-full p-2 border-gray-300 rounded-md focus:outline-none"
-                value={searchStartDate}
-                onChange={(e) => setSearchStartDate(e.target.value)}
               />
             </div>
             <div className="absolute left-3 mt-3">
@@ -828,31 +791,59 @@ function CsEnrolles() {
       </div>
 
       {/* Table Display */}
+
       <div className="overflow-x-auto w-full mt-10 bg-white">
-        <table className="w-full text-sm text-gray-600">
-          <thead className="text-red-500 bg-darkblue">
-            <tr>
-              <th className="py-2 px-4 text-left">Name</th>
-              <th className="py-2 px-4 text-left">Enrollee ID</th>
-              <th className="py-2 px-4 text-left">Scheme</th>
-              <th className="py-2 px-4 text-left">Plan Type</th>
-              <th className="py-2 px-4 text-left">Billing Info</th>
-              <th className="py-2 px-4 text-left">Start Date</th>
+        <div className="flex justify-center items-center w-full">
+          <div className="w-[75%] bg-red-500 flex justify-between gap-10 items-center">
+            <div className="flex items-center  py-2  text-left text-sm font-semibold text-gray-600">
+              Name
+              <img src={angleupdown} className="ml-2 w-4 h-4" alt="Sort Icon" />
+            </div>
+            <div className="flex items-center text-left text-sm font-semibold text-gray-600">
+              Enrollee ID
+              <img src={angleupdown} className="ml-2 w-4 h-4" alt="Sort Icon" />
+            </div>
+            <div className="flex items-center  py-2 text-left text-sm font-semibold text-gray-600">
+              Scheme
+              <img src={angleupdown} className="ml-2 w-4 h-4" alt="Sort Icon" />
+            </div>
+            <div className="flex items-center  py-2 text-left text-sm font-semibold text-gray-600">
+              Plan Type
+              <img src={angleupdown} className="ml-2 w-4 h-4" alt="Sort Icon" />
+            </div>
+            <div className="flex items-center  py-2 text-left text-sm font-semibold text-gray-600">
+              Billing Frequency
+              <img src={angleupdown} className="ml-2 w-4 h-4" alt="Sort Icon" />
+            </div>
+            <div className="flex items-center  py-2 text-left text-sm font-semibold text-gray-600">
+              Start Date
+              <img src={angleupdown} className="ml-2 w-4 h-4" alt="Sort Icon" />
+            </div>
+          </div>
+        </div>
+
+        <tbody>
+          {" "}
+          {paginateData.map((item, index) => (
+            <tr key={index} className="border-b">
+              {" "}
+              <td className="py-2 px-4">
+                {" "}
+                <img
+                  src={item.image}
+                  className="w-10 h-10 rounded-full bg-red-500"
+                  alt="User"
+                />{" "}
+              </td>{" "}
+              <td className="py-2 px-16">{item.name}</td>{" "}
+              <td className="py-2 px-4">{item.enrolleeId}</td>{" "}
+              <td className="py-2 px-4">{item.scheme}</td>{" "}
+              <td className="py-2 px-4">{item.planType}</td>{" "}
+              <td className="py-2 px-4">{item.billingInfo}</td>{" "}
+              <td className="py-2 px-4">{item.startDate}</td>{" "}
             </tr>
-          </thead>
-          <tbody>
-            {paginateData.map((item, index) => (
-              <tr key={index} className="border-b">
-                <td className="py-2 px-4">{item.name}</td>
-                <td className="py-2 px-4">{item.enrolleeId}</td>
-                <td className="py-2 px-4">{item.scheme}</td>
-                <td className="py-2 px-4">{item.planType}</td>
-                <td className="py-2 px-4">{item.billingInfo}</td>
-                <td className="py-2 px-4">{item.startDate}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          ))}{" "}
+        </tbody>
       </div>
 
       {/* Show all toggle */}

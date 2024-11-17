@@ -7,6 +7,7 @@ import skybluechart from "../../assets/CSIMAGES/skybluechat.svg";
 import orangechart from "../../assets/CSIMAGES/orangechat.svg";
 import search from "../../assets/CSIMAGES/Search.svg";
 import eachuser from "../../assets/CSIMAGES/eachuser.svg";
+import angleupdown from "../../assets/CSIMAGES/angleupdown.svg";
 
 import { useNavigate } from "react-router-dom";
 
@@ -306,31 +307,60 @@ function CsDashboard() {
         </div>
 
         {/* Table Section */}
-        <div className="overflow-x-auto bg-white rounded-md shadow-sm">
-          {/* Table Section */}
-          <div className=" flex justify-end items-center w-full">
-            <div className="w-[92%]  flex justify-between gap-10 items-center ">
-              <div className="px-4 py-2 bg-white text-left text-sm font-semibold text-gray-600">
-                Name
-              </div>
-              <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                Enrollee ID
-              </div>
-              <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                Date
-              </div>
-              <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                Hospital
-              </div>
-              <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                Diagnosis
-              </div>
-              <div className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
-                Status
-              </div>
 
-              {/* Show All / Show Less Button */}
-              <div className="flex justify-center ">
+        {/* Table Section */}
+        <div className="overflow-x-auto bg-white rounded-md shadow-sm mt-10">
+          <div className="flex justify-end items-center w-full">
+            <div className="w-[92%] flex justify-between gap-10 items-center">
+              <div className="flex items-center px-4 py-2 bg-white text-left text-sm font-semibold text-gray-600">
+                Name
+                <img
+                  src={angleupdown}
+                  className="ml-2 w-4 h-4"
+                  alt="Sort Icon"
+                />
+              </div>
+              <div className="flex items-center px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Enrollee ID
+                <img
+                  src={angleupdown}
+                  className="ml-2 w-4 h-4"
+                  alt="Sort Icon"
+                />
+              </div>
+              <div className="flex items-center px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Date
+                <img
+                  src={angleupdown}
+                  className="ml-2 w-4 h-4"
+                  alt="Sort Icon"
+                />
+              </div>
+              <div className="flex items-center px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Hospital
+                <img
+                  src={angleupdown}
+                  className="ml-2 w-4 h-4"
+                  alt="Sort Icon"
+                />
+              </div>
+              <div className="flex items-center px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Diagnosis
+                <img
+                  src={angleupdown}
+                  className="ml-2 w-4 h-4"
+                  alt="Sort Icon"
+                />
+              </div>
+              <div className="flex items-center px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                Status
+                <img
+                  src={angleupdown}
+                  className="ml-2 w-4 h-4"
+                  alt="Sort Icon"
+                />
+              </div>
+              <div className="flex justify-center">
                 <button
                   onClick={() => setShowAll(!showAll)}
                   className="text-blue-500 rounded-md hover:bg-blue-100 py-2 px-4"
@@ -342,37 +372,31 @@ function CsDashboard() {
           </div>
 
           <div className="w-full">
-            <div className="w-full">
-              {/* Render paginated data */}
-              {paginateData.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex  justify-between items-center bg-white border-2 "
-                >
-                  <p className="ml-3 pr-6  ">
-                    <img
-                      src={item.image}
-                      className="w-10 h-10 rounded-full bg-red-500 "
-                    />
-                  </p>
-                  <p className="font-semibold text-sm flex-1">{item.name}</p>
-                  <p className="text-xs text-gray-500 flex-1">
-                    {item.enrolleeId}
-                  </p>
-                  <p className="text-xs text-gray-500 flex-1">{item.date}</p>
-                  <p className="text-xs text-gray-500 flex-1">
-                    {item.hospital}
-                  </p>
-                  <p className="text-xs text-gray-500 flex-1">
-                    {item.diagnosis}
-                  </p>
-                  <p className="text-xs text-gray-500 flex-1">{item.status}</p>
-                  <button className="mr-3 text-blue-500 hover:bg-blue-100 rounded-md flex-shrink-0">
-                    ...
-                  </button>
+            {paginateData.map((item, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center bg-white border-b border-gray-200 py-2"
+              >
+                <div className="ml-3 pr-6">
+                  <img
+                    src={item.image}
+                    className="w-10 h-10 rounded-full bg-red-500"
+                    alt="User"
+                  />
                 </div>
-              ))}
-            </div>
+                <p className="font-semibold text-sm flex-1">{item.name}</p>
+                <p className="text-xs text-gray-500 flex-1">
+                  {item.enrolleeId}
+                </p>
+                <p className="text-xs text-gray-500 flex-1">{item.date}</p>
+                <p className="text-xs text-gray-500 flex-1">{item.hospital}</p>
+                <p className="text-xs text-gray-500 flex-1">{item.diagnosis}</p>
+                <p className="text-xs text-gray-500 flex-1">{item.status}</p>
+                <button className="mr-3 text-blue-500 hover:bg-blue-100 rounded-md flex-shrink-0">
+                  ...
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
