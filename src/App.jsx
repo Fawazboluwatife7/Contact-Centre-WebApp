@@ -17,31 +17,45 @@ import ManagePA from "./pages/csPages/ManagePaPage";
 import GeneratePaCode from "./pages/csPages/GeneratePaCodePage";
 import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
+import Dashboard from "./pages/caseManagement/Dashboard";
+import Enrollee from "./pages/caseManagement/Enrollee";
+import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/Sidebar" element={<Sidebar />} />
-        <Route path="/CsSideBar" element={<CsSideBar />} />
-        <Route path="/CsDashboard" element={<CsDashboardLayoutPage />} />
-        <Route path="/Enrollees" element={<EnrolleesPage />} />
-        <Route path="/create-ticket" element={<CreateNewTicketPage />} />
-        <Route path="/ticket" element={<TicketPage />} />
-        <Route path="/enrolleeInformations" element={<EnrolleeInformations />} />
-        <Route path="/approve" element={<Approve />} />
-        <Route path="/reject" element={<Reject />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/success" element={<Success />} />
-        <Route path="/managePa" element={<ManagePA />} />
-        <Route path="/generatePaCode" element={<GeneratePaCode />} />
-         <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
-        <Route path="/approvePaCode" element={<ApprovePaCode />} />
-
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/Sidebar" element={<Sidebar />} />
+                <Route path="/CsSideBar" element={<CsSideBar />} />
+                <Route
+                    path="/CsDashboard"
+                    element={<CsDashboardLayoutPage />}
+                />
+                <Route path="/Enrollees" element={<EnrolleesPage />} />
+                <Route
+                    path="/create-ticket"
+                    element={<CreateNewTicketPage />}
+                />
+                <Route path="/ticket" element={<TicketPage />} />
+                <Route
+                    path="/enrolleeInformations"
+                    element={<EnrolleeInformations />}
+                />
+                <Route path="/approve" element={<Approve />} />
+                <Route path="/reject" element={<Reject />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/success" element={<Success />} />
+                <Route path="/managePa" element={<ManagePA />} />
+                <Route path="/generatePaCode" element={<GeneratePaCode />} />
+                <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
+                <Route path="/approvePaCode" element={<ApprovePaCode />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/enrollee" element={<Enrollee />} />
+                <Route path="/searchenrollee" element={<SearchEnrollee />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
