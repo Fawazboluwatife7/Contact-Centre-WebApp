@@ -159,7 +159,6 @@
 
 // export default Workbench2;
 
-import React from "react";
 
 const Workbench2 = () => {
   const filterTasks = (status) => {

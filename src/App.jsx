@@ -21,6 +21,7 @@ import SalesLogin from "./pages/salesModule/SalesLogin"
 import StaffDashboard from "./pages/salesModule/StaffDashboard"
 import WorkbenchPages from "./pages/salesModule/WorkbenchPages";
 import CreateProspectPage from "./pages/salesModule/CreateProspectPage";
+import CompanyDetailsPage from "./pages/salesModule/CompanyDetailsPage";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
         <Route path="/StaffDashboard" element={<StaffDashboard />} />
         <Route path="/Workbench2" element={<WorkbenchPages />} />
         <Route path="/CreateProspectPage" element={<CreateProspectPage />} />
+        <Route path="/CompanyDetailsPage" element={<CompanyDetailsPage />} />
       </Routes>
     </BrowserRouter>
   );

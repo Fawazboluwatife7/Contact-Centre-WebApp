@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/SalesModuleImages/Leadway Health Logo.svg"
 import Background from "../../assets/SalesModuleImages/Background.svg"
