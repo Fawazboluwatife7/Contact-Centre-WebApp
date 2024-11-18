@@ -33,10 +33,6 @@ function CsDashboard() {
     navigate(path);
   };
 
-  const handleSeeAllEscalations = () => {
-    navigate("/ticket#escalations");
-  };
-
   // Simulate loading data (useEffect not needed for static data)
   useEffect(() => {
     setTimeout(() => {
