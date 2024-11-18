@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Login = () => {
     const [passwordType, setPasswortType] = useState("password");
     return (
-        <div className="flex bg-[#F0F2FA] w-full h-full">
+        <div className="flex bg-[#F0F2FA] w-full h-[100vh]">
             <div className=" pt-[3rem] pl-[5rem] w-[45%]">
                 <img src="/LeadwayLogo.svg" alt="" />
                 <div>
