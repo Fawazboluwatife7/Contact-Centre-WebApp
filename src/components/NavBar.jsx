@@ -1,76 +1,37 @@
-import { useState } from "react";
+import React from "react";
 
-const CSNavBar = () => {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
-
-  return (
-    <div className="relative w-full max-w-[800px] h-[56px] bg-white shadow rounded-lg p-2 flex items-center justify-between mt-4">
-      <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1 w-[300px]">
-        <span className="material-icons text-gray-500"></span>
-        <input
-          type="text"
-          placeholder="Search Here..."
-          className="bg-transparent border-none outline-none w-full text-sm text-gray-600"
-        />
-      </div>
-
-      {/* Right Section */}
-      <div className="flex items-center gap-4">
-        {/* Avatar with Notification */}
-        <div className="relative flex items-center gap-2">
-          <img
-            src="button-icon.svg"            
-            alt="avatar"
-            className="w-6 h-6 rounded-full border-2 border-white"
-          />
-          <div className="absolute top-0 right-0 w-4 h-4 bg-red-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            4
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 bg-red-100 text-red-600 text-xs rounded-full px-2 py-1">
-          <span className="w-2 h-2 bg-red-600 rounded-full" />
-          Customer Service
-        </div>
-
-        {/* Avatar and Dropdown Icon in Flex Container */}
-        <div className="relative flex items-center gap-1">
-          <img
-            src="Avatars.svg" 
-            alt="human avatar"
-            className="w-8 h-8 rounded-full border-2 border-white cursor-pointer"
-            onClick={toggleDropdown} 
-          />
-
-          <img
-            src="./assets/csImages/button-icon.svg"
-            className="cursor-pointer"
-            onClick={toggleDropdown}
-          />
-
-          {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-48 p-2 z-10">
-              <ul>
-                <li className="py-1 px-2 hover:bg-gray-100 cursor-pointer">
-                  Profile
-                </li>
-                <li className="py-1 px-2 hover:bg-gray-100 cursor-pointer">
-                  Settings
-                </li>
-                <li className="py-1 px-2 hover:bg-gray-100 cursor-pointer">
-                  Logout
-                </li>
-              </ul>
+const Navbar = () => {
+    return (
+        <div className="w-full h-[8%] border border-white flex items-center fixed bg-white top-0 pl-3 py-10">
+            <div className="w-[60%]  ">
+                <img
+                    src="searchBar.svg" // Replace with the actual image path
+                    alt="search icon"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 ml-4"
+                />
+                <input
+                    type="text"
+                    placeholder="Search here..."
+                    className="w-full py-2 border bg-[#F0F2FA] rounded-md my-3 pl-10 outline-none placeholder-gray-500"
+                />
             </div>
-          )}
+            <div className=" w-full flex gap-3 ">
+                <div className=" flex gap-1 items-center py-1 px-2  bg-[#C615311A] rounded-[50px]">
+                    <div className=" p-[6px] bg-[#C61531] rounded-full"></div>
+                    <p>Case Management</p>
+                </div>
+                <div>
+                    <img src="BelIcon.svg" alt="" />
+                </div>
+                <div>
+                    <img src="Avatars@3x.svg" alt="" />
+                </div>
+                <div>
+                    <img src="downArrow.svg" alt="" />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default CSNavBar;
+export default Navbar;
