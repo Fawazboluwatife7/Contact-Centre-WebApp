@@ -18,7 +18,7 @@ import GeneratePaCode from "./pages/csPages/GeneratePaCodePage";
 import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
 import SuccessGen from "./pages/csPages/SuccessGeneratePaPage";
-//import Provider from "./pages/csPages/providersPages/ProviderPage";
+import Provider from "./pages/csPages/ProverPage";
 
 function App() {
   return (
@@ -44,7 +44,7 @@ function App() {
         <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
         <Route path="/approvePaCode" element={<ApprovePaCode />} />
         <Route path="/successGen" element={<SuccessGen />} />
-        {/* <Route path="/provider" element={<Provider />} />  */}
+        {<Route path="/provider" element={<Provider />} /> }
       </Routes>
     </BrowserRouter>
   );
