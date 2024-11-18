@@ -1,5 +1,3 @@
-// 
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import RecentProspectsTable from './salesComponents/RecentProspectsTable';
 import Header from '../../components/cs/Header';
@@ -7,13 +5,7 @@ import CsSidebar from '../../components/cs/csSideBar';
 import Workbench from './salesComponents/Workbench';
 import CardDisplay from './salesComponents/CardDisplay';
 
-const ActionButton = ({ label }) => {
-  return (
-    <button className="bg-white border border-gray-300 text-red-600 font-bold py-2 px-4 rounded-md shadow-sm hover:bg-gray-100">
-      {label}
-    </button>
-  );
-};
+
 
 const StaffDashboard = () => {
   return (
