@@ -118,7 +118,9 @@ function CreateNewTicket() {
                   <option value="class2">Class 2</option>
                 </select>
                 <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-                  <img src={vangle} />
+                  <img
+                  // src={vangle}
+                  />
                 </div>
               </div>
             </div>
@@ -279,7 +281,9 @@ function CreateNewTicket() {
                   <option value="workflow2">Workflow 2</option>
                 </select>
                 <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-                  <img src={vangle} />
+                  <img
+                  // src={vangle}
+                  />
                 </div>
               </div>
             </div>

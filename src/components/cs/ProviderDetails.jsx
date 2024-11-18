@@ -1,7 +1,8 @@
-const providerDetails = () =>{
-    return(
-<div> prodiver</div>
-    );
+const providerDetails = () => {
+  return (
+
+    <div> Provider</div>
+  );
 };
 
 export default providerDetails;
