@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/caseManagement/Login";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./components/Landing/Sidebar";
 import CsSideBar from "./components/cs/csSideBar";
 import "./index.css";
 import CsDashboardLayoutPage from "./pages/csPages/DashboardLayoutPage";
@@ -17,6 +17,10 @@ import ManagePA from "./pages/csPages/ManagePaPage";
 import GeneratePaCode from "./pages/csPages/GeneratePaCodePage";
 import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
+import SalesLogin from "./pages/salesModule/SalesLogin"
+import StaffDashboard from "./pages/salesModule/StaffDashboard"
+import WorkbenchPages from "./pages/salesModule/WorkbenchPages";
+import CreateProspectPage from "./pages/salesModule/CreateProspectPage";
 
 function App() {
   return (
@@ -36,9 +40,12 @@ function App() {
         <Route path="/success" element={<Success />} />
         <Route path="/managePa" element={<ManagePA />} />
         <Route path="/generatePaCode" element={<GeneratePaCode />} />
-         <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
+        <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
         <Route path="/approvePaCode" element={<ApprovePaCode />} />
-
+        <Route path="/SalesLogin" element={<SalesLogin />} />
+        <Route path="/StaffDashboard" element={<StaffDashboard />} />
+        <Route path="/Workbench2" element={<WorkbenchPages />} />
+        <Route path="/CreateProspectPage" element={<CreateProspectPage />} />
       </Routes>
     </BrowserRouter>
   );

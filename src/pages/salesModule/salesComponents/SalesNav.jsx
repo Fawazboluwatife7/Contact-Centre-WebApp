@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CSNavBar = () => {
+const SalesNav = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -8,7 +8,7 @@ const CSNavBar = () => {
   };
 
   return (
-    <div className="relative w-full max-w-[800px] h-[56px] bg-white shadow rounded-lg p-2 flex items-center justify-between mt-4">
+    <nav className="relative w-full max-w-[800px] h-[56px] bg-white shadow rounded-lg p-2 flex items-center justify-between mt-4">
       <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1 w-[300px]">
         <span className="material-icons text-gray-500"></span>
         <input
@@ -69,8 +69,8 @@ const CSNavBar = () => {
           )}
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 
-export default CSNavBar;
+export default SalesNav;
