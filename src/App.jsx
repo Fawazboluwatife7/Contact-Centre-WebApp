@@ -19,6 +19,7 @@ import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
 import SuccessGen from "./pages/csPages/SuccessGeneratePaPage";
 import TicketInformationPage from "./pages/csPages/TicketInformationPage";
+import CsLoginPage from "./pages/csPages/CsLoginPage";
 //import Provider from "./pages/csPages/providersPages/ProviderPage";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="/create-ticket" element={<CreateNewTicketPage />} />
         <Route path="/ticket" element={<TicketPage />} />
         <Route path="/ticket-information" element={<TicketInformationPage />} />
+        <Route path="/cslogin" element={<CsLoginPage />} />
 
         <Route
           path="/enrolleeInformations"
