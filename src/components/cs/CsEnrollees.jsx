@@ -278,7 +278,7 @@ function CsEnrolles() {
 
       <div className="overflow-x-auto w-full mt-10 bg-white">
         <div className="flex justify-center items-center w-full">
-          <div className="w-[75%] bg-red-500 flex justify-between gap-10 items-center">
+          <div className="w-[75%]  flex justify-between gap-10 items-center">
             <div className="flex items-center  py-2  text-left text-sm font-semibold text-gray-600">
               Name
               <img src={angleupdown} className="ml-2 w-4 h-4" alt="Sort Icon" />
