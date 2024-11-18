@@ -2,7 +2,7 @@ const DependantsForm = () => {
   return (
     <div className="p-6 bg-gray-200 min-h-full">
       {/* Page Title */}
-      <div className="absolute top-4 left-4 text-black font-bold text-3xl ml-2">
+      <div className=" text-black font-bold text-3xl ml-2">
         Client Onboarding
       </div>
 
