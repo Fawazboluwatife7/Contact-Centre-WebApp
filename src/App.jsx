@@ -17,6 +17,11 @@ import ManagePA from "./pages/csPages/ManagePaPage";
 import GeneratePaCode from "./pages/csPages/GeneratePaCodePage";
 import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
+import SuccessGen from "./pages/csPages/SuccessGeneratePaPage";
+import TicketInformationPage from "./pages/csPages/TicketInformationPage";
+import CsLoginPage from "./pages/csPages/CsLoginPage";
+import Provider from "./pages/csPages/ProviderPage";
+import Providerdetails from "./pages/csPages/ProviderDetailsPage";
 
 function App() {
   return (
@@ -29,16 +34,24 @@ function App() {
         <Route path="/Enrollees" element={<EnrolleesPage />} />
         <Route path="/create-ticket" element={<CreateNewTicketPage />} />
         <Route path="/ticket" element={<TicketPage />} />
-        <Route path="/enrolleeInformations" element={<EnrolleeInformations />} />
+        <Route path="/ticket-information" element={<TicketInformationPage />} />
+        <Route path="/cslogin" element={<CsLoginPage />} />
+
+        <Route
+          path="/enrolleeInformations"
+          element={<EnrolleeInformations />}
+        />
         <Route path="/approve" element={<Approve />} />
         <Route path="/reject" element={<Reject />} />
         <Route path="/history" element={<History />} />
         <Route path="/success" element={<Success />} />
         <Route path="/managePa" element={<ManagePA />} />
         <Route path="/generatePaCode" element={<GeneratePaCode />} />
-         <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
+        <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
         <Route path="/approvePaCode" element={<ApprovePaCode />} />
-
+        <Route path="/successGen" element={<SuccessGen />} />
+        <Route path="/provider" element={<Provider />} />
+        <Route path="/providerDetails" element={<Providerdetails />} />
       </Routes>
     </BrowserRouter>
   );
