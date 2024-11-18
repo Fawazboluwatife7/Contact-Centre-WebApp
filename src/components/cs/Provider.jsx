@@ -32,6 +32,15 @@ function ProviderComponent() {
           endDate: "22/8/2022",
           status: "Active",
         },
+        {
+            id: 1,
+            groupCode: "1005",
+            groupName: "Leadway hospital",
+            scheme: "PRO",
+            startDate: "22/8/2022",
+            endDate: "22/8/2022",
+            status: "Active",
+          },
       ]);
       setLoading(false);
     }, 1000);
@@ -67,7 +76,7 @@ function ProviderComponent() {
   }
 
   const handleRowClick = (id) => {
-    navigate(`/providerDetails/${id}`);
+    navigate("/providerDetails");
   };
 
   return (
