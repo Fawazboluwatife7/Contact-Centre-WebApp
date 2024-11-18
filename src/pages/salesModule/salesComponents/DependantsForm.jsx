@@ -7,7 +7,7 @@ const DependantsForm = () => {
       </div>
 
       {/* Content area */}
-      <div className="py-8 mt-16 bg-white min-h-[75%]">
+      <div className="py-8 mt-10 bg-white min-h-[75%]">
         {/* Page Header */}
         <div className="relative mx-auto max-w-4xl">
           {/* Main Heading */}
