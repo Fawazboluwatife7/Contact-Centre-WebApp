@@ -4,7 +4,6 @@ import settings from "../../../../assets/SalesModuleImages/gear_3808071.png"
 
 const SalesSidebar = () => {
   const navigate = useNavigate(); // Initialize the navigate function
-
   // Function to handle navigation
   const handleNavigate = (path) => {
     navigate(path);

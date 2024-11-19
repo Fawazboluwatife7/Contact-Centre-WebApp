@@ -18,7 +18,7 @@ import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
 import SalesLogin from "./pages/salesModule/SalesLogin"
 import StaffDashboard from "./pages/salesModule/StaffDashboard"
-import WorkbenchPages from "./pages/salesModule/WorkbenchPages";
+import WorkbenchPage from "./pages/salesModule/WorkbenchPage";
 import CreateProspectPage from "./pages/salesModule/CreateProspectPage";
 import ClientOnboardingPage from './pages/salesModule/ClientOnboardingPage';
 import SMEClientOnboardingPage1 from "./pages/salesModule/SMEClientOnboardingPage1";
@@ -52,7 +52,7 @@ function App() {
         <Route path="/approvePaCode" element={<ApprovePaCode />} />
         <Route path="/SalesLogin" element={<SalesLogin />} />
         <Route path="/StaffDashboard" element={<StaffDashboard />} />
-        <Route path="/Workbench2" element={<WorkbenchPages />} />
+        <Route path="/WorkbenchPage" element={<WorkbenchPage />} />
         <Route path="/CreateProspectPage" element={<CreateProspectPage />} />
         <Route path="/ClientOnboardingPage" element={<ClientOnboardingPage />} />
         <Route path="/ClientOnboardingPage0" element={<ClientOnboardingPage0 />} />

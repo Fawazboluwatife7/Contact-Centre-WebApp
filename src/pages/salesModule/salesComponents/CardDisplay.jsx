@@ -1,6 +1,13 @@
-
+import { useNavigate } from "react-router-dom";
 
 const CardDisplay = () => {
+
+  const navigate = useNavigate(); // Initialize the navigate function
+  // Function to handle navigation
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
   return (
     <div className="flex flex-col px-8 py-6">
       {/* First Row */}
@@ -115,17 +122,17 @@ const CardDisplay = () => {
       <div className="flex gap-4 mt-8">
         {/* Send Proposal Button */}
         <div className="relative w-[168px] h-[45px] bg-[rgba(198,21,49,0.1)] border border-[#C61531] rounded-md flex items-center justify-center">
-          <span className="text-[#C61531] font-bold text-[15px] leading-[18px] tracking-[0.01em]">Send Proposal</span>
+          <span className="text-[#C61531] cursor-pointer font-bold text-[15px] leading-[18px] tracking-[0.01em]">Send Proposal</span>
         </div>
 
         {/* Create Invoice Button */}
         <div className="relative w-[168px] h-[45px] bg-[rgba(198,21,49,0.1)] border border-[#C61531] rounded-md flex items-center justify-center">
-          <span className="text-[#C61531] font-bold text-[15px] leading-[18px] tracking-[0.01em]">Create Invoice</span>
+          <span className="text-[#C61531] cursor-pointer font-bold text-[15px] leading-[18px] tracking-[0.01em]">Create Invoice</span>
         </div>
 
         {/* Create Prospect Button */}
         <div className="relative w-[168px] h-[45px] bg-[rgba(198,21,49,0.1)] border border-[#C61531] rounded-md flex items-center justify-center">
-          <span className="text-[#C61531] font-bold text-[15px] leading-[18px] tracking-[0.01em]">Create Prospect</span>
+          <span onClick={() => handleNavigate("/CreateProspectPage")} className="text-[#C61531] font-bold text-[15px] leading-[18px] cursor-pointer tracking-[0.01em]">Create Prospect</span>
         </div>
       </div>
     </div>

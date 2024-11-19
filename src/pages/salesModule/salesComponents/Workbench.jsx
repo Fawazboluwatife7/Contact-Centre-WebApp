@@ -1,6 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Workbench = () => {
+
+  const navigate = useNavigate(); // Initialize the navigate function
+  // Function to handle navigation
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
   const tasks = [
     {
       task: "Send proposal to Smith Hospitals",
@@ -34,7 +42,7 @@ const Workbench = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="ml-9 text-[#353535] font-bold text-[25px] leading-[23px]">Workbench</h2>
-        <button className="mr-[8%] w-[62px] h-[25px] text-[#C61531] text-[10px] rounded-[3px] font-[Lato] bg-red-200 border border-[#C61531]">
+        <button onClick={() => handleNavigate("/WorkbenchPage")} className="mr-[8%] w-[62px] h-[25px] text-[#C61531] text-[10px] rounded-[3px] font-[Lato] bg-red-200 border border-[#C61531]">
           View All
         </button>
       </div>
