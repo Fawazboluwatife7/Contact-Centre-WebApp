@@ -1,4 +1,5 @@
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const PageTitle = () => (
   <div className="-mt-16 relative bottom-10 left-4 text-black font-bold text-3xl -ml-28">
@@ -64,6 +65,11 @@ const SMEClientOnboarding1 = () => {
     { value: "health", label: "Healthcare" }
   ];
 
+  const navigate = useNavigate(); // Initialize the navigate function
+  // Function to handle navigation
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
   return (
     <div className="relative justify-center items-center p-28 bg-[#F0F2FA] h-[90%]">
       <PageTitle />
@@ -85,7 +91,7 @@ const SMEClientOnboarding1 = () => {
           </div>
         </div>
         <div className="flex justify-end px-4 md:px-8 pb-6">
-          <button className="mt-2 md:w-auto px-20 py-3 bg-[#C61531] text-white rounded-md text-lg font-medium">
+          <button onClick={() => handleNavigate("/SMEClientOnboarding")} className="mt-2 md:w-auto px-20 py-3 bg-[#C61531] text-white rounded-md text-lg font-medium">
             Proceed
           </button>
         </div>

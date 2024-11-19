@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 const SMEClientForm = () => {
   // ProgressBar Component
   const ProgressBar = () => {
@@ -61,16 +63,21 @@ const SMEClientForm = () => {
       </div>
     );
   };
+  const navigate = useNavigate(); // Initialize the navigate function
+  // Function to handle navigation
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
 
   return (
-    <div className="justify-center items-center p-28 bg-[#F0F2FA] min-h-full">
+    <div className="justify-center items-center p-2 bg-[#F0F2FA] min-h-full">
       {/* Page Title */}
-      <div className="relative bottom-10 left-4 text-black font-bold text-3xl ml-4">
+      <div className="ml-6 bottom-10 left-4 text-black font-bold text-3xl">
         Client Onboarding
       </div>
 
       {/* Main Container */}
-      <div className="ml-9 w-[100%] h-[95%] bg-white rounded-md shadow-md">
+      <div className="justify-center w-[95%] h-full ml-7 mt-10 bg-white rounded-md shadow-md">
         {/* Header Section */}
         <div className="text-center py-6">
           <h1 className="text-2xl text-[#34475E] font-bold">Complete This In No Time</h1>
@@ -109,7 +116,7 @@ const SMEClientForm = () => {
 
         {/* Submit Buttons */}
         <div className="flex lg:flex-row lg:justify-between gap-16 px-4 md:px-8 pb-6">
-          <button className="w-full md:w-auto md:px-20 px-2 py-3 bg-white border border-[#C61531] text-[#C61531] rounded-md text-lg font-medium">
+          <button onClick={() => handleNavigate("/SMEClientOnboardingPage1")} className="w-full md:w-auto md:px-20 px-2 py-3 bg-white border border-[#C61531] text-[#C61531] rounded-md text-lg font-medium">
             Back
           </button>
           <button className="w-full md:w-auto md:px-16 px-2 py-3 bg-[#C61531] text-white rounded-md text-lg font-medium">

@@ -48,7 +48,7 @@ const CreateProspect = () => {
 
           {/* SME Card */}
           <div 
-            className="relative w-72 h-72 bg-white border cursor-pointer border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6 hover:scale-95
+           onClick={() => handleNavigate("/SMEClientOnboardingPage1")} className="relative w-72 h-72 bg-white border cursor-pointer border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6 hover:scale-95
           ">
           <svg className="w-24 h-24 mt-8 mb-12 text-[#C61531]" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 81"><path d="M50 19.2a19.2 19.2 0 1 1-38.5 0 19.2 19.2 0 0 1 38.5 0m27 19.3a15.4 15.4 0 1 0 0-30.8 15.4 15.4 0 0 0 0 30.8m-7.8 20v-.8q0-6.4-3.8-11.5h25.2c5.2 0 9.4 4.2 9.4 9.4 0 0 0 17.5-23 17.5q-7 0-11.3-1.8a30 30 0 0 0 3.5-12.1zm-7.7-.8A11.5 11.5 0 0 0 50 46.2H11.5A11.5 11.5 0 0 0 0 57.7v.6s0 22.5 30.8 22.5c29.3 0 30.7-20.5 30.7-22.4z" fill="#C61531"/></svg>
 

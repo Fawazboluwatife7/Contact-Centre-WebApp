@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ActionButton = ({ label, onClick }) => {
@@ -39,7 +40,7 @@ const Modal = ({ onComplete }) => {
   };
 
   return (
-    <div className=" -mb-[100px] fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div className="-mb-[100px] fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
       <div className="relative max-w-[800px] h-auto bg-white rounded-[5px] p-8 mx-4">
         <div className="w-full text-center font-semibold text-[24px] md:text-[30px] leading-[30px] md:leading-[35px] text-black mb-6">
           Select “Yes” or “No”
