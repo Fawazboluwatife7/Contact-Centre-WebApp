@@ -469,7 +469,8 @@ const EnrollePaCode = () => {
 
         <div className="flex ml-6 justify-end">
           {" "}
-          <img src={plusiconred} alt="" className="mr-2" /> Add Another Dianosis
+          <img src={plusiconred} alt="" className="mr-2" /> Add Another
+          Procedure
         </div>
 
         <div className="ml-6">
