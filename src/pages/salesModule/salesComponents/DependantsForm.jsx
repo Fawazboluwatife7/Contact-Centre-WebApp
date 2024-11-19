@@ -1,5 +1,14 @@
+import { useNavigate } from 'react-router-dom';
+
 const DependantsForm = () => {
+
+  const navigate = useNavigate(); // Initialize the navigate function
+    // Function to handle navigation
+    const handleNavigate = (path) => {
+      navigate(path);
+    };
   return (
+  
     <div className="p-6 bg-gray-200 min-h-full">
       {/* Page Title */}
       <div className=" text-black font-bold text-3xl ml-2">
@@ -199,11 +208,11 @@ const DependantsForm = () => {
           {/* Buttons */}
           <div className="flex justify-between items-center mt-24">
             {/* Back Button */}
-            <button className="w-[196px] h-[56px] border border-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-[#C61531] ml-10">
+            <button onClick={() => handleNavigate("/BillingSchemePage")} className="w-[196px] h-[56px] border border-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-[#C61531] ml-10">
               Back
             </button>
             {/* Proceed Button */}
-            <button className="w-[196px] h-[56px] bg-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-white mr-5">
+            <button onClick={() => handleNavigate("/ClientOnboardingPage")} className="w-[196px] h-[56px] bg-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-white mr-5">
               Proceed
             </button>
           </div>

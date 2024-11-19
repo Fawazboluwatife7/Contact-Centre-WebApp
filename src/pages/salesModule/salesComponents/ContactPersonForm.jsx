@@ -111,7 +111,7 @@ const ContactPersonForm = () => {
               Back
             </button>
             {/* Proceed Button */}
-            <button onClick={() => handleNavigate("/C")} className="w-[196px] h-[56px] bg-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-white mr-5">
+            <button onClick={() => handleNavigate("/BillingSchemePage")} className="w-[196px] h-[56px] bg-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-white mr-5">
               Proceed
             </button>
           </div>
