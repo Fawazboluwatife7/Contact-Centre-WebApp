@@ -1,4 +1,3 @@
-import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/caseManagement/Login";
 import Sidebar from "./components/Landing/Sidebar";
@@ -27,6 +26,7 @@ import CompanyDetailsForm from "./pages/salesModule/CompanyDetailsForm";
 import ContactPersonPage from "./pages/salesModule/ContactPersonPage";
 import BillingSchemePage from "./pages/salesModule/BillingSchemePage";
 import DependantsPage from "./pages/salesModule/DependantsPage";
+import ClientOnboardingPage0 from "./pages/salesModule/ClientOnboardingPage0";
 
 function App() {
   return (
@@ -53,6 +53,7 @@ function App() {
         <Route path="/Workbench2" element={<WorkbenchPages />} />
         <Route path="/CreateProspectPage" element={<CreateProspectPage />} />
         <Route path="/ClientOnboardingPage" element={<ClientOnboardingPage />} />
+        <Route path="/ClientOnboardingPage0" element={<ClientOnboardingPage0 />} />
         <Route path="/SMEClientOnboardingPage1" element={<SMEClientOnboardingPage1 />} />
         <Route path="/CompanyDetailsForm" element={<CompanyDetailsForm />} />
         <Route path="/ContactPersonPage" element={<ContactPersonPage />} />

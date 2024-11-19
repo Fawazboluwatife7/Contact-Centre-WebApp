@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import search from "../../../assets/CSIMAGES/Search.svg"
-import reddot from "../../../assets/CSIMAGES/reddot.svg";
-import alarm from "../../../assets/CSIMAGES/alarmicon.svg";
-import vangle from "../../../assets/CSIMAGES/vangle.svg";
-import userimage from "../../../assets/CSIMAGES/userimage.svg";
+import search from "../../../../assets/SalesModuleImages/Search.svg"
+import reddot from "../../../../assets/CSIMAGES/reddot.svg";
+import alarm from "../../../../assets/CSIMAGES/alarmicon.svg";
+import vangle from "../../../../assets/CSIMAGES/vangle.svg";
+import userimage from "../../../../assets/CSIMAGES/userimage.svg";
 
-const SalesNav = () => {
+function SalesNav() {
   const [searchTerm, setSearchTerm] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -34,10 +34,6 @@ const SalesNav = () => {
         />
       </div>
       <div className="flex gap-2">
-        <div className="bg-red-50 flex items-center space-x-2 rounded-full p-2">
-          <img src={reddot} alt="Red Dot" className="w-[7px] h-[7px]" />
-          <div className="text-red-500">Customer Service</div>
-        </div>
         <img src={alarm} />
         <div
           className="relative flex w-[52px] h-[38px] p-1 cursor-pointer"
