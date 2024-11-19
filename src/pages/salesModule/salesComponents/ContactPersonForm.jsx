@@ -1,4 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
+
 const ContactPersonForm = () => {
+  const navigate = useNavigate(); // Initialize the navigate function
+  // Function to handle navigation
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
   return (
     <div className="p-6 bg-gray-200 h-full">
       {/* Page Title */}
@@ -97,13 +105,13 @@ const ContactPersonForm = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-between items-center mt-8">
+          <div  className="flex justify-between items-center mt-8">
             {/* Back Button */}
-            <button className="w-[196px] h-[56px] border border-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-[#C61531] ml-10">
+            <button onClick={() => handleNavigate("/CompanyDetailsForm")} className="w-[196px] h-[56px] border border-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-[#C61531] ml-10">
               Back
             </button>
             {/* Proceed Button */}
-            <button className="w-[196px] h-[56px] bg-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-white mr-5">
+            <button onClick={() => handleNavigate("/C")} className="w-[196px] h-[56px] bg-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-white mr-5">
               Proceed
             </button>
           </div>
