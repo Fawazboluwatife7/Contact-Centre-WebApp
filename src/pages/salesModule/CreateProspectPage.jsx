@@ -1,4 +1,3 @@
-import React from 'react'
 import CreateProspect from './salesComponents/CreateProspect'
 import SalesSidebar from './salesComponents/Landing/SalesSidebar';
 import SalesNav from './salesComponents/Landing/SalesNav';

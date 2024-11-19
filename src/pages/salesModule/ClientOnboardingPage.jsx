@@ -1,4 +1,3 @@
-import React from 'react'
 import ClientOnboarding from './salesComponents/ClientOnboarding'
 import SalesSidebar from './salesComponents/Landing/SalesSidebar'
 import SalesNav from './salesComponents/Landing/SalesNav'
