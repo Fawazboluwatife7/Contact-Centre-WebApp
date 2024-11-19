@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/SalesModuleImages/Leadway Health Logo.svg"
 import Background from "../../assets/SalesModuleImages/Background.svg"
@@ -32,55 +31,34 @@ const SalesLogin = () => {
 
       {/* Username Input */}
       <div className="absolute top-[434px] left-24 w-[474px] h-[100px] bg-white shadow-lg rounded-md p-5">
-        <label
-          htmlFor="username"
-          className="block text-[16px] text-black font-normal"
-        >
-          Username
-        </label>
-        <img src="/Loginicons@3x.svg" alt="" />
-        <input
-          id="username"
-          type="text"
-          placeholder="enter your username"
-          className="w-full mt-2 p-2 border border-gray-300 rounded-md text-[#AFB0B1] text-[16px]"
-        />
+      <label className="font-['Mulish'] text-[16px] text-black">Username</label>
+        <input type="text" placeholder="Enter your username" 
+               className="mt-1 w-full text-[16px] text-[#AFB0B1] border-none focus:outline-none"/>
+        <svg className="absolute w-[18px] h-[20px] right-6 top-10" fill="none" viewBox="0 0 20 20">
+          <path fillRule="evenodd" clipRule="evenodd" 
+                d="M10 10c-2.216 0-4.018-1.794-4.018-4S7.784 2 10 2s4.019 1.794 4.019 4-1.802 4-4.02 4m3.777.673a5.98 5.98 0 0 0 2.182-5.603c-.397-2.623-2.59-4.722-5.236-5.028C7.07-.381 3.973 2.449 3.973 6c0 1.89.88 3.574 2.252 4.673C2.853 11.934.39 14.895.005 18.891A1.013 1.013 0 0 0 1.009 20a.99.99 0 0 0 .993-.891C2.405 14.646 5.838 12 10 12s7.596 2.646 7.999 7.109a.99.99 0 0 0 .993.891c.596 0 1.06-.518 1.003-1.109-.385-3.996-2.847-6.957-6.22-8.218" fill="#7A7C87"/>
+        </svg>
       </div>
 
       {/* Password Input */}
       <div className="absolute top-[565px] left-24 w-[474px] h-[100px] bg-white shadow-lg rounded-md p-5">
-        <label
-          htmlFor="password"
-          className="block text-[16px] text-black font-normal"
-        >
-          Password
-        </label>
-        <div className="relative">
-          <input
-            id="password"
-            type="password"
-            placeholder="enter your password"
-            className="w-full mt-2 p-2 border border-gray-300 rounded-md text-[#AFB0B1] text-[16px]"
-          />
-          <button
-            type="button"
-            className="absolute top-1/2 transform -translate-y-1/2 right-3 text-[10px] font-bold text-[#C61531]"
-          >
-            SHOW
-          </button>
-          <img src="HidePassword.svg" alt="" />
-        </div>
+        <label className="font-['Mulish'] text-[16px] text-black">Password</label>
+        <input type="password" placeholder="Enter your password" 
+               className="mt-1 w-full text-[16px] text-[#AFB0B1] border-none focus:outline-none"/>
+        <svg className="absolute w-[18px] h-[20px] right-6 top-10" fill="none" viewBox="0 0 18 20">
+          <path d="M13.077 8.462H4.615a.77.77 0 0 1-.769-.77V5c0-2.757 2.243-5 5-5s5 2.243 5 5v2.692a.77.77 0 0 1-.769.77M5.385 6.923h6.923V5a3.466 3.466 0 0 0-3.462-3.462A3.466 3.466 0 0 0 5.385 5z" fill="#7A7C87"/>
+          <path d="M15.385 20H2.308A2.31 2.31 0 0 1 0 17.692V9.231a2.31 2.31 0 0 1 2.308-2.308h13.077a2.31 2.31 0 0 1 2.307 2.308v8.461A2.31 2.31 0 0 1 15.385 20M2.308 8.462a.77.77 0 0 0-.77.769v8.461a.77.77 0 0 0 .77.77h13.077a.77.77 0 0 0 .769-.77V9.231a.77.77 0 0 0-.77-.77z" fill="#7A7C87"/>
+        </svg>
+        <span className="absolute right-6 top-6 font-['Mulish'] font-bold text-[10px] text-[#C61531] cursor-pointer">SHOW</span>
       </div>
 
       {/* Keep Me Logged In & Reset Password */}
-      <div className="absolute top-[696px] left-24 flex items-center gap-3">
-        <div className="w-[13.38px] h-[14px] bg-[#C61531] rounded-[2px]"></div>
-        <p className="text-[12px] font-normal text-[#7F8B94]">
-          Keep me logged in
-        </p>
-        <p className="ml-auto text-[12px] font-normal text-[#7F8B94]">
-          Reset Password
-        </p>
+      <div className="fixed top-[696px] left-24 flex items-center gap-64">
+      <div className="flex items-center space-x-2">
+          <input type="checkbox" className="w-[13px] h-[14px] bg-[#C61531] rounded-[2px]"/>
+          <label className="text-[#7F8B94] font-['Product Sans'] text-[12px]">Keep me logged in</label>
+        </div>
+        <a href="#" className="text-[#7F8B94] font-['Product Sans'] text-[12px]">Reset Password</a>
       </div>
 
       {/* Log In Button */}

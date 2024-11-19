@@ -1,8 +1,8 @@
 import CsSidebar from '../../components/cs/csSideBar'
 import Header from '../../components/cs/Header';
-import Workbench2 from './salesComponents/WorkBench2';
+import ContactPersonForm from './salesComponents/ContactPersonForm';
 
-const WorkbenchPages = () => {
+const ContactPersonPage = () => {
   return (
     <div className="flex h-screen">
       <CsSidebar className="" />
@@ -10,11 +10,11 @@ const WorkbenchPages = () => {
         <Header />
         <main className="w-[1150px] p-4 flex-1 ">
           
-          <Workbench2 />
+          <ContactPersonForm />
         </main>
       </div>
     </div>
   )
 }
 
-export default WorkbenchPages;
+export default ContactPersonPage;

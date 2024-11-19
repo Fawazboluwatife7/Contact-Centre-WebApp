@@ -23,6 +23,10 @@ import WorkbenchPages from "./pages/salesModule/WorkbenchPages";
 import CreateProspectPage from "./pages/salesModule/CreateProspectPage";
 import ClientOnboardingPage from './pages/salesModule/ClientOnboardingPage';
 import SMEClientOnboardingPage1 from "./pages/salesModule/SMEClientOnboardingPage1";
+import CompanyDetailsForm from "./pages/salesModule/CompanyDetailsForm";
+import ContactPersonPage from "./pages/salesModule/ContactPersonPage";
+import BillingSchemePage from "./pages/salesModule/BillingSchemePage";
+import DependantsPage from "./pages/salesModule/DependantsPage";
 
 function App() {
   return (
@@ -50,6 +54,10 @@ function App() {
         <Route path="/CreateProspectPage" element={<CreateProspectPage />} />
         <Route path="/ClientOnboardingPage" element={<ClientOnboardingPage />} />
         <Route path="/SMEClientOnboardingPage1" element={<SMEClientOnboardingPage1 />} />
+        <Route path="/CompanyDetailsForm" element={<CompanyDetailsForm />} />
+        <Route path="/ContactPersonPage" element={<ContactPersonPage />} />
+        <Route path="/BillingSchemePage" element={<BillingSchemePage />} />
+        <Route path="/DependantsPage" element={<DependantsPage />} />
       </Routes>
     </BrowserRouter>
   );
