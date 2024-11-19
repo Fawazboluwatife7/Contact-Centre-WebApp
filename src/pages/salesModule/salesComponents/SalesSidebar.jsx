@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const SalesSidebar = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="flex">
             <div className="bg-[#121638] h-[100vh] col-auto justify-items-center ">
@@ -71,14 +74,14 @@ const SalesSidebar = () => {
                 />
                 <div
                     className="mt-14 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
-                    onClick={"#"}
+                    onClick={() => navigate('/StaffDashboard')}
                 >
                     <img src="Dashboard.svg" alt="" />
                     <p className=" ml-2">Dashboard</p>
                 </div>
                 <div
                     className="mt-2 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
-                    onClick={"#"}
+                    onClick={""}
                 >
                     <img src="carbon_hospital-bed@3x.svg" alt="" />
                     <p className=" ml-2">Admissions</p>

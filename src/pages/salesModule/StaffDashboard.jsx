@@ -1,18 +1,18 @@
 import { Outlet } from 'react-router-dom';
 import RecentProspectsTable from './salesComponents/RecentProspectsTable';
-import Header from '../../components/cs/Header';
-import CsSidebar from '../../components/cs/csSideBar';
 import Workbench from './salesComponents/Workbench';
 import CardDisplay from './salesComponents/CardDisplay';
+import SalesSidebar from './salesComponents/Landing/SalesSidebar';
+import SalesNav from './salesComponents/Landing/SalesNav';
 
 
 
 const StaffDashboard = () => {
   return (
     <div className="flex h-screen">
-      <CsSidebar className="" />
+      <SalesSidebar className="" />
       <div className="flex flex-col w-3/4">
-        <Header />
+        <SalesNav />
         <main className="w-[1150px] p-4 bg-gray-100 flex-1 ">
           <header className="mb-4">
             <div className="flex justify-between items-center">

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import search from "../../../../assets/SalesModuleImages/Search.svg"
-import reddot from "../../../../assets/CSIMAGES/reddot.svg";
 import alarm from "../../../../assets/CSIMAGES/alarmicon.svg";
 import vangle from "../../../../assets/CSIMAGES/vangle.svg";
 import userimage from "../../../../assets/CSIMAGES/userimage.svg";

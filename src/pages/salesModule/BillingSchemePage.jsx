@@ -1,13 +1,13 @@
-import CsSidebar from '../../components/cs/csSideBar'
-import Header from '../../components/cs/Header';
 import BillingSchemeForm from './salesComponents/BillingSchemeForm';
+import SalesNav from './salesComponents/Landing/SalesNav';
+import SalesSidebar from './salesComponents/Landing/SalesSidebar';
 
 const BillingSchemePage = () => {
   return (
     <div className="flex h-screen">
-      <CsSidebar className="" />
+      <SalesSidebar className="" />
       <div className="flex flex-col w-3/4">
-        <Header />
+        <SalesNav />
         <main className="w-[1150px] p-4 flex-1 ">
           
           <BillingSchemeForm />
