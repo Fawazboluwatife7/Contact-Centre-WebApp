@@ -20,6 +20,7 @@ import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
 import Dashboard from "./pages/caseManagement/Dashboard";
 import Enrollee from "./pages/caseManagement/Enrollee";
 import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
+import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
 
 function App() {
     return (
@@ -53,6 +54,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/enrollee" element={<Enrollee />} />
                 <Route path="/searchenrollee" element={<SearchEnrollee />} />
+                <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
             </Routes>
         </BrowserRouter>
     );

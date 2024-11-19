@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../pages/caseManagement/CMSidebar";
 import Navbar from "../../components/Navbar";
 
 const Enrollee = () => {
@@ -7,15 +7,15 @@ const Enrollee = () => {
 
     const handleInputChange = (event) => {
         if (event.target.value) {
-            setImageSrc("RedSearchIcon.svg"); // Change to red image when there's input
+            setImageSrc("RedSearchIcon.svg");
         } else {
-            setImageSrc("searchBar.svg"); // Revert to default image if input is cleared
+            setImageSrc("searchBar.svg");
         }
     };
     return (
-        <div className="flex">
+        <div className="flex bg-white-500">
             <Sidebar />
-            <div className="bg-[#F0F2FA] w-[82%] ml-auto pt-[5.1rem]  ">
+            <div className="bg-[#F0F2FA] w-[82%] ml-auto  ">
                 <Navbar />
                 <div className="mx-7">
                     <div className="mb-2 mt-4">

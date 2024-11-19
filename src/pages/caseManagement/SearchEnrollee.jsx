@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../pages/caseManagement/CMSidebar";
 import Navbar from "../../components/Navbar";
 
 const SearchEnrollee = () => {

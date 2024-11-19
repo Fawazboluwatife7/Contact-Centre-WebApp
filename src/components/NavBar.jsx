@@ -2,32 +2,55 @@ import React from "react";
 
 const Navbar = () => {
     return (
-        <div className="w-full h-[8%] border border-white flex items-center fixed bg-white top-0 pl-3 py-10">
-            <div className="w-[60%]  ">
-                <img
-                    src="searchBar.svg" // Replace with the actual image path
-                    alt="search icon"
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 ml-4"
-                />
-                <input
-                    type="text"
-                    placeholder="Search here..."
-                    className="w-full py-2 border bg-[#F0F2FA] rounded-md my-3 pl-10 outline-none placeholder-gray-500"
-                />
+        <div className="flex items-center justify-between bg-white p-4 shadow-md ">
+            {/* Search Bar */}
+            <div className="flex items-center w-1/3">
+                <div className="relative w-full">
+                    <img
+                        src="searchBar.svg"
+                        alt="Search Icon"
+                        className="absolute top-1/2 left-3 transform -translate-y-1/2 h-5 w-5"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Search here..."
+                        className="w-full py-2 pl-10 pr-4 border rounded-md bg-[#F0F2FA] placeholder-gray-400 focus:outline-none"
+                    />
+                </div>
             </div>
-            <div className=" w-full flex gap-3 ">
-                <div className=" flex gap-1 items-center py-1 px-2  bg-[#C615311A] rounded-[50px]">
-                    <div className=" p-[6px] bg-[#C61531] rounded-full"></div>
-                    <p>Case Management</p>
+
+            {/* Right Section */}
+            <div className="flex items-center space-x-6">
+                {/* Case Management */}
+                <button className="flex items-center bg-[#FDEEEE] text-[#C61531] py-1 px-4 rounded-full text-sm font-medium">
+                    <span className="mr-2 h-2 w-2 bg-red-500 rounded-full"></span>
+                    Case Management
+                </button>
+
+                {/* Notifications */}
+                <div className="relative">
+                    <img
+                        src="BelIcon.svg"
+                        alt=""
+                        className="h-6 w-6 text-gray-600 cursor-pointer"
+                    />
+                    <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                        4
+                    </span>
                 </div>
-                <div>
-                    <img src="BelIcon.svg" alt="" />
-                </div>
-                <div>
-                    <img src="Avatars@3x.svg" alt="" />
-                </div>
-                <div>
-                    <img src="downArrow.svg" alt="" />
+
+                {/* Profile Section */}
+                <div className="flex items-center space-x-2 cursor-pointer">
+                    <img
+                        src="Avatars@3x.svg"
+                        alt="Profile"
+                        className="h-8 w-8 rounded-full border border-gray-200"
+                    />
+                    <img
+                        src="downArrow.svg"
+                        alt="Dropdown Icon"
+                        className="h-4 w-4 text-gray-600"
+                    />
                 </div>
             </div>
         </div>

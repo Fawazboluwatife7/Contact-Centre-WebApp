@@ -11,8 +11,8 @@ const Sidebar = () => {
         setouterSideBar(item);
     };
 
-    const handleNavigate = () => {
-        navigate("/enrollee");
+    const handleNavigate = (path) => {
+        navigate(path);
     };
     return (
         <div className=" w-[18%]  bg-black overflow-x-hidden top-0 left-0 fixed flex">
@@ -87,7 +87,7 @@ const Sidebar = () => {
                 />
                 <div
                     className="mt-14 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
-                    onClick={"#"}
+                    onClick={() => handleNavigate("/dashboard")}
                 >
                     <img src="Dashboard.svg" alt="" />
                     <p className=" ml-2">Dashboard</p>
@@ -101,12 +101,10 @@ const Sidebar = () => {
                 </div>
                 <div
                     className="mt-2 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
-                    onClick={"#"}
+                    onClick={() => handleNavigate("/enrollee")}
                 >
                     <img src="people-group@3x.svg" alt="" />
-                    <p className=" ml-2 " onClick={handleNavigate}>
-                        Enrollees
-                    </p>
+                    <p className="ml-2">Enrollees</p>
                 </div>
                 <div
                     className="mt-2 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
