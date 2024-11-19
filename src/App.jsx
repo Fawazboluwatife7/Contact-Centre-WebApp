@@ -27,6 +27,7 @@ import ContactPersonPage from "./pages/salesModule/ContactPersonPage";
 import BillingSchemePage from "./pages/salesModule/BillingSchemePage";
 import DependantsPage from "./pages/salesModule/DependantsPage";
 import ClientOnboardingPage0 from "./pages/salesModule/ClientOnboardingPage0";
+import SaleAgentPage from "./pages/salesModule/SaleAgentPage";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
         <Route path="/ContactPersonPage" element={<ContactPersonPage />} />
         <Route path="/BillingSchemePage" element={<BillingSchemePage />} />
         <Route path="/DependantsPage" element={<DependantsPage />} />
+        <Route path="/SaleAgentPage" element={<SaleAgentPage />} />
       </Routes>
     </BrowserRouter>
   );

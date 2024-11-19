@@ -1,4 +1,3 @@
-import React from 'react'
 import CsSidebar from '../../components/cs/csSideBar'
 import Header from '../../components/cs/Header'
 import ClientOnboarding from './salesComponents/ClientOnboarding'
