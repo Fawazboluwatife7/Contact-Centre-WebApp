@@ -28,6 +28,7 @@ import BillingSchemePage from "./pages/salesModule/BillingSchemePage";
 import DependantsPage from "./pages/salesModule/DependantsPage";
 import ClientOnboardingPage0 from "./pages/salesModule/ClientOnboardingPage0";
 import SaleAgentPage from "./pages/salesModule/SaleAgentPage";
+import SMEClientOnboarding from "./pages/salesModule/SMEClientOnboarding";
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
         <Route path="/BillingSchemePage" element={<BillingSchemePage />} />
         <Route path="/DependantsPage" element={<DependantsPage />} />
         <Route path="/SaleAgentPage" element={<SaleAgentPage />} />
+        <Route path="/SMEClientOnboarding" element={<SMEClientOnboarding />} />
       </Routes>
     </BrowserRouter>
   );
