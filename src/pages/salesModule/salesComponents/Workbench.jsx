@@ -38,7 +38,7 @@ const Workbench = () => {
   ];
 
   return (
-    <div className="relative w-[100%] mt-16 mx-auto p-8 bg-white border border-[#EDF2F6] shadow-lg rounded-[5px]">
+    <div className="w-[100%] mt-12 mx-auto p-8 bg-white border border-[#EDF2F6] shadow-lg rounded-[5px]">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="ml-9 text-[#353535] font-bold text-[25px] leading-[23px]">Workbench</h2>
