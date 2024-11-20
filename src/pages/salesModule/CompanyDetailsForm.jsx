@@ -2,7 +2,7 @@ import Companydetails from './salesComponents/CompanyDetails'
 import SalesNav from './salesComponents/Landing/SalesNav';
 import SalesSidebar from './salesComponents/Landing/SalesSidebar';
 
-const CompanyDetailsPage = () => {
+const CompanyDetailsForm = () => {
   return (
     <div className="flex h-screen">
       <SalesSidebar className="" />
@@ -17,4 +17,4 @@ const CompanyDetailsPage = () => {
   )
 }
 
-export default CompanyDetailsPage;
+export default CompanyDetailsForm;

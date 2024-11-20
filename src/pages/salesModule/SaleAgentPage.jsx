@@ -2,7 +2,7 @@ import CsSidebar from '../../components/cs/csSideBar'
 import Header from '../../components/cs/Header';
 import SaleAgentForm from './salesComponents/SaleAgentForm';
 
-const CompanyDetailsPage = () => {
+const SaleAgentPage = () => {
   return (
     <div className="flex h-screen">
       <CsSidebar className="" />
@@ -17,4 +17,4 @@ const CompanyDetailsPage = () => {
   )
 }
 
-export default CompanyDetailsPage;
+export default SaleAgentPage;
