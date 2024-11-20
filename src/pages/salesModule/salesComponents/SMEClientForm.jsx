@@ -70,14 +70,14 @@ const SMEClientForm = () => {
   };
 
   return (
-    <div className="justify-center items-center p-2 bg-[#F0F2FA] min-h-full">
+    <div className="justify-center items-center p-2 bg-[#F0F2FA] min-h-[90%]">
       {/* Page Title */}
       <div className="ml-6 bottom-10 left-4 text-black font-bold text-3xl">
         Client Onboarding
       </div>
 
       {/* Main Container */}
-      <div className="justify-center w-[95%] h-full ml-7 mt-10 bg-white rounded-md shadow-md">
+      <div className="justify-center w-[95%] h-full ml-7 mt-5 bg-white rounded-md shadow-md">
         {/* Header Section */}
         <div className="text-center py-6">
           <h1 className="text-2xl text-[#34475E] font-bold">Complete This In No Time</h1>
