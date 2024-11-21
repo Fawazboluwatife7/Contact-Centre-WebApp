@@ -29,6 +29,7 @@ import DependantsPage from "./pages/salesModule/DependantsPage";
 import ClientOnboardingPage0 from "./pages/salesModule/ClientOnboardingPage0";
 import SaleAgentPage from "./pages/salesModule/SaleAgentPage";
 import SMEClientOnboarding from "./pages/salesModule/SMEClientOnboarding";
+import LandingPage from "./pages/salesModule/salesComponents/Landing/LandingPage";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
         <Route path="/DependantsPage" element={<DependantsPage />} />
         <Route path="/SaleAgentPage" element={<SaleAgentPage />} />
         <Route path="/SMEClientOnboarding" element={<SMEClientOnboarding />} />
+        <Route path="/LandingPage" element={<LandingPage />} />
       </Routes>
     </BrowserRouter>
   );
