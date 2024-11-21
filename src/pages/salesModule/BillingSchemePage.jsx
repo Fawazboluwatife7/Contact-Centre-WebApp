@@ -6,7 +6,7 @@ const BillingSchemePage = () => {
   return (
     <div className="flex h-screen">
       <SalesSidebar className="" />
-      <div className="flex flex-col w-3/4">
+      <div className="flex flex-col w-full">
         <SalesNav />
         <main className="w-[1150px] p-4 flex-1 ">
           

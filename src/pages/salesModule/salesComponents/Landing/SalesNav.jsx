@@ -17,7 +17,7 @@ function SalesNav() {
   };
 
   return (
-    <div className="flex justify-between items-center w-[1150px] p-4">
+    <div className="flex justify-between items-center w-full p-4">
       <div className="relative w-full max-w-md">
         <input
           type="text"

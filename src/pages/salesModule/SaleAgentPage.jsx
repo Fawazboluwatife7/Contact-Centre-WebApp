@@ -1,14 +1,14 @@
-import CsSidebar from '../../components/cs/csSideBar'
-import Header from '../../components/cs/Header';
+import SalesNav from './salesComponents/Landing/SalesNav';
+import SalesSidebar from './salesComponents/Landing/SalesSidebar';
 import SaleAgentForm from './salesComponents/SaleAgentForm';
 
 const SaleAgentPage = () => {
   return (
     <div className="flex h-screen">
-      <CsSidebar className="" />
-      <div className="flex flex-col w-3/4">
-        <Header />
-        <main className="w-[1150px] p-4 flex-1 ">
+      <SalesSidebar className="" />
+      <div className="flex flex-col w-full">
+        <SalesNav className="" />
+        <main className="w-full p-4 flex-1 ">
           
           <SaleAgentForm />
         </main>

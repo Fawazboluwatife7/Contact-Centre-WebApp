@@ -54,27 +54,29 @@ const SaleAgentForm = () => {
         Client Onboarding
       </div>
 
-      <div className="py-8 mt-10 bg-white min-h-[85%]">
+      <div className="justify-center w-[98%] h-[92%] ml-4 mt-5 bg-white rounded-md shadow-md">
         <FormHeader />
-        <div className="relative w-full max-w-[1163px] h-[95%] mx-auto bg-white rounded-[5px] p-8">
-          <div className="flex gap-16 mb-6">
+        <div className="py-10 px-4 md:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="sapce-y-2">
             <InputField id="FirstName" label="First Name" />
             <InputField id="LastName" label="Last Name" />
           </div>
-          <div className="flex gap-16 mb-6">
+          <div className="space-y-2">
             <InputField id="email" label="Email" type="email" />
             <InputField id="PhoneNumber" label="Phone Number" type="number" />
           </div>
-          <div className="flex justify-between items-center mt-8">
+          </div>
+          <div className="flex lg:flex-row lg:justify-between gap-10 px-4 pt-11  md:px-8 pb-6">
             <button
               onClick={() => navigate("/ClientOnboardingPage0")}
-              className="w-[196px] h-[56px] border border-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-[#C61531] ml-10"
+              className="w-full md:w-auto md:-ml-7 md:px-20 px-2 py-3 bg-white border border-[#C61531] text-[#C61531] rounded-md text-lg font-medium "
             >
               Back
             </button>
             <button
               onClick={handleShowModal}
-              className="w-[196px] h-[56px] bg-[#C61531] rounded-[5px] flex items-center justify-center font-bold text-[18px] text-white mr-5"
+              className="w-full md:w-auto md:px-16 md:mr-28 px-2 py-3 bg-[#C61531] text-white rounded-md text-lg font-medium "
             >
               Proceed
             </button>
