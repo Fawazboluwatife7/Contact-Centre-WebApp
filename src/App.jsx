@@ -16,6 +16,15 @@ import ManagePA from "./pages/csPages/ManagePaPage";
 import GeneratePaCode from "./pages/csPages/GeneratePaCodePage";
 import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
+import SuccessGen from "./pages/csPages/SuccessGeneratePaPage";
+import TicketInformationPage from "./pages/csPages/TicketInformationPage";
+import CsLoginPage from "./pages/csPages/CsLoginPage";
+import Provider from "./pages/csPages/ProviderPage";
+import Providerdetails from "./pages/csPages/ProviderDetailsPage";
+import Dashboard from "./pages/caseManagement/Dashboard";
+import Enrollee from "./pages/caseManagement/Enrollee";
+import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
+import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
 import SalesLogin from "./pages/salesModule/SalesLogin"
 import StaffDashboard from "./pages/salesModule/StaffDashboard"
 import WorkbenchPage from "./pages/salesModule/WorkbenchPage";
@@ -32,26 +41,38 @@ import SMEClientOnboarding from "./pages/salesModule/SMEClientOnboarding";
 import LandingPage from "./pages/salesModule/salesComponents/Landing/LandingPage";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/Sidebar" element={<Sidebar />} />
-        <Route path="/CsSideBar" element={<CsSideBar />} />
-        <Route path="/CsDashboard" element={<CsDashboardLayoutPage />} />
-        <Route path="/Enrollees" element={<EnrolleesPage />} />
-        <Route path="/create-ticket" element={<CreateNewTicketPage />} />
-        <Route path="/ticket" element={<TicketPage />} />
-        <Route path="/enrolleeInformations" element={<EnrolleeInformations />} />
-        <Route path="/approve" element={<Approve />} />
-        <Route path="/reject" element={<Reject />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/success" element={<Success />} />
-        <Route path="/managePa" element={<ManagePA />} />
-        <Route path="/generatePaCode" element={<GeneratePaCode />} />
-        <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
-        <Route path="/approvePaCode" element={<ApprovePaCode />} />
-        <Route path="/SalesLogin" element={<SalesLogin />} />
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/Sidebar" element={<Sidebar />} />
+                <Route path="/CsSideBar" element={<CsSideBar />} />
+                <Route
+                    path="/CsDashboard"
+                    element={<CsDashboardLayoutPage />}
+                />
+                <Route path="/Enrollees" element={<EnrolleesPage />} />
+                <Route
+                    path="/create-ticket"
+                    element={<CreateNewTicketPage />}
+                />
+                <Route path="/ticket" element={<TicketPage />} />
+                <Route
+                    path="/enrolleeInformations"
+                    element={<EnrolleeInformations />}
+                />
+                <Route path="/approve" element={<Approve />} />
+                <Route path="/reject" element={<Reject />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/success" element={<Success />} />
+                <Route path="/managePa" element={<ManagePA />} />
+                <Route path="/generatePaCode" element={<GeneratePaCode />} />
+               <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
+                <Route path="/approvePaCode" element={<ApprovePaCode />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/enrollee" element={<Enrollee />} />
+                <Route path="/searchenrollee" element={<SearchEnrollee />} />
+                <Route path="/enrolleedetails" element={<EnrolleeDetails />} />        <Route path="/SalesLogin" element={<SalesLogin />} />
         <Route path="/StaffDashboard" element={<StaffDashboard />} />
         <Route path="/WorkbenchPage" element={<WorkbenchPage />} />
         <Route path="/CreateProspectPage" element={<CreateProspectPage />} />
@@ -65,9 +86,9 @@ function App() {
         <Route path="/SaleAgentPage" element={<SaleAgentPage />} />
         <Route path="/SMEClientOnboarding" element={<SMEClientOnboarding />} />
         <Route path="/LandingPage" element={<LandingPage />} />
-      </Routes>
-    </BrowserRouter>
-  );
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;

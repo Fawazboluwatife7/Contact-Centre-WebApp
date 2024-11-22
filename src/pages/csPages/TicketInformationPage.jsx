@@ -1,18 +1,19 @@
-import Ticket from "../../components/cs/TicketComponent/Ticket";
+import React from "react";
+import TicketInformation from "../../components/cs/TicketComponent/TicketInformation";
 import CsSidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
 
-function TicketPage() {
+function TicketInformationPage() {
   return (
     <div className="flex  ">
       <CsSidebar />
 
       <div className="flex flex-col ">
         <Header />
-        <Ticket />
+        <TicketInformation />
       </div>
     </div>
   );
 }
 
-export default TicketPage;
+export default TicketInformationPage;

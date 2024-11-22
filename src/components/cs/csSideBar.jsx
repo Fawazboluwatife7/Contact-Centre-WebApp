@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const CsSidebar = () => {
@@ -77,14 +76,14 @@ const CsSidebar = () => {
         </div>
         <div
           className="mt-2 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
-          onClick={() => handleNavigate("/enrollees")} // Navigate to /enrollees
+          onClick={() => handleNavigate("/enrollees")}
         >
           <img src="people-group@3x.svg" alt="" />
           <p className="ml-2">Enrollees</p>
         </div>
         <div
           className="mt-2 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
-          onClick={() => handleNavigate("/providers")}
+          onClick={() => handleNavigate("/provider")}
         >
           <img src="uil_invoice@3x.svg" alt="" />
           <p className="ml-2">Providers</p>
