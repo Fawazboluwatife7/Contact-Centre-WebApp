@@ -1,7 +1,6 @@
-import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/caseManagement/Login";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./components/Landing/Sidebar";
 import CsSideBar from "./components/cs/csSideBar";
 import "./index.css";
 import CsDashboardLayoutPage from "./pages/csPages/DashboardLayoutPage";
@@ -26,6 +25,20 @@ import Dashboard from "./pages/caseManagement/Dashboard";
 import Enrollee from "./pages/caseManagement/Enrollee";
 import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
 import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
+import SalesLogin from "./pages/salesModule/SalesLogin"
+import StaffDashboard from "./pages/salesModule/StaffDashboard"
+import WorkbenchPage from "./pages/salesModule/WorkbenchPage";
+import CreateProspectPage from "./pages/salesModule/CreateProspectPage";
+import ClientOnboardingPage from './pages/salesModule/ClientOnboardingPage';
+import SMEClientOnboardingPage1 from "./pages/salesModule/SMEClientOnboardingPage1";
+import CompanyDetailsForm from "./pages/salesModule/CompanyDetailsForm";
+import ContactPersonPage from "./pages/salesModule/ContactPersonPage";
+import BillingSchemePage from "./pages/salesModule/BillingSchemePage";
+import DependantsPage from "./pages/salesModule/DependantsPage";
+import ClientOnboardingPage0 from "./pages/salesModule/ClientOnboardingPage0";
+import SaleAgentPage from "./pages/salesModule/SaleAgentPage";
+import SMEClientOnboarding from "./pages/salesModule/SMEClientOnboarding";
+import LandingPage from "./pages/salesModule/salesComponents/Landing/LandingPage";
 
 function App() {
     return (
@@ -54,12 +67,25 @@ function App() {
                 <Route path="/success" element={<Success />} />
                 <Route path="/managePa" element={<ManagePA />} />
                 <Route path="/generatePaCode" element={<GeneratePaCode />} />
-                <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
+               <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
                 <Route path="/approvePaCode" element={<ApprovePaCode />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/enrollee" element={<Enrollee />} />
                 <Route path="/searchenrollee" element={<SearchEnrollee />} />
-                <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
+                <Route path="/enrolleedetails" element={<EnrolleeDetails />} />        <Route path="/SalesLogin" element={<SalesLogin />} />
+        <Route path="/StaffDashboard" element={<StaffDashboard />} />
+        <Route path="/WorkbenchPage" element={<WorkbenchPage />} />
+        <Route path="/CreateProspectPage" element={<CreateProspectPage />} />
+        <Route path="/ClientOnboardingPage" element={<ClientOnboardingPage />} />
+        <Route path="/ClientOnboardingPage0" element={<ClientOnboardingPage0 />} />
+        <Route path="/SMEClientOnboardingPage1" element={<SMEClientOnboardingPage1 />} />
+        <Route path="/CompanyDetailsForm" element={<CompanyDetailsForm />} />
+        <Route path="/ContactPersonPage" element={<ContactPersonPage />} />
+        <Route path="/BillingSchemePage" element={<BillingSchemePage />} />
+        <Route path="/DependantsPage" element={<DependantsPage />} />
+        <Route path="/SaleAgentPage" element={<SaleAgentPage />} />
+        <Route path="/SMEClientOnboarding" element={<SMEClientOnboarding />} />
+        <Route path="/LandingPage" element={<LandingPage />} />
             </Routes>
         </BrowserRouter>
     );
