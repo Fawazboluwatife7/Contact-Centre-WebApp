@@ -1,13 +1,13 @@
 import React from "react";
-import Sidebar from "../../components/Sidebar";
-import Navbar from "../../components/Navbar";
+import Sidebar from "../../components/Landing/Sidebar";
+import Header from "../../components/cs/Header";
 
 const EnrolleeDetails = () => {
     return (
         <div className="flex">
             <Sidebar />
             <div className="bg-[#F0F2FA] w-[82%] ml-auto pt-[5.1rem]  ">
-                <Navbar />
+                <Header />
                 <div className="mx-7">
                     <div class="relative overflow-x-auto shadow-md  mt-3">
                         <table class="w-full text-sm text-left rtl:text-right text-black ">
