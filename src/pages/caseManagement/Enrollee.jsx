@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../../pages/caseManagement/CMSidebar";
-import Navbar from "../../components/Navbar";
+import Header from "../../components/cs/Header";
 
 const Enrollee = () => {
     const [imageSrc, setImageSrc] = useState("searchBar.svg");
@@ -16,7 +16,7 @@ const Enrollee = () => {
         <div className="flex bg-white-500">
             <Sidebar />
             <div className="bg-[#F0F2FA] w-[82%] ml-auto  ">
-                <Navbar />
+                <Header />
                 <div className="mx-7">
                     <div className="mb-2 mt-4">
                         <h1 className="text-[#353535] font-normal text-[25px]">

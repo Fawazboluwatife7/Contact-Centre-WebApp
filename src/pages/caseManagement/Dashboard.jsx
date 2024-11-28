@@ -1,13 +1,13 @@
 import React from "react";
 import Sidebar from "../../pages/caseManagement/CMSidebar";
-import Navbar from "../../components/Navbar";
+import Header from "../../components/cs/Header";
 
 const Dashboard = () => {
     return (
         <div>
             <Sidebar />
             <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh]">
-                <Navbar />
+                <Header />
                 <div className="mx-7">
                     <div className="flex justify-between">
                         <p className="text-[#7E7E7E]">Hi, Jay Jay</p>
