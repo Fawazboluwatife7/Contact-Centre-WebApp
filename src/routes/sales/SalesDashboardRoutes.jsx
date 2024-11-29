@@ -22,7 +22,6 @@ import ClientsProfilePage from '../../pages/sales/ClientsProfilePage';
 import ProspectProfile from '../../pages/sales/ProspectProfile';
 import CoveragePlan from '../../pages/sales/CoveragePlan';
 
-
 function SalesDashboardRoutes() {
   return (
     <Routes>

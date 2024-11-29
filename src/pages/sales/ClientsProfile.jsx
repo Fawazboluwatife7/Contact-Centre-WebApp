@@ -11,7 +11,7 @@ const ClientsProfile = () => {
         <div className="flex">
           {/* Image Section */}
           <div className="flex flex-col items-center w-1/4 border-r-2">
-            <img src="path/to/building-image.png" alt="Building" className="w-32 h-32 object-contain mb-4" />
+            <img src="/Avatar.svg" alt="Building" className="w-32 h-32 object-contain mb-4 rounded-full" />
             <h2 className="text-lg font-semibold text-gray-800">Leadway Assurance</h2>
           </div>
 
@@ -110,7 +110,16 @@ const ClientsProfile = () => {
               <tr className="border-b">
                 <td className="px-4 py-2">
                   <div className="flex items-center space-x-4">
-                    <img src="path/to/image1.png" alt="Plan 1" className="w-10 h-10 rounded" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="none"
+                  >
+                    <circle cx="12" cy="12" r="10" fill="green" />
+                  </svg>
                     <span>Customized Plan #01</span>
                   </div>
                 </td>
@@ -120,7 +129,16 @@ const ClientsProfile = () => {
               <tr className="border-b">
                 <td className="px-4 py-2">
                   <div className="flex items-center space-x-4">
-                    <img src="path/to/image2.png" alt="Plan 2" className="w-10 h-10 rounded" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="none"
+                  >
+                    <circle cx="12" cy="12" r="10" fill="green" />
+                  </svg>
                     <span>Customized Plan #02</span>
                   </div>
                 </td>
@@ -130,7 +148,16 @@ const ClientsProfile = () => {
               <tr className="border-b">
                 <td className="px-4 py-2">
                   <div className="flex items-center space-x-4">
-                    <img src="path/to/image3.png" alt="Plan 3" className="w-10 h-10 rounded" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="none"
+                  >
+                    <circle cx="12" cy="12" r="10" fill="green" />
+                  </svg>
                     <span>Health Insurance Presentation</span>
                   </div>
                 </td>
