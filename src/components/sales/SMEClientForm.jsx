@@ -111,12 +111,12 @@ const SMEClientForm = () => {
 
         {/* Submit Buttons */}
         <div className="flex lg:flex-row lg:justify-between gap-16 px-4 md:px-8 pb-6">
-          <Link to='/SalesDashboard/create-prospect1'>
+          <Link to='/SalesDashboard/sme-client-onboarding1'>
             <button className="w-full md:w-auto md:px-20 px-2 py-3 bg-white border border-[#C61531] text-[#C61531] rounded-md text-lg font-medium">
             Back
             </button>
           </Link>
-          <Link to='/SalesDashboard/sme-client-onboarding1'>
+          <Link to='/SalesDashboard/create-prospect1'>
             <button className="w-full md:w-auto md:px-16 px-2 py-3 bg-[#C61531] text-white rounded-md text-lg font-medium">
             Proceed
             </button>

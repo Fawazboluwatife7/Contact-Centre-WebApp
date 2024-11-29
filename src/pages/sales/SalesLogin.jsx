@@ -1,12 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Logo from "../../assets/SalesModuleImages/Leadway Health Logo.svg"
 import Background from "../../assets/SalesModuleImages/Background.svg"
 import Help from "../../assets/SalesModuleImages/Help.svg"
 import salesIcon from "../../assets/SalesModuleImages/SalesIcon.svg"
 
 const SalesLogin = () => {
-
-  const navigate = useNavigate();
 
   return (
     <div className="relative w-full h-screen bg-[#F0F2FA] bg-contain overflow-auto">
@@ -62,11 +60,13 @@ const SalesLogin = () => {
       </div>
 
       {/* Log In Button */}
-      <button className="absolute top-[753px] left-24 w-[474px] h-[71px] bg-[#C61531] shadow-md rounded-md text-white text-[24px] font-bold"
-      onClick={() => navigate("/dashboard")} 
-      >
-        Log In
-      </button>
+      <Link to='/SalesDashboard'>
+        <button className="absolute top-[753px] left-24 w-[474px] h-[71px] bg-[#C61531] shadow-md rounded-md text-white text-[24px] font-bold"
+      
+        >
+          Log In
+        </button>
+      </Link>
 
       {/* Image Section */}
       <div className="absolute top-0 right-0 w-[758px] h-auto">

@@ -16,6 +16,12 @@ import SaleAgentPage from '../../pages/sales/SaleAgentPage';
 import SMEClientOnboarding2 from '../../pages/sales/SMEClientOnboarding2';
 import RecentProspectsTable from '../../components/sales/RecentProspectsTable';
 import WelcomeUser from '../../components/sales/WelcomeUser';
+import UpdateProfile from '../../pages/sales/UpdateProfile'
+import ClientsProfile from '../../pages/sales/ClientsProfile';
+import ClientsProfilePage from '../../pages/sales/ClientsProfilePage';
+import ProspectProfile from '../../pages/sales/ProspectProfile';
+import CoveragePlan from '../../pages/sales/CoveragePlan';
+
 
 function SalesDashboardRoutes() {
   return (
@@ -40,6 +46,11 @@ function SalesDashboardRoutes() {
         <Route path="corporate-client-onboarding4" element={<CorporateClientOnboarding4 />} />
         <Route path="sales-agent" element={<SaleAgentPage />} />
         <Route path="sme-client-onboarding2" element={<SMEClientOnboarding2 />} />
+        <Route path="update-profile" element={<UpdateProfile />} />
+        <Route path="clients-profile" element={<ClientsProfile />} />
+        <Route path="clients-profile-page" element={<ClientsProfilePage />} />
+        <Route path="prospect-profile" element={<ProspectProfile />} /> 
+        <Route path="coverage-plan" element={<CoveragePlan />} />
       </Route>
     </Routes>
   );
