@@ -16,6 +16,7 @@ import SaleAgentPage from '../../pages/sales/SaleAgentPage';
 import SMEClientOnboarding2 from '../../pages/sales/SMEClientOnboarding2';
 import RecentProspectsTable from '../../components/sales/RecentProspectsTable';
 import WelcomeUser from '../../components/sales/WelcomeUser';
+import ClientEnrollees from '../../pages/sales/ClientEnrollees';
 
 function SalesDashboardRoutes() {
   return (
@@ -40,6 +41,7 @@ function SalesDashboardRoutes() {
         <Route path="corporate-client-onboarding4" element={<CorporateClientOnboarding4 />} />
         <Route path="sales-agent" element={<SaleAgentPage />} />
         <Route path="sme-client-onboarding2" element={<SMEClientOnboarding2 />} />
+        <Route path="client-enrollees" element={<ClientEnrollees />} />
       </Route>
     </Routes>
   );
