@@ -1,4 +1,6 @@
-import backgroundImage from "../../../assets/SalesModuleImages/Designer1.png"; // Update the path to your background image
+import React from "react";
+import backgroundImage from "../../../assets/SalesModuleImages/Designer1.png"; 
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
@@ -56,12 +58,12 @@ const LandingPage = () => {
             <p className="text-center font-['Product Sans'] text-[14px] text-[#585858] leading-[20px] mb-4">
               Manage your clients and prospects with ease.
             </p>
-            <button
-              onClick={() => (window.location.href = "/salesLogin")}
-              className="w-full max-w-[200px] h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
-            >
+            <Link to='/salesLogin'>
+              <button className="w-full max-w-[200px] h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
+              >
               Go to Sales
-            </button>
+              </button>
+            </Link>
           </div>
 
           {/* Case Management Module */}

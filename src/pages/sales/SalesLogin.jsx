@@ -1,12 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Logo from "../../assets/SalesModuleImages/Leadway Health Logo.svg"
 import Background from "../../assets/SalesModuleImages/Background.svg"
 import Help from "../../assets/SalesModuleImages/Help.svg"
 import salesIcon from "../../assets/SalesModuleImages/SalesIcon.svg"
 
 const SalesLogin = () => {
-
-  const navigate = useNavigate();
 
   return (
     <div className="relative w-full h-screen bg-[#F0F2FA] bg-contain overflow-auto">
