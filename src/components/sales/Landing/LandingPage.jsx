@@ -97,7 +97,7 @@ const LandingPage = () => {
                <img
                 src="Lcustomer-service.svg"
                 alt=""
-                className="w-[40px] h-[40px] " fill="#BE0000FF" viewBox="0 0 55 64"
+                className="w-[40px] h-[40px] " fill="#C61531" viewBox="0 0 55 64"
                 /> {/* Replace with your logo path */}
               
             </div>

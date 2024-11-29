@@ -60,13 +60,11 @@ const SalesLogin = () => {
       </div>
 
       {/* Log In Button */}
-      <Link to='/SalesDashboard'>
-        <button className="absolute top-[753px] left-24 w-[474px] h-[71px] bg-[#C61531] shadow-md rounded-md text-white text-[24px] font-bold"
-      
-        >
-          Log In
-        </button>
-      </Link>
+      <button className="absolute top-[753px] left-24 w-[474px] h-[71px] bg-[#C61531] shadow-md rounded-md text-white text-[24px] font-bold"
+      onClick={() => navigate("/SalesDashboard")} 
+      >
+        Log In
+      </button>
 
       {/* Image Section */}
       <div className="absolute top-0 right-0 w-[758px] h-auto">
