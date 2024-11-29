@@ -22,6 +22,9 @@ import ClientsProfilePage from '../../pages/sales/ClientsProfilePage';
 import ProspectProfile from '../../pages/sales/ProspectProfile';
 import CoveragePlan from '../../pages/sales/CoveragePlan';
 
+import ClientEnrollees from '../../pages/sales/ClientEnrollees';
+import EnrolleeProfile from '../../pages/sales/EnrolleeProfile';
+
 function SalesDashboardRoutes() {
   return (
     <Routes>
@@ -50,6 +53,8 @@ function SalesDashboardRoutes() {
         <Route path="clients-profile-page" element={<ClientsProfilePage />} />
         <Route path="prospect-profile" element={<ProspectProfile />} /> 
         <Route path="coverage-plan" element={<CoveragePlan />} />
+        <Route path="client-enrollees" element={<ClientEnrollees />} />
+        <Route path="enrollee-profile" element={<EnrolleeProfile />} />
       </Route>
     </Routes>
   );
