@@ -7,14 +7,14 @@ const UpdateProfile = () => {
         Update Profile
       </div>
 
-      {/* Create Activity Link and Back Arrow */}
+      {/* back to profile link and Back Arrow */}
       <div className="flex items-center ml-auto space-x-2 cursor-pointer">
         {/* Backward Arrow Icon */}
         <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
           <path d="M18.75 7.5003H3.925l4.5375-5.45a1.2516 1.2516 0 0 0-1.925-1.6l-6.25 7.5a1.5 1.5 0 0 0-.1125.1875c0 .0625 0 .1-.0875.1625a1.25 1.25 0 0 0-.0875.45 1.25 1.25 0 0 0 .0875.45c0 .0625 0 .1.0875.1625q.0494.098.1125.1875l6.25 7.5a1.25 1.25 0 0 0 .9625.45 1.2496 1.2496 0 0 0 1.1959-1.6208 1.25 1.25 0 0 0-.2334-.4292l-4.5375-5.45H18.75a1.25 1.25 0 1 0 0-2.5" fill="#C61531"/>
         </svg>
 
-        {/* Create Activity Text Link */}
+        {/* back to profile Text Link */}
         <a href="#" className="text-[#C61531] text-[19px] font-[Product Sans] font-bold">Back To Profile</a>
       </div>
 

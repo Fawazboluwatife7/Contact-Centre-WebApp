@@ -6,7 +6,7 @@ const AddEnrollee = () => {
   // Handle navigation when an option is selected
   const handleSelection = (type) => {
     if (type === "individual") {
-      navigate("/add-individual"); // Replace with the actual route for adding an individual
+      navigate("/SalesDashboard/enrollee-onboard"); // Replace with the actual route for adding an individual
     } else if (type === "multiple") {
       navigate("/add-multiple"); // Replace with the actual route for adding multiple
     }
@@ -55,7 +55,7 @@ const AddEnrollee = () => {
         <div className="flex justify-center gap-6 mt-12">
           {/* Individual Card */}
           <div
-            className="relative w-72 h-76 bg-white border border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6 cursor-pointer hover:shadow-2xl"
+            className="relative w-72 h-76 bg-white border border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6 cursor-pointer hover:shadow-2xl cursor-pointer hover:border-[#C61531] hover:border-4 "
             onClick={() => handleSelection("individual")}
           >
             {/* Individual Icon */}
@@ -79,7 +79,7 @@ const AddEnrollee = () => {
 
           {/* Multiple Card */}
           <div
-            className="relative w-72 h-72 bg-white border border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6 cursor-pointer hover:shadow-2xl"
+            className="relative w-72 h-72 bg-white border border-gray-300 cursor-pointer hover:border-[#C61531] hover:border-4  rounded-md shadow-lg flex flex-col items-center py-6 cursor-pointer hover:shadow-2xl"
             onClick={() => handleSelection("multiple")}
           >
             {/* Multiple Icon */}

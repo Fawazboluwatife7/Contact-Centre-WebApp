@@ -1,6 +1,6 @@
 import SatisfactionChart from "./SatisfactionChart"; // Import the SatisfactionChart component
 
-const EnrolleeProfile = () => {
+const ClientEnrolleeProfile = () => {
   return (
     <div className="bg-gray-200 min-h-screen p-6">
       <div className="relative mr-auto mb-5 text-black font-bold text-3xl">
@@ -140,4 +140,4 @@ const EnrolleeProfile = () => {
   );
 };
 
-export default EnrolleeProfile;
+export default ClientEnrolleeProfile;
