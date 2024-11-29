@@ -63,7 +63,7 @@ const SalesLogin = () => {
 
       {/* Log In Button */}
       <button className="absolute top-[753px] left-24 w-[474px] h-[71px] bg-[#C61531] shadow-md rounded-md text-white text-[24px] font-bold"
-      onClick={() => navigate("/dashboard")} 
+      onClick={() => navigate("/SalesDashboard")} 
       >
         Log In
       </button>
