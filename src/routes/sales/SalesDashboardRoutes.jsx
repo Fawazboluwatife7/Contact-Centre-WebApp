@@ -24,6 +24,7 @@ import CoveragePlan from '../../pages/sales/CoveragePlan';
 
 import ClientEnrollees from '../../pages/sales/ClientEnrollees';
 import EnrolleeProfile from '../../pages/sales/EnrolleeProfile';
+import AddEnrollee from '../../pages/sales/AddEnrollee';
 
 function SalesDashboardRoutes() {
   return (
@@ -55,6 +56,8 @@ function SalesDashboardRoutes() {
         <Route path="coverage-plan" element={<CoveragePlan />} />
         <Route path="client-enrollees" element={<ClientEnrollees />} />
         <Route path="enrollee-profile" element={<EnrolleeProfile />} />
+        <Route path="add-enrollee" element={<AddEnrollee />} />
+         
       </Route>
     </Routes>
   );
