@@ -59,7 +59,7 @@ const LandingPage = () => {
               Manage your clients and prospects with ease.
             </p>
             <Link to='/salesLogin'>
-              <button className="w-full max-w-[200px] h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
+              <button className="w-52 h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
               >
               Go to Sales
               </button>
@@ -71,7 +71,7 @@ const LandingPage = () => {
             <div className="w-[64px] h-[64px] bg-[#F3F5F6] flex items-center justify-center rounded-full mb-4">
               {/* Add your logo image here */}
                 <img
-                src="redMenuIcon.svg"
+                src="/redMenuIcon.svg"
                 alt=""
                 className="w-[40px] h-[40px]" fill="none" viewBox="0 0 55 64"
                 /> {/* Replace with your logo path */}
@@ -84,7 +84,7 @@ const LandingPage = () => {
             </p>
             <button
               onClick={() => (window.location.href = "/case-management-login")}
-              className="w-full max-w-[200px] h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
+              className="w-52 h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
             >
               Go to Case Management
             </button>
@@ -95,7 +95,7 @@ const LandingPage = () => {
             <div className="w-[64px] h-[64px] bg-[#F3F5F6] flex items-center justify-center rounded-full mb-4">
                {/* Add your logo image here */}
                <img
-                src="Lcustomer-service.svg"
+                src="/Lcustomer-service.svg"
                 alt=""
                 className="w-[40px] h-[40px] " fill="#C61531" viewBox="0 0 55 64"
                 /> {/* Replace with your logo path */}
@@ -111,7 +111,7 @@ const LandingPage = () => {
               onClick={() =>
                 (window.location.href = "/customer-service-login")
               }
-              className="w-full max-w-[200px] h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
+              className="w-52 h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
             >
               Go to Customer Service
             </button>

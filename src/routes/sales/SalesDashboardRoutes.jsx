@@ -30,6 +30,8 @@ import ClientEnrolleeProfile from '../../pages/sales/ClientEnrolleeProfile';
 function SalesDashboardRoutes() {
   return (
     <Routes>
+
+      // Dashboard
       <Route path="/" element={<SalesDashboard />}>
         <Route index element={
           <>
@@ -58,9 +60,40 @@ function SalesDashboardRoutes() {
         <Route path="client-enrollees" element={<ClientEnrollees />} />
         <Route path="client-enrollee-profile" element={<ClientEnrolleeProfile />} />
         <Route path="add-enrollee" element={<AddEnrollee />} />
-        <Route path="enrollee-onboard" element={<EnrolleeOnboard />} />
-         
+        <Route path="enrollee-onboard" element={<EnrolleeOnboard />} />         
       </Route>
+
+      {/* // Clients Routes
+      <Route path="" element={<Clients />}>
+      <Route path='' element={
+          <>
+          </>
+        } />
+      </Route>
+
+      // Prospects Routes
+      <Route path="" element={<Prospects />}>
+      <Route path='' element={
+          <>
+          </>
+        } />
+      </Route>
+
+      // Proposals Routes
+      <Route path="" element={<Proposals />}>
+      <Route path='' element={
+          <>
+          </>
+        } />
+      </Route>
+
+      // Invoice Routes
+      <Route path="" element={<Invoice />}>
+      <Route path='' element={
+          <>
+          </>
+        } />
+      </Route> */}
     </Routes>
   );
 }

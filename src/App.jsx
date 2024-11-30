@@ -53,6 +53,7 @@ function App() {
         <Route path="/enrollee" element={<Enrollee />} />
         <Route path="/searchenrollee" element={<SearchEnrollee />} />
         <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
+        // Sales
         <Route path="/salesLogin" element={<SalesLogin />} />
         <Route path="/SalesDashboard/*" element={<SalesDashboardRoutes />} />
         <Route path="/LandingPage" element={<LandingPage />} />

@@ -15,7 +15,7 @@ const ClientEnrollees = () => {
 
   const searchResults = [
     {
-      avatar: "/path/to/avatar.png",
+      avatar: "/Avatar.svg",
       name: "Smiths Hospital",
       id: "LAC/1251",
       policyNumber: "2100201/0",
@@ -27,7 +27,7 @@ const ClientEnrollees = () => {
       statusColor: "#1EBD49",
     },
     {
-      avatar: "/path/to/avatar.png",
+      avatar: "/Avatar.svg",
       name: "Johns Clinic",
       id: "LAC/2232",
       policyNumber: "2100302/1",
@@ -39,7 +39,7 @@ const ClientEnrollees = () => {
       statusColor: "#F1A806",
     },
     {
-      avatar: "/path/to/avatar.png",
+      avatar: "/Avatar.svg",
       name: "MediCare Center",
       id: "LAC/3321",
       policyNumber: "2100403/2",
@@ -51,7 +51,7 @@ const ClientEnrollees = () => {
       statusColor: "#C61531",
     },
     {
-      avatar: "/path/to/avatar.png",
+      avatar: "/Avatar.svg",
       name: "Prime Health",
       id: "LAC/4451",
       policyNumber: "2100504/3",
@@ -63,7 +63,7 @@ const ClientEnrollees = () => {
       statusColor: "#1EBD49",
     },
     {
-      avatar: "/path/to/avatar.png",
+      avatar: "/Avatar.svg",
       name: "BetterCare Hospital",
       id: "LAC/5511",
       policyNumber: "2100605/4",
@@ -75,7 +75,7 @@ const ClientEnrollees = () => {
       statusColor: "#F1A806",
     },
     {
-      avatar: "/path/to/avatar.png",
+      avatar: "/Avatar.svg",
       name: "Family Health Center",
       id: "LAC/6672",
       policyNumber: "2100706/5",
@@ -87,7 +87,7 @@ const ClientEnrollees = () => {
       statusColor: "#1EBD49",
     },
     {
-      avatar: "/path/to/avatar.png",
+      avatar: "/Avatar.svg",
       name: "Global Health",
       id: "LAC/7781",
       policyNumber: "2100807/6",

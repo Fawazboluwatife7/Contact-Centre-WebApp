@@ -48,28 +48,24 @@ const SalesSidebar = () => {
         
         
       </div>
-      <div className="bg-white w-[212] border min-h-screen justify-center items-center">
+      <div className="bg-white w-48 border min-h-screen justify-center items-center">
         <img
           src="/SmallLogo.svg"
           alt=""
           className="justify-items-center mt-8 ml-10"
         />
-        <NavLink
-      to="/SalesDashboard"
-      className={({ isActive }) =>
-        `mt-14 flex px-10 cursor-pointer group p-2 ${
-          isActive ? "bg-red-600" : "hover:bg-[#C61531]"
-        }`
-      }
-    >
-      <img
-        src="/Dashboard.svg"
-        alt="Dashboard"
-      />
-      <p className="">
-        Dashboard
-      </p>
-    </NavLink>
+      <NavLink
+        to="/SalesDashboard"
+        className={({ isActive }) =>
+          `mt-14 flex px-10 cursor-pointer group p-2 ${
+            isActive ? "bg-red-600" : "hover:bg-[#C61531]"
+          }`
+        }
+      >
+        <img src="/Dashboard.svg" alt="Dashboard"/>
+        <p className="ml-4 text-black group-hover:text-white">Dashboard</p>
+
+      </NavLink>
         <div
             className="mt-2 flex px-10 cursor-pointer p-2 group hover:bg-[#C61531]"
             onClick={() => handleNavigate("/")}

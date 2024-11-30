@@ -12,7 +12,7 @@ const ClientEnrolleeProfile = () => {
         <div className="flex">
           {/* Image Section */}
           <div className="flex flex-col items-center w-1/4 border-r-2">
-            <img src="path/to/building-image.png" alt="Building" className="w-32 h-32 object-contain mb-4" />
+            <img src="/Avatar.svg" alt="Building" className="w-32 h-32 object-contain mb-4" />
             <h2 className="text-lg font-semibold text-gray-800">Leadway Assurance</h2>
           </div>
 
@@ -102,7 +102,7 @@ const ClientEnrolleeProfile = () => {
               {/* Row 1 */}
               <tr>
                 <td className="p-4 flex items-center gap-3">
-                  <img src="https://via.placeholder.com/40" alt="Dependent" className="w-10 h-10 rounded-full" />
+                  <img src="/Avatar.svg" alt="Dependent" className="w-10 h-10 rounded-full" />
                   <span className="text-sm font-medium text-gray-800">Aminu Ibrahim</span>
                 </td>
                 <td className="p-4 text-sm text-gray-600">Brother</td>
@@ -111,7 +111,7 @@ const ClientEnrolleeProfile = () => {
               {/* Repeat rows */}
               <tr>
                 <td className="p-4 flex items-center gap-3">
-                  <img src="https://via.placeholder.com/40" alt="Dependent" className="w-10 h-10 rounded-full" />
+                  <img src="/Avatar.svg" alt="Dependent" className="w-10 h-10 rounded-full" />
                   <span className="text-sm font-medium text-gray-800">John Doe</span>
                 </td>
                 <td className="p-4 text-sm text-gray-600">Brother</td>
@@ -119,7 +119,7 @@ const ClientEnrolleeProfile = () => {
               </tr>
               <tr>
                 <td className="p-4 flex items-center gap-3">
-                  <img src="https://via.placeholder.com/40" alt="Dependent" className="w-10 h-10 rounded-full" />
+                  <img src="/Avatar.svg" alt="Dependent" className="w-10 h-10 rounded-full" />
                   <span className="text-sm font-medium text-gray-800">Angelo Micheal</span>
                 </td>
                 <td className="p-4 text-sm text-gray-600">Brother</td>
