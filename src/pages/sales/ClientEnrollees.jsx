@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from 'react-router-dom';
 
 const ClientEnrollees = () => {
   const [activeMenuIndex, setActiveMenuIndex] = useState(null); // Track which menu is open
@@ -101,13 +102,15 @@ const ClientEnrollees = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F6FB] p-14" onClick={closeMenu}>
+    <div className="min-h-full bg-none p-4" onClick={closeMenu}>
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Client Enrollee</h1>
+        <Link to="/SalesDashBoard/add-enrollee">
         <button className="bg-pink-100 border border-red-600 hover:bg-[#B5132A] hover:text-white text-red-600 font-semibold text-sm px-10 py-3 rounded-md shadow-sm -mb-7">
           Add Enrollee
         </button>
+        </Link>
       </div>
 
       {/* Search Bar */}
