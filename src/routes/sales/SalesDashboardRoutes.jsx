@@ -21,11 +21,14 @@ import ClientsProfile from '../../pages/sales/ClientsProfile';
 import ClientsProfilePage from '../../pages/sales/ClientsProfilePage';
 import ProspectProfile from '../../pages/sales/ProspectProfile';
 import CoveragePlan from '../../pages/sales/CoveragePlan';
-
 import ClientEnrollees from '../../pages/sales/ClientEnrollees';
 import AddEnrollee from '../../pages/sales/AddEnrollee';
 import EnrolleeOnboard from '../../pages/sales/EnrolleeOnboard';
 import ClientEnrolleeProfile from '../../pages/sales/ClientEnrolleeProfile';
+import InvoiceDashboard from "../../pages/sales/InvoiceDashboard";
+import ClientDashboard from "../../pages/sales/ClientsDashboard";
+import ProspectDashboard from "../../pages/sales/ProspectDashboard";
+import ProposalDashboard from "../../pages/sales/ProposalDashboard";
 
 function SalesDashboardRoutes() {
   return (
@@ -60,40 +63,12 @@ function SalesDashboardRoutes() {
         <Route path="client-enrollees" element={<ClientEnrollees />} />
         <Route path="client-enrollee-profile" element={<ClientEnrolleeProfile />} />
         <Route path="add-enrollee" element={<AddEnrollee />} />
-        <Route path="enrollee-onboard" element={<EnrolleeOnboard />} />         
+        <Route path="enrollee-onboard" element={<EnrolleeOnboard />} />
+        <Route path="/invoice-main" element={<InvoiceDashboard />} />
+        <Route path="/clients-main" element={<ClientDashboard />} />
+        <Route path="/prospects-main" element={<ProspectDashboard />} />
+        <Route path="/proposals-main" element={<ProposalDashboard />} />
       </Route>
-
-      {/* // Clients Routes
-      <Route path="" element={<Clients />}>
-      <Route path='' element={
-          <>
-          </>
-        } />
-      </Route>
-
-      // Prospects Routes
-      <Route path="" element={<Prospects />}>
-      <Route path='' element={
-          <>
-          </>
-        } />
-      </Route>
-
-      // Proposals Routes
-      <Route path="" element={<Proposals />}>
-      <Route path='' element={
-          <>
-          </>
-        } />
-      </Route>
-
-      // Invoice Routes
-      <Route path="" element={<Invoice />}>
-      <Route path='' element={
-          <>
-          </>
-        } />
-      </Route> */}
     </Routes>
   );
 }
