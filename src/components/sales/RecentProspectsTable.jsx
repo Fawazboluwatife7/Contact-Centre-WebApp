@@ -9,9 +9,9 @@ const RecentProspectsTable = () => {
   ];
 
   return (
-    <div className="w-[37.5%] h-[40%] ml-[60%] -mt-[32%] bg-white border border-[#EDF2F6] shadow-lg rounded-[5px] p-4">
+    <div className="w-[45%] ml-[54%] h-80 -mt-[29.5%] bg-white border border-[#EDF2F6] shadow-lg rounded-[5px] p-4">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center">
         <h2 className="font-product-sans font-bold text-[17px] text-[#222B45]">Recent Prospects</h2>
         <button className="w-[62px] h-[25px] text-[#C61531] text-[10px] rounded-[3px] font-[Lato] bg-red-200 border border-[#C61531]">
           View All
