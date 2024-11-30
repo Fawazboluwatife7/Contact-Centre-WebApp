@@ -4,7 +4,7 @@ import SalesNav from "../../components/sales/Landing/SalesNav";
 
 const SalesDashboard = () => {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-100vh">
       <SalesSidebar className="" />
       <div className="flex flex-col w-full">
         <SalesNav />

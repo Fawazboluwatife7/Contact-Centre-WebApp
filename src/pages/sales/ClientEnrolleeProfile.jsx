@@ -2,13 +2,13 @@ import SatisfactionChart from "./SatisfactionChart"; // Import the SatisfactionC
 
 const ClientEnrolleeProfile = () => {
   return (
-    <div className="bg-gray-200 min-h-screen p-6">
+    <div className="bg-none h-100% p-4">
       <div className="relative mr-auto mb-5 text-black font-bold text-3xl">
         Enrollee Profile
       </div>
 
       {/* Profile Section */}
-      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-4">
         <div className="flex">
           {/* Image Section */}
           <div className="flex flex-col items-center w-1/4 border-r-2">

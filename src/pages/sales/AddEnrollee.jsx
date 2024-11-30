@@ -13,7 +13,7 @@ const AddEnrollee = () => {
   };
 
   return (
-    <div className="p-6 h-[100%]">
+    <div className="px-2 h-[100%]">
       {/* Page Title */}
       <div className=" top-4 left-4 text-black font-bold text-3xl ml-2">
         Add Enrollee
@@ -37,7 +37,7 @@ const AddEnrollee = () => {
 
         {/* Back to prospects text */}
         <a
-          href="#"
+          href="/SalesDashboard/clients-profile-page"
           className="text-[#C61531] text-[19px] font-[Product Sans] font-bold"
         >
           Back To Clients
@@ -45,7 +45,7 @@ const AddEnrollee = () => {
       </div>
 
       {/* Content Area */}
-      <div className="py-16 mt-8 bg-white min-h-[80%]">
+      <div className="py-16 bg-white min-h-[80%]">
         {/* Main Heading */}
         <div className="text-center text-2xl font-product-sans text-[#34475E] mb-1 leading-[56px]">
           Add Enrollee
