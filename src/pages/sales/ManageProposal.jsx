@@ -1,9 +1,9 @@
 
 const ManageProposal = () => {
   return (
-    <div className="p-6 bg-gray-200 min-h-full">
+    <div className="p-4 min-h-full">
       {/* Page Title */}
-      <h1 className="absolute top-4 left-4 text-black font-bold text-3xl ml-2">
+      <h1 className="top-4 left-4 text-black font-bold text-3xl ml-2">
         Manage Proposal
       </h1>
 
@@ -24,7 +24,7 @@ const ManageProposal = () => {
         </svg>
 
         {/* Back to Clients Text */}
-        <a href="#" className="text-[#C61531] text-[19px] font-[Product Sans] font-bold">
+        <a href="/SalesDashboard/sme-client-profile" className="text-[#C61531] text-[19px] font-[Product Sans] font-bold">
           Back To Clients
         </a>
       </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const UpdateProfile = () => {
   return (
-    <div className="bg-gray-200 min-h-screen flex flex-col justify-center items-center p-20">
+    <div className=" min-h-100 flex flex-col justify-center items-center p-10">
       <div className="relative mr-auto mb-5 text-black font-bold text-3xl">
         Update Profile
       </div>

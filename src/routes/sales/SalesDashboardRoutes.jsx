@@ -30,18 +30,14 @@ import Clients from "../../pages/sales/Clients";
 import Proposals from "../../pages/sales/Proposals";
 import AddEnrolleeMultiple from '../../pages/sales/AddEnrolleeMultiple';
 import Prospects from '../../pages/sales/Prospects';
-<<<<<<< HEAD
 import SMEClientProfile from '../../pages/sales/SMEClientProfile';
 import ManageProposal from '../../pages/sales/ManageProposal';
-=======
 import InvoiceReview from '../../pages/sales/InvoiceReview';
->>>>>>> 430cc3eaed8a74ed58738923b7712202144ffd9e
+import ProspectProfileUpdate from '../../pages/sales/ProspectProfileUpdate';
 
 function SalesDashboardRoutes() {
   return (
     <Routes>
-
-      // Dashboard
       <Route path="/" element={<SalesDashboard />}>
         <Route index element={
           <>
@@ -76,12 +72,12 @@ function SalesDashboardRoutes() {
         <Route path="/proposals" element={<Proposals />} />
         <Route path="/add-enrollee-multiple" element={<AddEnrolleeMultiple />} />
         <Route path="/prospects" element={<Prospects />} />
-<<<<<<< HEAD
-        <Route path="/sme-client-profile" element={<SMEClientProfile />} />
-        <Route path="/manage-proposal" element={<ManageProposal />} />
-=======
+        <>
+          <Route path="/sme-client-profile" element={<SMEClientProfile />} />
+          <Route path="/manage-proposal" element={<ManageProposal />} />
+          <Route path="/prospect-profile-update" element ={<ProspectProfileUpdate/>} />
+        </>
         <Route path="/invoice-review" element={<InvoiceReview />} />
->>>>>>> 430cc3eaed8a74ed58738923b7712202144ffd9e
       </Route>
     </Routes>
   );
