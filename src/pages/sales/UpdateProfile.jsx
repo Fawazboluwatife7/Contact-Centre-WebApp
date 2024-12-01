@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const UpdateProfile = () => {
   return (
@@ -100,7 +101,8 @@ const UpdateProfile = () => {
 
         {/* Update Button */}
         <div className="flex justify-end mt-8">
-          <button className="bg-red-600 text-white px-14 py-3 rounded-lg font-semibold hover:bg-red-700 transition">Update</button>
+          <Link to='/SalesDashboard/clients'>
+          <button className="bg-red-600 text-white px-14 py-3 rounded-lg font-semibold hover:bg-red-700 transition">Update</button></Link>
         </div>
       </div>
     </div>

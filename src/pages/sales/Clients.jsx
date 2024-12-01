@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-const Prospects = () => {
+const Clients = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredProspects, setFilteredProspects] = useState([]);
+  const [filteredClients, setFilteredClients] = useState([]);
 
-  const prospects = [
+  const clients = [
     { id: 1, name: "Smiths Hospital", email: "smith@hospital.com", type: "Corporate", idNumber: "01786568", broker: "Broker Name", date: "22 Aug 2022" },
     { id: 2, name: "Green Valley", email: "contact@greenvalley.com", type: "Corporate", idNumber: "01786569", broker: "Broker A", date: "10 Jul 2022" },
     { id: 3, name: "Blue Health", email: "info@bluehealth.com", type: "Corporate", idNumber: "01786570", broker: "Broker B", date: "05 Jun 2022" },
@@ -33,9 +33,9 @@ const Prospects = () => {
   }, []);
 
   useEffect(() => {
-    setFilteredProspects(
-      prospects.filter((prospect) =>
-        prospect.name.toLowerCase().includes(searchTerm.toLowerCase())
+    setFilteredClients(
+      clients.filter((clients) =>
+        clients.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [searchTerm]);
@@ -44,10 +44,7 @@ const Prospects = () => {
     <div className="min-h-screen bg-[#F5F6FB]">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-[#2D2D2D]">Prospects</h1>
-        <button className="bg-pink-100 border border-red-600 hover:bg-[#B5132A] text-red-600 font-bold text-sm px-10 py-4 rounded-md shadow-sm">
-          Create Prospect
-        </button>
+        <h1 className="text-2xl font-bold text-[#2D2D2D]">Clients</h1>
       </div>
 
       {/* Search Bar */}
@@ -88,17 +85,17 @@ const Prospects = () => {
           {/* Table */}
           <table className="w-full text-left table-auto border-collapse">
             <tbody>
-              {filteredProspects.map((prospect) => (
-                <tr key={prospect.id} className="bg-white hover:bg-gray-100 border-2 border-gray-300">
+              {filteredClients.map((clients) => (
+                <tr key={clients.id} className="bg-white hover:bg-gray-100 border-2 border-gray-300">
                   <td className="py-4 px-6 flex items-center space-x-3">
                     <img className="h-8 w-8 rounded-full" src="/Avatar.svg" alt="Profile" />
-                    <span>{prospect.name}</span>
+                    <span>{clients.name}</span>
                   </td>
-                  <td className="py-4 px-6">{prospect.email}</td>
-                  <td className="py-4 px-6">{prospect.type}</td>
-                  <td className="py-4 px-6">{prospect.idNumber}</td>
-                  <td className="py-4 px-6">{prospect.broker}</td>
-                  <td className="py-4 px-6">{prospect.date}</td>
+                  <td className="py-4 px-6">{clients.type}</td>
+                  <td className="py-4 px-6">{clients.email}</td>
+                  <td className="py-4 px-6">{clients.idNumber}</td>
+                  <td className="py-4 px-6">{clients.broker}</td>
+                  <td className="py-4 px-6">{clients.date}</td>
                   <td className="py-4 px-6 text-right">
                     <div className="relative inline-block text-left">
                       {/* Button */}
@@ -176,4 +173,4 @@ const Prospects = () => {
   );
 };
 
-export default Prospects;
+export default Clients;

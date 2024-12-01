@@ -26,10 +26,11 @@ import AddEnrollee from '../../pages/sales/AddEnrollee';
 import EnrolleeOnboard from '../../pages/sales/EnrolleeOnboard';
 import ClientEnrolleeProfile from '../../pages/sales/ClientEnrolleeProfile';
 import Invoice from "../../pages/sales/Invoice";
-import ClientDashboard from "../../pages/sales/ClientsDashboard";
+import Clients from "../../pages/sales/Clients";
 import Proposals from "../../pages/sales/Proposals";
 import AddEnrolleeMultiple from '../../pages/sales/AddEnrolleeMultiple';
 import Prospects from '../../pages/sales/Prospects';
+import InvoiceReview from '../../pages/sales/InvoiceReview';
 
 function SalesDashboardRoutes() {
   return (
@@ -66,10 +67,11 @@ function SalesDashboardRoutes() {
         <Route path="add-enrollee" element={<AddEnrollee />} />
         <Route path="enrollee-onboard" element={<EnrolleeOnboard />} />
         <Route path="/invoice" element={<Invoice />} />
-        <Route path="/clients-main" element={<ClientDashboard />} />
+        <Route path="/clients" element={<Clients />} />
         <Route path="/proposals" element={<Proposals />} />
         <Route path="/add-enrollee-multiple" element={<AddEnrolleeMultiple />} />
         <Route path="/prospects" element={<Prospects />} />
+        <Route path="/invoice-review" element={<InvoiceReview />} />
       </Route>
     </Routes>
   );
