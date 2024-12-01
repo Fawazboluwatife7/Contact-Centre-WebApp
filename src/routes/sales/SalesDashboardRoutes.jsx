@@ -30,6 +30,8 @@ import ClientDashboard from "../../pages/sales/ClientsDashboard";
 import Proposals from "../../pages/sales/Proposals";
 import AddEnrolleeMultiple from '../../pages/sales/AddEnrolleeMultiple';
 import Prospects from '../../pages/sales/Prospects';
+import SMEClientProfile from '../../pages/sales/SMEClientProfile';
+import ManageProposal from '../../pages/sales/ManageProposal';
 
 function SalesDashboardRoutes() {
   return (
@@ -70,6 +72,8 @@ function SalesDashboardRoutes() {
         <Route path="/proposals" element={<Proposals />} />
         <Route path="/add-enrollee-multiple" element={<AddEnrolleeMultiple />} />
         <Route path="/prospects" element={<Prospects />} />
+        <Route path="/sme-client-profile" element={<SMEClientProfile />} />
+        <Route path="/manage-proposal" element={<ManageProposal />} />
       </Route>
     </Routes>
   );
