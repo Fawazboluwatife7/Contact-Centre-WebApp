@@ -25,10 +25,9 @@ import ClientEnrollees from '../../pages/sales/ClientEnrollees';
 import AddEnrollee from '../../pages/sales/AddEnrollee';
 import EnrolleeOnboard from '../../pages/sales/EnrolleeOnboard';
 import ClientEnrolleeProfile from '../../pages/sales/ClientEnrolleeProfile';
-import InvoiceDashboard from "../../pages/sales/InvoiceDashboard";
+import Invoice from "../../pages/sales/Invoice";
 import ClientDashboard from "../../pages/sales/ClientsDashboard";
-import ProspectDashboard from "../../pages/sales/ProspectDashboard";
-import ProposalDashboard from "../../pages/sales/ProposalDashboard";
+import Proposals from "../../pages/sales/Proposals";
 import AddEnrolleeMultiple from '../../pages/sales/AddEnrolleeMultiple';
 import Prospects from '../../pages/sales/Prospects';
 
@@ -66,10 +65,9 @@ function SalesDashboardRoutes() {
         <Route path="client-enrollee-profile" element={<ClientEnrolleeProfile />} />
         <Route path="add-enrollee" element={<AddEnrollee />} />
         <Route path="enrollee-onboard" element={<EnrolleeOnboard />} />
-        <Route path="/invoice-main" element={<InvoiceDashboard />} />
+        <Route path="/invoice" element={<Invoice />} />
         <Route path="/clients-main" element={<ClientDashboard />} />
-        <Route path="/prospects-main" element={<ProspectDashboard />} />
-        <Route path="/proposals-main" element={<ProposalDashboard />} />
+        <Route path="/proposals" element={<Proposals />} />
         <Route path="/add-enrollee-multiple" element={<AddEnrolleeMultiple />} />
         <Route path="/prospects" element={<Prospects />} />
       </Route>

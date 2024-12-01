@@ -55,7 +55,7 @@ const AddEnrollee = () => {
         <div className="flex justify-center gap-6 mt-12">
           {/* Individual Card */}
           <div
-            className="relative w-72 h-76 bg-white border border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6 cursor-pointer hover:shadow-2xl cursor-pointer hover:border-[#C61531] hover:border-4 "
+            className="relative w-72 h-76 bg-white border border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6 cursor-pointer hover:shadow-2xl hover:border-[#C61531] hover:border-4 "
             onClick={() => handleSelection("individual")}
           >
             {/* Individual Icon */}
