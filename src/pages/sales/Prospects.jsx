@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Prospects = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -25,9 +26,11 @@ const Prospects = () => {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Prospects</h1>
+        <Link to="/SalesDashboard/create-prospect1">
         <button className="bg-pink-100 border border-red-600 hover:bg-[#B5132A] text-red-600 font-bold text-sm px-10 py-4 rounded-md shadow-sm">
           Create Prospect
         </button>
+        </Link>
       </div>
 
       {/* Search Bar */}
