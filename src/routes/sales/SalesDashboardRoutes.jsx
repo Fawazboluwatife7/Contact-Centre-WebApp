@@ -26,12 +26,9 @@ import Clients from "../../pages/sales/Clients";
 import Proposals from "../../pages/sales/Proposals";
 import AddEnrolleeMultiple from '../../pages/sales/AddEnrolleeMultiple';
 import Prospects from '../../pages/sales/Prospects';
-<<<<<<< HEAD
 import SMEClientProfile from '../../pages/sales/SMEClientProfile';
 import ManageProposal from '../../pages/sales/ManageProposal';
-=======
 import InvoiceReview from '../../pages/sales/InvoiceReview';
->>>>>>> 430cc3eaed8a74ed58738923b7712202144ffd9e
 import Dashboard from '../../pages/sales/Dashboard';
 
 function SalesDashboardRoutes() {
@@ -70,12 +67,9 @@ function SalesDashboardRoutes() {
         <Route path="/proposals" element={<Proposals />} />
         <Route path="/add-enrollee-multiple" element={<AddEnrolleeMultiple />} />
         <Route path="/prospects" element={<Prospects />} />
-<<<<<<< HEAD
         <Route path="/sme-client-profile" element={<SMEClientProfile />} />
         <Route path="/manage-proposal" element={<ManageProposal />} />
-=======
         <Route path="/invoice-review" element={<InvoiceReview />} />
->>>>>>> 430cc3eaed8a74ed58738923b7712202144ffd9e
       </Route>
     </Routes>
   );
