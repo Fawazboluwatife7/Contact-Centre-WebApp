@@ -26,12 +26,16 @@ import AddEnrollee from '../../pages/sales/AddEnrollee';
 import EnrolleeOnboard from '../../pages/sales/EnrolleeOnboard';
 import ClientEnrolleeProfile from '../../pages/sales/ClientEnrolleeProfile';
 import Invoice from "../../pages/sales/Invoice";
-import ClientDashboard from "../../pages/sales/ClientsDashboard";
+import Clients from "../../pages/sales/Clients";
 import Proposals from "../../pages/sales/Proposals";
 import AddEnrolleeMultiple from '../../pages/sales/AddEnrolleeMultiple';
 import Prospects from '../../pages/sales/Prospects';
+<<<<<<< HEAD
 import SMEClientProfile from '../../pages/sales/SMEClientProfile';
 import ManageProposal from '../../pages/sales/ManageProposal';
+=======
+import InvoiceReview from '../../pages/sales/InvoiceReview';
+>>>>>>> 430cc3eaed8a74ed58738923b7712202144ffd9e
 
 function SalesDashboardRoutes() {
   return (
@@ -68,12 +72,16 @@ function SalesDashboardRoutes() {
         <Route path="add-enrollee" element={<AddEnrollee />} />
         <Route path="enrollee-onboard" element={<EnrolleeOnboard />} />
         <Route path="/invoice" element={<Invoice />} />
-        <Route path="/clients-main" element={<ClientDashboard />} />
+        <Route path="/clients" element={<Clients />} />
         <Route path="/proposals" element={<Proposals />} />
         <Route path="/add-enrollee-multiple" element={<AddEnrolleeMultiple />} />
         <Route path="/prospects" element={<Prospects />} />
+<<<<<<< HEAD
         <Route path="/sme-client-profile" element={<SMEClientProfile />} />
         <Route path="/manage-proposal" element={<ManageProposal />} />
+=======
+        <Route path="/invoice-review" element={<InvoiceReview />} />
+>>>>>>> 430cc3eaed8a74ed58738923b7712202144ffd9e
       </Route>
     </Routes>
   );

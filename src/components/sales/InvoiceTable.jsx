@@ -7,15 +7,6 @@ const InvoiceTable = () => {
  const [selectedTab, setSelectedTab] = useState("All");
 
 
-
-
-
-
- const handleGenerateClick = () => {
-   navigate("/generatePaCode");
- };
-
-
  const tableData = {
    all: [
      {
@@ -243,7 +234,7 @@ const handleTabClick = (tab) => {
 //   navigate(`/enrolleeInformations/${enrolleeID}`);
 // };
 const handleRowClick = () => { //its not getting the userID yet
-  navigate("/enrolleeInformations");
+  navigate("/SalesDashboard/invoice-review");
 };
 return (
   <div className="bg-lightblue">

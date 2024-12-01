@@ -68,7 +68,7 @@ const SalesSidebar = () => {
       </NavLink>
         
       <NavLink
-          to="/SalesDashboard/clients-main"
+          to="/SalesDashboard/clients"
           className={({ isActive }) =>
             `${
               isActive ? "bg-red-600" : "hover:bg-[#C61531]"
@@ -91,7 +91,7 @@ const SalesSidebar = () => {
           <p className="ml-2 text-black group-hover:text-white">Prospects</p>
         </div>
       </NavLink>
-      <NavLink to="/SalesDashboard/proposals-main">
+      <NavLink to="/SalesDashboard/proposals">
         <div className="mt-2 flex px-10 cursor-pointer group hover:bg-[#C61531] p-2">
           <img src="/Reporting Menu@3x.svg" alt="" className="group-hover:filter group-hover:brightness-0 group-hover:invert brightness-50"  />
           <p className="ml-2 text-black group-hover:text-white">Proposals</p>
