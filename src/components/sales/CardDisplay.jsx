@@ -116,14 +116,14 @@ const CardDisplay = () => {
       <div className="flex gap-4 mt-4">
         {/* Send Proposal Button */}
         <div className="relative w-[168px] h-[45px] bg-[rgba(198,21,49,0.1)] border border-[#C61531] rounded-md flex items-center justify-center">
-          <Link to=''>
+          <Link to='/SalesDashboard/proposals'>
             <span className="text-[#C61531] cursor-pointer font-bold text-[15px] leading-[18px] tracking-[0.01em]">Send Proposal</span>
           </Link>
         </div>
 
         {/* Create Invoice Button */}
         <div className="relative w-[168px] h-[45px] bg-[rgba(198,21,49,0.1)] border border-[#C61531] rounded-md flex items-center justify-center">
-          <Link to=''>
+          <Link to='/SalesDashboard/invoice'>
             <span className="text-[#C61531] cursor-pointer font-bold text-[15px] leading-[18px] tracking-[0.01em]">Create Invoice</span>
           </Link>
         </div>

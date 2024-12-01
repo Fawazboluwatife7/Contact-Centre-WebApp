@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import InvoiceModal from "../../components/sales/InvoiceModal";
 
 function InvoiceReview() {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ function InvoiceReview() {
     ],
     paymentPlan: "Annually",
   });
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
   const handleAddInvoice = () => {
     setFormData((prev) => ({
@@ -35,13 +37,22 @@ function InvoiceReview() {
       0
     );
 
+  const handleGenerateClick = () => {
+    setShowInvoiceModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowInvoiceModal(false);
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen p-2">
+      {showInvoiceModal && <InvoiceModal onClose={handleCloseModal} />}
       <div className="relative mr-auto mb-5 text-black text-3xl">
         Invoice - Smiths Hospital
       </div>
       {/* Header Section */}
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <div className="flex">
           {/* Image Section */}
           <div className="flex flex-col items-center w-1/4 border-r-2">
@@ -172,8 +183,11 @@ function InvoiceReview() {
             <button className="bg-red-500 text-white px-12 py-2 rounded">
               Update
             </button>
-            <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
-                Generate
+            <button 
+              onClick={handleGenerateClick} 
+              className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition"
+            >
+              Generate
             </button>
           </div>
         </div>

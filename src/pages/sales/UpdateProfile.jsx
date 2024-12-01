@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import SuccessModal from '../../components/sales/SuccessModal'; // Ensure the correct path to the SuccessModal
 
 const UpdateProfile = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleUpdateClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className=" min-h-100 flex flex-col justify-center items-center p-10">
       <div className="relative mr-auto mb-5 text-black font-bold text-3xl">
+    <div className="bg-gray-200 h-screen flex flex-col justify-center items-center p-4 relative">
+      {showModal && <SuccessModal onClose={handleCloseModal} />}
+      <div className="relative -mt-24 mr-auto mb-2 text-black font-bold text-3xl">
         Update Profile
       </div>
 
@@ -16,7 +30,7 @@ const UpdateProfile = () => {
         </svg>
 
         {/* back to profile Text Link */}
-        <a href="#" className="text-[#C61531] text-[19px] font-[Product Sans] font-bold">Back To Profile</a>
+        <Link to="/SalesDashboard/clients-profile" className="mb-1 text-[#C61531] text-[19px] font-[Product Sans] font-bold">Back To Profile</Link>
       </div>
 
       <div className="w-full bg-white rounded-lg shadow-md p-8">
@@ -34,10 +48,10 @@ const UpdateProfile = () => {
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="policy-cycle">Policy Cycle</label>
             <div className="relative w-full">
-              <select id="businessSector" className="w-full h-[56px] bg-white border border-[#7F8B94] rounded-[15px] px-4 focus:outline-none focus:ring-2 focus:ring-[#C61531] appearance-none">
-                <option value="tech">Annually</option>
-                <option value="finance">Bi-Annually</option>
-                <option value="health">Monthly</option>
+              <select id="policy-cycle" className="w-full h-[56px] bg-white border border-[#7F8B94] rounded-[15px] px-4 focus:outline-none focus:ring-2 focus:ring-[#C61531] appearance-none">
+                <option value="annually">Annually</option>
+                <option value="bi-annually">Bi-Annually</option>
+                <option value="monthly">Monthly</option>
               </select>
               {/* Dropdown Icon */}
               <div className="absolute top-1/2 right-4 transform -translate-y-1/2 pointer-events-none">
@@ -101,8 +115,12 @@ const UpdateProfile = () => {
 
         {/* Update Button */}
         <div className="flex justify-end mt-8">
-          <Link to='/SalesDashboard/clients'>
-          <button className="bg-red-600 text-white px-14 py-3 rounded-lg font-semibold hover:bg-red-700 transition">Update</button></Link>
+          <button 
+            className="bg-red-600 text-white px-14 py-3 rounded-lg font-semibold hover:bg-red-700 transition" 
+            onClick={handleUpdateClick}
+          >
+            Update
+          </button>
         </div>
       </div>
     </div>
