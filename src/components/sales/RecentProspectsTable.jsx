@@ -14,7 +14,7 @@ const RecentProspectsTable = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="font-product-sans font-bold text-[17px] text-[#222B45]">Recent Prospects</h2>
-        <Link to='/SalesDashboard/prospects'>
+        <Link to="/SalesDashboard/prospects">
         <button className="w-[62px] h-[25px] text-[#C61531] text-[10px] rounded-[3px] font-[Lato] bg-red-200 border border-[#C61531]">
           View All
         </button></Link>
