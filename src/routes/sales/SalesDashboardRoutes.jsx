@@ -32,6 +32,7 @@ import InvoiceReview from '../../pages/sales/InvoiceReview';
 import ProspectProfileUpdate from '../../pages/sales/ProspectProfileUpdate';
 import Dashboard from '../../pages/sales/Dashboard';
 import SendECard from '../../pages/sales/SendECard';
+import SendingProposals from '../../pages/sales/SendingProposals';
 
 function SalesDashboardRoutes() {
   return (
@@ -72,6 +73,7 @@ function SalesDashboardRoutes() {
           <Route path="/manage-proposal" element={<ManageProposal />} />
           <Route path="/prospect-profile-update" element ={<ProspectProfileUpdate/>} />
           <Route path="/send-ecard" element={<SendECard />} />
+          <Route path="/sending-proposals" element={<SendingProposals />} />
         </>
         
         <Route path="/invoice-review" element={<InvoiceReview />} />

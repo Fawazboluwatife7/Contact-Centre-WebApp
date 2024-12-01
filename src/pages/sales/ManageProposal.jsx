@@ -8,7 +8,7 @@ const ManageProposal = () => {
       </h1>
 
       {/* Back to Clients Link */}
-      <div className="flex items-center pl-[87%] mt-16 space-x-2 cursor-pointer">
+      <div className="flex items-center pl-[87%] mt-1 space-x-2 cursor-pointer">
         {/* Backward Arrow Icon */}
         <svg
           width="18"
@@ -30,7 +30,7 @@ const ManageProposal = () => {
       </div>
 
       {/* Content Area */}
-      <div className="py-16 mt-1 bg-white min-h-screen">
+      <div className="py-16 mt-1 bg-white min-h-full">
         {/* Options Section */}
         <div className="md:flex sm:flex justify-center gap-6 mt-12">
           {/* Send Proposal Card */}

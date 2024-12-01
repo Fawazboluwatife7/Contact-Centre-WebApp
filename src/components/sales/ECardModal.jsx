@@ -1,20 +1,29 @@
 import React from "react";
 
-const ECardModal = () => {
+const ECardModal = ({ isOpen, onClose }) => {
+  // Only render the modal if `isOpen` is true
+
   return (
-    <div className="bg-gray-100 flex items-center justify-center min-h-full">
-      <div className="bg-white shadow-lg rounded-lg w-full px-96 p-6 relative">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 rounded-lg bg-gray-100 bg-dots-pattern opacity-50 pointer-events-none"></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+      {/* Modal Content */}
+      <div className="relative bg-white shadow-lg rounded-lg w-full max-w-3xl px-8 py-6">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+          aria-label="Close"
+        >
+          ✕
+        </button>
 
         {/* Header */}
         <div className="flex items-center mb-4">
           <img
-            src="https://via.placeholder.com/40"
+            src='/SmallLogo.svg'
             alt="Logo"
-            className="w-10 h-10"
+            className=""
           />
-          <h2 className="ml-2 font-semibold text-red-600 text-lg">Leadway Health</h2>
+          
         </div>
 
         {/* Content Section */}
@@ -22,7 +31,7 @@ const ECardModal = () => {
           {/* Profile Image */}
           <div className="flex-shrink-0 w-24 h-24 rounded-md overflow-hidden border-2 border-red-500">
             <img
-              src="https://via.placeholder.com/150"
+              src="/Avatar.svg"
               alt="Profile Picture"
               className="w-full h-full object-cover"
             />
@@ -39,7 +48,9 @@ const ECardModal = () => {
             <div className="grid grid-cols-2 gap-4 mb-2">
               <div>
                 <p className="text-sm text-gray-600">Member No:</p>
-                <p className="text-base font-bold text-gray-800">21000722/0</p>
+                <p className="text-base font-bold text-gray-800">
+                  21000722/0
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Principal:</p>
@@ -51,7 +62,9 @@ const ECardModal = () => {
             <div className="grid grid-cols-2 gap-4 mb-2">
               <div>
                 <p className="text-sm text-gray-600">Date of Birth:</p>
-                <p className="text-base font-bold text-gray-800">15-Nov-1985</p>
+                <p className="text-base font-bold text-gray-800">
+                  15-Nov-1985
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Plan:</p>
@@ -60,9 +73,9 @@ const ECardModal = () => {
             </div>
 
             {/* Biometric Icon */}
-            <div className="flex items-center justify-center mt-4">
+            <div className="flex items-center justify-center mt-4 ml-12">
               <img
-                src="biometric.svg"
+                src="/biometric.svg"
                 alt="Biometric Icon"
                 className="w-8 h-8"
               />
@@ -72,7 +85,7 @@ const ECardModal = () => {
 
         {/* Progress Bar */}
         <div className="w-full bg-black h-2 rounded-full overflow-hidden mt-6">
-          <div className="ml-20 bg-red-600 h-full w-72"></div>
+          <div className="bg-red-600 h-full w-[70%] ml-24"></div>
         </div>
 
         {/* Action Button */}

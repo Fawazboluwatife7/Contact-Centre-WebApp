@@ -32,7 +32,7 @@ const SendECardPage = () => {
           />
         </svg>
         <a
-          href="#"
+          href="/SalesDashboard/sme-client-profile"
           className="text-[#C61531] text-[19px] font-[Product Sans] font-bold"
         >
           Back To Clients
