@@ -1,8 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SalesDashboard from '../../pages/sales/SalesDashboard';
-import Workbench1 from '../../components/sales/Workbench1';
-import CardDisplay from '../../components/sales/CardDisplay';
 import PendingTask from '../../pages/sales/PendingTask';
 import CreateProspect1 from '../../pages/sales/CreateProspect1';
 import CorporateClientOnboarding5 from '../../pages/sales/CorporateClientOnboarding6';
@@ -14,8 +12,6 @@ import CorporateClientOnboarding3 from '../../pages/sales/CorporateClientOnboard
 import CorporateClientOnboarding4 from '../../pages/sales/CorporateClientOnboarding4';
 import SaleAgentPage from '../../pages/sales/SaleAgentPage';
 import SMEClientOnboarding2 from '../../pages/sales/SMEClientOnboarding2';
-import RecentProspectsTable from '../../components/sales/RecentProspectsTable';
-import WelcomeUser from '../../components/sales/WelcomeUser';
 import UpdateProfile from '../../pages/sales/UpdateProfile'
 import ClientsProfile from '../../pages/sales/ClientsProfile';
 import ClientsProfilePage from '../../pages/sales/ClientsProfilePage';
@@ -31,6 +27,7 @@ import Proposals from "../../pages/sales/Proposals";
 import AddEnrolleeMultiple from '../../pages/sales/AddEnrolleeMultiple';
 import Prospects from '../../pages/sales/Prospects';
 import InvoiceReview from '../../pages/sales/InvoiceReview';
+import Dashboard from '../../pages/sales/Dashboard';
 
 function SalesDashboardRoutes() {
   return (
@@ -40,10 +37,7 @@ function SalesDashboardRoutes() {
       <Route path="/" element={<SalesDashboard />}>
         <Route index element={
           <>
-            <WelcomeUser />
-            <CardDisplay />
-            <RecentProspectsTable />
-            <Workbench1 />
+            <Dashboard />
           </>
         } />
         <Route path="pending-task" element={<PendingTask />} />
