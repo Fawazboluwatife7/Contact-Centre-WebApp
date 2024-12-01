@@ -8,7 +8,7 @@ const AddEnrollee = () => {
     if (type === "individual") {
       navigate("/SalesDashboard/enrollee-onboard"); // Replace with the actual route for adding an individual
     } else if (type === "multiple") {
-      navigate("/add-multiple"); // Replace with the actual route for adding multiple
+      navigate("/SalesDashboard/add-enrollee-multiple"); // Replace with the actual route for adding multiple enrolleeEnrollee-multiple"); // Replace with the actual route for adding multiple enrollee"); // Replace with the actual route for adding multiple
     }
   };
 

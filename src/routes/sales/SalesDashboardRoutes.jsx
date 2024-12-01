@@ -29,6 +29,8 @@ import InvoiceDashboard from "../../pages/sales/InvoiceDashboard";
 import ClientDashboard from "../../pages/sales/ClientsDashboard";
 import ProspectDashboard from "../../pages/sales/ProspectDashboard";
 import ProposalDashboard from "../../pages/sales/ProposalDashboard";
+import AddEnrolleeMultiple from '../../pages/sales/AddEnrolleeMultiple';
+import Prospects from '../../pages/sales/Prospects';
 
 function SalesDashboardRoutes() {
   return (
@@ -68,6 +70,8 @@ function SalesDashboardRoutes() {
         <Route path="/clients-main" element={<ClientDashboard />} />
         <Route path="/prospects-main" element={<ProspectDashboard />} />
         <Route path="/proposals-main" element={<ProposalDashboard />} />
+        <Route path="/add-enrollee-multiple" element={<AddEnrolleeMultiple />} />
+        <Route path="/prospects" element={<Prospects />} />
       </Route>
     </Routes>
   );
