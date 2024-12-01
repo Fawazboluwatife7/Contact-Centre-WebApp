@@ -30,7 +30,7 @@ const SendingProposals = () => {
 
         {/* Profile Details & Edit Button */}
         <div className="flex-1 px-6">
-          <div id="profile-details" className={`grid grid-cols-2 gap-6 ${!isProfileDetailsVisible ? "hidden" : ""}`}>
+          <div id="profile-details" className={`grid grid-cols-3 gap-6 ${!isProfileDetailsVisible ? "hidden" : ""}`}>
             <div>
               <p className="text-sm text-gray-500">Name</p>
               <p className="font-semibold text-gray-700">FBN Client</p>
