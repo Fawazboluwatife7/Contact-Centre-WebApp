@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ProposalDashboard = () => {
+const Proposals = () => {
   return (
     <div>
       Proposals
@@ -8,4 +8,4 @@ const ProposalDashboard = () => {
   )
 }
 
-export default ProposalDashboard
+export default Proposals
