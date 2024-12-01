@@ -127,7 +127,7 @@ const SMEClientProfile = () => {
             { text: "Manage Proposal", route: "/SalesDashboard/manage-proposal" },
             { text: "Create Invoice", route: "/SalesDashboard/create-invoice" },
             { text: "See Plans", route: "/SalesDashboard/coverage-plan" },
-            { text: "Send E-Card", route: "/send-ecard" },
+            { text: "Send E-Card", route: "/SalesDashboard/send-ecard" },
           ].map(({ text, route }) => (
             <button
               key={text}

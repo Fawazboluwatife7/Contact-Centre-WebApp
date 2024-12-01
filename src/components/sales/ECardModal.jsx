@@ -2,8 +2,8 @@ import React from "react";
 
 const ECardModal = () => {
   return (
-    <div className="bg-gray-100 flex items-center justify-center min-h-screen">
-      <div className="bg-white shadow-lg rounded-lg w-full max-w-lg p-6 relative">
+    <div className="bg-gray-100 flex items-center justify-center min-h-full">
+      <div className="bg-white shadow-lg rounded-lg w-full px-96 p-6 relative">
         {/* Background Pattern */}
         <div className="absolute inset-0 rounded-lg bg-gray-100 bg-dots-pattern opacity-50 pointer-events-none"></div>
 
