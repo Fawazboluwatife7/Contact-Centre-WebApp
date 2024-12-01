@@ -14,8 +14,6 @@ const UpdateProfile = () => {
   };
 
   return (
-    <div className=" min-h-100 flex flex-col justify-center items-center p-10">
-      <div className="relative mr-auto mb-5 text-black font-bold text-3xl">
     <div className="bg-gray-200 h-screen flex flex-col justify-center items-center p-4 relative">
       {showModal && <SuccessModal onClose={handleCloseModal} />}
       <div className="relative -mt-24 mr-auto mb-2 text-black font-bold text-3xl">

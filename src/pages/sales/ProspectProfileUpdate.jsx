@@ -1,8 +1,21 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import ProspectUpdateModal from "../../components/sales/ProspectUpdateModal";
 
 const ProspectProfileUpdate = () => {
-  const navigate = useNavigate();
-
+    const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  
+    // Function to handle the "Convert" button click
+    const handleConvertClick = (e) => {
+      e.preventDefault(); // Prevent default form submission behavior
+      setIsModalOpen(true); // Show the modal
+    };
+  
+    // Function to close the modal
+    const closeModal = () => {
+      setIsModalOpen(false); // Hide the modal
+    };
   return (
     <div className="h-[95%] justify-center items-center p- px-20 font-sans">
       {/* Header */}
@@ -202,14 +215,23 @@ const ProspectProfileUpdate = () => {
           {/* Submit Button */}
           <div className="flex justify-end mt-8">
             <button
-              type="submit"
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-12 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+               type="submit"
+               className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-12 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+               onClick={handleConvertClick} // Trigger modal on click
             >
               Convert
             </button>
           </div>
         </form>
       </div>
+       {/* Success Modal */}
+       {isModalOpen && (
+        <ProspectUpdateModal
+          title="FBN has been converted successfully."
+          message="FBN has been converted successfully."
+          onClose={closeModal} // Close modal handler
+        />
+      )}
     </div>
   );
 };

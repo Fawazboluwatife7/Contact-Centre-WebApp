@@ -62,7 +62,7 @@ const ECardModal = () => {
             {/* Biometric Icon */}
             <div className="flex items-center justify-center mt-4">
               <img
-                src="https://via.placeholder.com/30"
+                src="biometric.svg"
                 alt="Biometric Icon"
                 className="w-8 h-8"
               />
