@@ -14,9 +14,9 @@ const UpdateProfile = () => {
   };
 
   return (
-    <div className=" h-full flex flex-col justify-center items-center p-4 relative">
+    <div className=" h-full flex flex-col justify-center items-center p-3 ">
       {showModal && <SuccessModal onClose={handleCloseModal} />}
-      <div className="relative -mt-24 mr-auto mb-2 text-black font-bold text-3xl">
+      <div className="mb-5 mr-auto text-black font-bold text-3xl">
         Update Profile
       </div>
 
