@@ -57,9 +57,11 @@ const ClientEnrolleeProfile = () => {
 
             {/* Update Profile Button */}
             <div className="pt-4">
+              <Link to='/SalesDashboard/update-profile'>
               <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
                 Update Profile
               </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -68,9 +70,11 @@ const ClientEnrolleeProfile = () => {
       {/* Buttons Row */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex gap-4">
+          <Link to='/SalesDashboard/send-ecard'>
           <button className="bg-red-100 border border-red-600 text-red-600 px-10 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
             Send E-Card
           </button>
+          </Link>
           <Link to='/SalesDashboard/coverage-plan'>
             <button className="bg-red-100 border border-red-600 text-red-600 px-12 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
               See Plan

@@ -31,7 +31,7 @@ const ECardModal = ({ isOpen, onClose }) => {
           {/* Profile Image */}
           <div className="flex-shrink-0 w-24 h-24 rounded-md overflow-hidden border-2 border-red-500">
             <img
-              src="/Avatar.svg"
+              src="/Avatars@3x.svg"
               alt="Profile Picture"
               className="w-full h-full object-cover"
             />

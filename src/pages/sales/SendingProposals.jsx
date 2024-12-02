@@ -8,7 +8,7 @@ const SendingProposals = () => {
   };
 
   return (
-    <div className="min-h-full p-6 bg-gray-100 font-sans">
+    <div className="min-h-full p-6 font-sans">
       {/* Header Section */}
       <div className="mb-4 flex justify-between">
         <h1 className="text-2xl font-bold text-gray-700">Proposal - Smiths Hospital</h1>

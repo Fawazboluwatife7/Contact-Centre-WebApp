@@ -41,7 +41,7 @@ const Clients = () => {
   }, [searchTerm]);
 
   return (
-    <div className="min-h-screen bg-[#F5F6FB]">
+    <div className="min-h-full ">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Clients</h1>
@@ -120,10 +120,10 @@ const Clients = () => {
                           <ul className="py-1">
                             <li>
                               <a
-                                href="#"
+                                href="/SalesDashboard/clients-profile"
                                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                               >
-                                Option 1
+                                View
                               </a>
                             </li>
                             <li>
