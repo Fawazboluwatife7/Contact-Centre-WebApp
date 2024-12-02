@@ -90,7 +90,7 @@ const ClientsProfile = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex justify-start mb-4">
+      <div className="flex justify-start">
         <div className="flex space-x-4 w-1/2">
           <button className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
             Enrollees
@@ -115,16 +115,7 @@ const ClientsProfile = () => {
               <tr className="border-b">
                 <td className="px-4 py-2">
                   <div className="flex items-center space-x-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="none"
-                  >
-                    <circle cx="12" cy="12" r="10" fill="green" />
-                  </svg>
+                  <img src="/Avatar.svg" alt="Building" className="w-18 h-18 object-contain " />
                     <span>Customized Plan #01</span>
                   </div>
                 </td>
@@ -134,16 +125,7 @@ const ClientsProfile = () => {
               <tr className="border-b">
                 <td className="px-4 py-2">
                   <div className="flex items-center space-x-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="none"
-                  >
-                    <circle cx="12" cy="12" r="10" fill="green" />
-                  </svg>
+                  <img src="/Avatar.svg" alt="Building" className="w-18 h-18 object-contain " />
                     <span>Customized Plan #02</span>
                   </div>
                 </td>
@@ -153,16 +135,7 @@ const ClientsProfile = () => {
               <tr className="border-b">
                 <td className="px-4 py-2">
                   <div className="flex items-center space-x-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="none"
-                  >
-                    <circle cx="12" cy="12" r="10" fill="green" />
-                  </svg>
+                  <img src="/Avatar.svg" alt="Building" className="w-18 h-18 object-contain " />
                     <span>Health Insurance Presentation</span>
                   </div>
                 </td>
