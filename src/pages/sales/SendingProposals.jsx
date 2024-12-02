@@ -23,13 +23,13 @@ const SendingProposals = () => {
       {/* Profile Section */}
       <div className="bg-white shadow-md rounded-md p-6 flex items-center">
         {/* Profile Image & Title */}
-        <div className="flex flex-col items-center">
-          <img src="https://via.placeholder.com/100" alt="Building" className="w-16 h-16 rounded-md object-cover mb-2" />
+        <div className="flex flex-col items-center p-6 ">
+          <img src="https://via.placeholder.com/100" alt="Building" className="w-36 h-36 rounded-md object-cover  mb-2" />
           <h2 className="text-xl font-bold text-gray-700 text-center">FBN</h2>
         </div>
 
         {/* Profile Details & Edit Button */}
-        <div className="flex-1 px-6">
+        <div className="flex-1 px-14 ">
           <div id="profile-details" className={`grid grid-cols-3 gap-6 ${!isProfileDetailsVisible ? "hidden" : ""}`}>
             <div>
               <p className="text-sm text-gray-500">Name</p>
@@ -59,14 +59,14 @@ const SendingProposals = () => {
 
           {/* Edit Profile Button */}
           <div className="mt-6">
-            <button className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-700 focus:outline-none">
+            <button className="bg-red-600 text-white px-8 py-3 rounded-md text-sm font-semibold hover:bg-red-700 focus:outline-none">
               Edit Profile
             </button>
           </div>
         </div>
 
         {/* Dropdown Arrow */}
-        <button id="toggle-profile" className="text-gray-500" onClick={toggleProfileDetails}>
+        <button id="toggle-profile" className="text-gray-500 pr-24 mb-32" onClick={toggleProfileDetails}>
           <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
@@ -90,7 +90,7 @@ const SendingProposals = () => {
           <button className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-red-600">Customized</button>
           <button className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-red-600">Sent Proposals</button>
         </div>
-        <button className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-700">Upload Template</button>
+        <button className="bg-red-600 text-white px-4 py-3 rounded-md text-sm font-semibold hover:bg-red-700">Upload Template</button>
       </div>
 
       {/* Proposals Table */}
