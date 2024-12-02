@@ -57,11 +57,7 @@ const SMEClientProfile = () => {
         <div className="flex">
           {/* Image Section */}
           <div className="flex flex-col items-center w-1/4 border-r-2">
-            <img
-              src="path/to/building-image.png"
-              alt="Building"
-              className="w-32 h-32 object-contain mb-4"
-            />
+          <img src="/Building.jpg" alt="Building" className="w-48 h-48 object-contain " />
             <h2 className="text-lg font-semibold text-gray-800">
               Leadway Assurance
             </h2>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const SendingProposals = () => {
   const [isProfileDetailsVisible, setIsProfileDetailsVisible] = useState(true);
@@ -24,7 +25,7 @@ const SendingProposals = () => {
       <div className="bg-white shadow-md rounded-md p-6 flex items-center">
         {/* Profile Image & Title */}
         <div className="flex flex-col items-center p-6 ">
-          <img src="https://via.placeholder.com/100" alt="Building" className="w-36 h-36 rounded-md object-cover  mb-2" />
+        <img src="/Building.jpg" alt="Building" className="w-48 h-48 object-contain " />
           <h2 className="text-xl font-bold text-gray-700 text-center">FBN</h2>
         </div>
 
@@ -59,9 +60,11 @@ const SendingProposals = () => {
 
           {/* Edit Profile Button */}
           <div className="mt-6">
+            <Link to="/SalesDashboard/update-profile">
             <button className="bg-red-600 text-white px-8 py-3 rounded-md text-sm font-semibold hover:bg-red-700 focus:outline-none">
               Edit Profile
             </button>
+            </Link>
           </div>
         </div>
 
