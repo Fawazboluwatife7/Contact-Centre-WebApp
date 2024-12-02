@@ -1,8 +1,31 @@
-import React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SMEClientProfile = () => {
+  const navigate = useNavigate();
+
+  // State to manage active tab
+  const [activeTab, setActiveTab] = useState("Proposal History");
+
+  // Content for each tab
+  const tableContent = {
+    "Proposal History": [
+      { name: "Customized Plan #01", type: "Retail", date: "22 Aug 2022" },
+      { name: "Customized Plan #02", type: "Corporate", date: "22 Aug 2022" },
+      { name: "Health Insurance Presentation", type: "Retail", date: "22 Aug 2022" },
+    ],
+    "Invoice History": [
+      { name: "Invoice #123", type: "Corporate", date: "10 Sep 2022" },
+      { name: "Invoice #124", type: "Retail", date: "15 Sep 2022" },
+    ],
+    "Recent Activity": [
+      { name: "E-Card Sent", type: "Notification", date: "01 Oct 2022" },
+      { name: "Proposal Reviewed", type: "Corporate", date: "05 Oct 2022" },
+    ],
+  };
+
   return (
-    <div className="px-20  min-h-full p-4">
+    <div className="px-20 min-h-full p-4">
       {/* Page Title */}
       <h1 className="relative mr-auto mb-5 text-black font-bold text-3xl">
         Prospect Profile
@@ -12,6 +35,7 @@ const SMEClientProfile = () => {
       <a
         href="#"
         className="flex items-center text-[#C61531] font-bold text-lg cursor-pointer gap-3 ml-[84%]"
+        onClick={() => navigate("/SalesDashboard/prospects")}
       >
         <svg
           width="18"
@@ -85,7 +109,10 @@ const SMEClientProfile = () => {
 
             {/* Update Profile Button */}
             <div className="pt-4">
-              <button className="bg-pink-100 border border-red-600 text-red-600 px-4 py-2 rounded-sm font-semibold hover:bg-red-700 hover:text-white transition">
+              <button
+                className="bg-pink-100 border border-red-600 text-red-600 px-4 py-2 rounded-sm font-semibold hover:bg-red-700 hover:text-white transition"
+                onClick={() => navigate("/SalesDashboard/update-profile")}
+              >
                 Update Profile
               </button>
             </div>
@@ -96,30 +123,42 @@ const SMEClientProfile = () => {
       {/* Action Buttons */}
       <div className="flex justify-between mb-6">
         <div className="flex space-x-4">
-          {["Manage Proposal", "Create Invoice", "See Plans", "Send E-Card"].map(
-            (buttonText) => (
-              <button
-                key={buttonText}
-                className="bg-pink-100 border border-red-600 text-red-600 px-8 py-2 rounded-sm font-semibold hover:bg-red-700 hover:text-white transition"
-              >
-                {buttonText}
-              </button>
-            )
-          )}
+          {[
+            { text: "Manage Proposal", route: "/SalesDashboard/manage-proposal" },
+            { text: "Create Invoice", route: "/SalesDashboard/create-invoice" },
+            { text: "See Plans", route: "/SalesDashboard/coverage-plan" },
+            { text: "Send E-Card", route: "/SalesDashboard/send-ecard" },
+          ].map(({ text, route }) => (
+            <button
+              key={text}
+              className="bg-pink-100 border border-red-600 text-red-600 px-8 py-2 rounded-sm font-semibold hover:bg-red-700 hover:text-white transition"
+              onClick={() => navigate(route)}
+            >
+              {text}
+            </button>
+          ))}
         </div>
-        <button className="bg-red-600 text-white px-4 py-2 rounded-sm font-semibold hover:bg-red-700 transition">
+        <button
+          className="bg-red-600 text-white px-4 py-2 rounded-sm font-semibold hover:bg-red-700 transition"
+          onClick={() => navigate("/SalesDashboard/prospect-profile-update")}
+        >
           Convert to Client
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex justify-start mb-">
+      <div className="flex justify-start ">
         <div className="flex space-x-4 w-1/2">
           {["Proposal History", "Invoice History", "Recent Activity"].map(
             (tabText) => (
               <button
                 key={tabText}
-                className="bg-red-600 text-white px-4 py-2 rounded-t-md font-semibold hover:bg-red-700 transition"
+                className={`px-4 py-2 rounded-t-md font-semibold transition ${
+                  activeTab === tabText
+                    ? "bg-red-600 text-white"
+                    : "bg-gray-200 text-gray-800"
+                }`}
+                onClick={() => setActiveTab(tabText)}
               >
                 {tabText}
               </button>
@@ -128,20 +167,12 @@ const SMEClientProfile = () => {
         </div>
       </div>
 
-      {/* Proposal History Table */}
+      {/* Dynamic Table */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <tbody>
-              {[
-                { name: "Customized Plan #01", type: "Retail", date: "22 Aug 2022" },
-                { name: "Customized Plan #02", type: "Corporate", date: "22 Aug 2022" },
-                {
-                  name: "Health Insurance Presentation",
-                  type: "Retail",
-                  date: "22 Aug 2022",
-                },
-              ].map(({ name, type, date }) => (
+              {tableContent[activeTab].map(({ name, type, date }) => (
                 <tr className="border-b" key={name}>
                   <td className="px-4 py-2">
                     <div className="flex items-center space-x-4">

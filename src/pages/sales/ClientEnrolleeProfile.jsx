@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import SatisfactionChart from "./SatisfactionChart"; // Import the SatisfactionChart component
+import SatisfactionChart from "../../components/sales/SatisfactionChart"; // Import the SatisfactionChart component
 
 const ClientEnrolleeProfile = () => {
   return (

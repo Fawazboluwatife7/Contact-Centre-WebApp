@@ -1,14 +1,23 @@
+import React, { useState } from "react"; // Adjust the path to your modal component
+import ECardModal from "../../components/sales/ECardModal";
 
-const ManageProposal = () => {
+const SendECardPage = () => {
+  // State to control modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Functions to handle modal visibility
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
-    <div className="p-4 min-h-full">
+    <div className="p-6 bg-gray-200 min-h-full">
       {/* Page Title */}
       <h1 className="top-4 left-4 text-black font-bold text-3xl ml-2">
-        Manage Proposal
+        Send E-Cards
       </h1>
 
-      {/* Back to Clients Link */}
-      <div className="flex items-center pl-[87%] mt-1 space-x-2 cursor-pointer">
+      {/* Back to Prospects Link */}
+      <div className="flex items-center pl-[87%] space-x-2 cursor-pointer">
         {/* Backward Arrow Icon */}
         <svg
           width="18"
@@ -22,20 +31,30 @@ const ManageProposal = () => {
             fill="#C61531"
           />
         </svg>
-
-        {/* Back to Clients Text */}
-        <a href="/SalesDashboard/sme-client-profile" className="text-[#C61531] text-[19px] font-[Product Sans] font-bold">
+        <a
+          href="/SalesDashboard/sme-client-profile"
+          className="text-[#C61531] text-[19px] font-[Product Sans] font-bold"
+        >
           Back To Clients
         </a>
       </div>
 
       {/* Content Area */}
-      <div className="py-16 mt-1 bg-white min-h-full">
+      <div className="py-20 mt-1 bg-white min-h-full">
+        {/* Main Heading */}
+        <div className="flex justify-center">
+          <h1 className="text-2xl md:text-3xl text-[#34475E] font-normal font-product-sans">
+            How Would You Like to Send E-Cards?
+          </h1>
+        </div>
+
         {/* Options Section */}
-        <div className="md:flex sm:flex justify-center gap-6 mt-12">
-          {/* Send Proposal Card */}
-          <div className="relative w-72 h-76 bg-white cursor-pointer hover:border-[#C61531] hover:border-4 border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6">
-            {/* Individual Icon */}
+        <div className="md:flex sm:flex justify-center gap-6 mt-24">
+          {/* Individual Card */}
+          <div
+            className="relative w-72 h-76 bg-white cursor-pointer hover:border-[#C61531] hover:border-4 border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6"
+            onClick={openModal} // Open modal on click
+          >
             <svg
               className="w-24 h-24 mt-8 mb-12 text-[#C61531]"
               width="76"
@@ -49,12 +68,13 @@ const ManageProposal = () => {
                 fill="#C61531"
               />
             </svg>
-            <div className="text-[#C61531] font-product-sans font-bold text-2xl">Send Proposal</div>
+            <div className="text-[#C61531] font-product-sans font-bold text-2xl">
+              Individual
+            </div>
           </div>
 
-          {/* Send Hospital Proposal Card */}
+          {/* Multiple Card */}
           <div className="relative w-72 h-72 bg-white border cursor-pointer hover:border-[#C61531] hover:border-4 border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6">
-            {/* Multiple Icon */}
             <svg
               className="w-24 h-24 mt-8 mb-12 text-[#C61531]"
               fill="none"
@@ -67,13 +87,16 @@ const ManageProposal = () => {
               />
             </svg>
             <div className="text-[#C61531] font-product-sans font-bold text-2xl">
-              Send Hospital Proposal
+              Multiple
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal Component */}
+      {isModalOpen && <ECardModal onClose={closeModal} />}
     </div>
   );
 };
 
-export default ManageProposal;
+export default SendECardPage;

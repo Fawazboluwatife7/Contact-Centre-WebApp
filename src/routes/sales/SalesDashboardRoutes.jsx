@@ -29,13 +29,14 @@ import Prospects from '../../pages/sales/Prospects';
 import SMEClientProfile from '../../pages/sales/SMEClientProfile';
 import ManageProposal from '../../pages/sales/ManageProposal';
 import InvoiceReview from '../../pages/sales/InvoiceReview';
+import ProspectProfileUpdate from '../../pages/sales/ProspectProfileUpdate';
 import Dashboard from '../../pages/sales/Dashboard';
+import SendECard from '../../pages/sales/SendECard';
+import SendingProposals from '../../pages/sales/SendingProposals';
 
 function SalesDashboardRoutes() {
   return (
     <Routes>
-
-      // Dashboard
       <Route path="/" element={<SalesDashboard />}>
         <Route index element={
           <>
@@ -67,8 +68,14 @@ function SalesDashboardRoutes() {
         <Route path="/proposals" element={<Proposals />} />
         <Route path="/add-enrollee-multiple" element={<AddEnrolleeMultiple />} />
         <Route path="/prospects" element={<Prospects />} />
-        <Route path="/sme-client-profile" element={<SMEClientProfile />} />
-        <Route path="/manage-proposal" element={<ManageProposal />} />
+        <>
+          <Route path="/sme-client-profile" element={<SMEClientProfile />} />
+          <Route path="/manage-proposal" element={<ManageProposal />} />
+          <Route path="/prospect-profile-update" element ={<ProspectProfileUpdate/>} />
+          <Route path="/send-ecard" element={<SendECard />} />
+          <Route path="/sending-proposals" element={<SendingProposals />} />
+        </>
+        
         <Route path="/invoice-review" element={<InvoiceReview />} />
       </Route>
     </Routes>

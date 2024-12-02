@@ -3,7 +3,7 @@ import React from 'react';
 const ProspectProfile = () => {
   return (
     <div className="bg-gray-200 min-h-screen p-6">
-      <div className="absolute top-4 left-4 text-black font-bold text-3xl ml-2">
+      <div className="top-4 left-4 text-black font-bold text-3xl ml-2">
         Prospect Profile
       </div>
 
