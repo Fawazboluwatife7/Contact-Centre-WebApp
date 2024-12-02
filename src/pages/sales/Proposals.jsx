@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Proposals = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProspects, setFilteredProspects] = useState([]);
+  const navigate = useNavigate();
 
   const prospects = [
     { id: 1, name: "Smiths Hospital", email: "smith@hospital.com", type: "Corporate", idNumber: "01786568", broker: "Broker Name", date: "22 Aug 2022" },
@@ -41,12 +42,15 @@ const Proposals = () => {
     );
   }, [searchTerm]);
 
+  const handleRowClick = () => {
+    navigate("/SalesDashboard/sending-proposals");
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F6FB]">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Proposals</h1>
-        
       </div>
 
       {/* Search Bar */}
@@ -72,7 +76,7 @@ const Proposals = () => {
           placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="-ml-5 flex-grow mr-6 p-3 bg-white rounded-r border border-[#E5E7EB] text-sm focus:outline-none"
+          className="ml-5 flex-grow mr-6 p-3 bg-white rounded-r border border-[#E5E7EB] text-sm focus:outline-red-500"
         />
         {/* Button */}
         <button className="bg-[#C61531] hover:bg-[#B5132A] text-white font-medium text-sm px-16 py-4 rounded-md shadow-sm">
@@ -88,7 +92,11 @@ const Proposals = () => {
           <table className="w-full text-left table-auto border-collapse">
             <tbody>
               {filteredProspects.map((prospect) => (
-                <tr key={prospect.id} className="bg-white hover:bg-gray-100 border-2 border-gray-300">
+                <tr 
+                  key={prospect.id} 
+                  className="bg-white hover:bg-gray-100 border-2 border-gray-300 cursor-pointer"
+                  onClick={handleRowClick}
+                >
                   <td className="py-4 px-6 flex items-center space-x-3">
                     <img className="h-8 w-8 rounded-full" src="/Avatar.svg" alt="Profile" />
                     <span>{prospect.name}</span>
@@ -142,22 +150,6 @@ const Proposals = () => {
                                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                               >
                                 Option 3
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                Option 4
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                Option 5
                               </a>
                             </li>
                           </ul>

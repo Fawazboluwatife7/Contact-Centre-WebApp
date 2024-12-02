@@ -1,344 +1,167 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-
+import React, { useState } from "react";
 
 const CoveragePlanTable = () => {
- const navigate = useNavigate();
- const [selectedTab, setSelectedTab] = useState("All");
+  const [activeTab, setActiveTab] = useState("Overview");
 
-
-
-
-
-
- const handleGenerateClick = () => {
-   navigate("/generatePaCode");
- };
-
-
- const tableData = {
-   all: [
-     {
-       date: "2024-11-01",
-       enrolleeName: "John Doe",
-       provider: "Provider A",
-       enrolleeID: "12345",
-       requestStatus: "Approved",
-       comment: "Request approved successfully.",
-       approvedRejectedDate: "2024-11-02",
-       diagnosis: "Hypertension",
-       request: "Routine Checkup",
-     },
-     {
-       date: "2024-11-03",
-       enrolleeName: "Jane Smith",
-       provider: "Provider B",
-       enrolleeID: "12346",
-       requestStatus: "Pending",
-       comment: "Pending approval.",
-       approvedRejectedDate: "-",
-       diagnosis: "Diabetes",
-       request: "Emergency Care",
-     },
-     {
-       date: "2024-11-05",
-       enrolleeName: "Mark Johnson",
-       provider: "Provider C",
-       enrolleeID: "12347",
-       requestStatus: "Rejected",
-       comment: "Request rejected due to missing documents.",
-       approvedRejectedDate: "2024-11-06",
-       diagnosis: "Asthma",
-       request: "Specialist Referral",
-     },
-     {
-       date: "2024-11-07",
-       enrolleeName: "Emily Davis",
-       provider: "Provider A",
-       enrolleeID: "12348",
-       requestStatus: "Approved",
-       comment: "Request approved successfully.",
-       approvedRejectedDate: "2024-11-08",
-       diagnosis: "Pneumonia",
-       request: "Hospitalization",
-     },
-     {
-       date: "2024-11-09",
-       enrolleeName: "Michael Brown",
-       provider: "Provider B",
-       enrolleeID: "12349",
-       requestStatus: "Pending",
-       comment: "Awaiting further review.",
-       approvedRejectedDate: "-",
-       diagnosis: "Anemia",
-       request: "Blood Transfusion",
-     },
-     {
-      date: "2024-11-10",
-      enrolleeName: "Sarah Wilson",
-      provider: "Provider C",
-      enrolleeID: "12350",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-11",
-      diagnosis: "Migraine",
-      request: "Pain Management",
+  const tableData = [
+    {
+      id: "7000062",
+      region: "SOUTH EAST",
+      state: "Abia",
+      city: "UMUAHIA",
+      hospital: "CHUKWUEBUKA HOSPITAL",
+      address: "50 SCHOOL ROAD, UMUAHIA",
+      grade: "D",
+      plans: "All Plans",
+      specialty: "GENERAL MEDICINE",
     },
     {
-      date: "2024-11-12",
-      enrolleeName: "David Lee",
-      provider: "Provider A",
-      enrolleeID: "12351",
-      requestStatus: "Rejected",
-      comment: "Request rejected due to invalid details.",
-      approvedRejectedDate: "2024-11-13",
-      diagnosis: "Back Pain",
-      request: "Physical Therapy",
+      id: "7000062",
+      region: "SOUTH EAST",
+      state: "Abia",
+      city: "UMUAHIA",
+      hospital: "CHUKWUEBUKA HOSPITAL",
+      address: "50 SCHOOL ROAD, UMUAHIA",
+      grade: "D",
+      plans: "All Plans",
+      specialty: "GENERAL MEDICINE",
     },
     {
-      date: "2024-11-13",
-      enrolleeName: "Laura Taylor",
-      provider: "Provider B",
-      enrolleeID: "12352",
-      requestStatus: "Pending",
-      comment: "Under review.",
-      approvedRejectedDate: "-",
-      diagnosis: "Depression",
-      request: "Psychiatric Evaluation",
+      id: "7000062",
+      region: "SOUTH EAST",
+      state: "Abia",
+      city: "UMUAHIA",
+      hospital: "CHUKWUEBUKA HOSPITAL",
+      address: "50 SCHOOL ROAD, UMUAHIA",
+      grade: "D",
+      plans: "All Plans",
+      specialty: "GENERAL MEDICINE",
     },
     {
-      date: "2024-11-14",
-      enrolleeName: "James Harris",
-      provider: "Provider C",
-      enrolleeID: "12353",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-15",
-      diagnosis: "COVID-19",
-      request: "Isolation Care",
+      id: "7000062",
+      region: "SOUTH EAST",
+      state: "Abia",
+      city: "UMUAHIA",
+      hospital: "CHUKWUEBUKA HOSPITAL",
+      address: "50 SCHOOL ROAD, UMUAHIA",
+      grade: "D",
+      plans: "All Plans",
+      specialty: "GENERAL MEDICINE",
     },
-  ],
-  pending: [
-    {
-      date: "2024-11-03",
-      enrolleeName: "Jane Smith",
-      provider: "Provider B",
-      enrolleeID: "12346",
-      requestStatus: "Pending",
-      comment: "Pending approval.",
-      approvedRejectedDate: "-",
-      diagnosis: "Diabetes",
-      request: "Emergency Care",
-    },
-    {
-      date: "2024-11-09",
-      enrolleeName: "Michael Brown",
-      provider: "Provider B",
-      enrolleeID: "12349",
-      requestStatus: "Pending",
-      comment: "Awaiting further review.",
-      approvedRejectedDate: "-",
-      diagnosis: "Anemia",
-      request: "Blood Transfusion",
-    },
-    {
-      date: "2024-11-13",
-      enrolleeName: "Laura Taylor",
-      provider: "Provider B",
-      enrolleeID: "12352",
-      requestStatus: "Pending",
-      comment: "Under review.",
-      approvedRejectedDate: "-",
-      diagnosis: "Depression",
-      request: "Psychiatric Evaluation",
-    },
-  ],
-  approved: [
-    {
-      date: "2024-11-01",
-      enrolleeName: "John Doe",
-      provider: "Provider A",
-      enrolleeID: "12345",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-02",
-      diagnosis: "Hypertension",
-      request: "Routine Checkup",
-    },
-    {
-      date: "2024-11-07",
-      enrolleeName: "Emily Davis",
-      provider: "Provider A",
-      enrolleeID: "12348",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-08",
-      diagnosis: "Pneumonia",
-      request: "Hospitalization",
-    },
-    {
-      date: "2024-11-10",
-      enrolleeName: "Sarah Wilson",
-      provider: "Provider C",
-      enrolleeID: "12350",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-11",
-      diagnosis: "Migraine",
-      request: "Pain Management",
-    },
-    {
-      date: "2024-11-14",
-      enrolleeName: "James Harris",
-      provider: "Provider C",
-      enrolleeID: "12353",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-15",
-      diagnosis: "COVID-19",
-      request: "Isolation Care",
-    },
-  ],
-  rejected: [
-    {
-      date: "2024-11-05",
-      enrolleeName: "Mark Johnson",
-      provider: "Provider C",
-      enrolleeID: "12347",
-      requestStatus: "Rejected",
-      comment: "Request rejected due to missing documents.",
-      approvedRejectedDate: "2024-11-06",
-      diagnosis: "Asthma",
-      request: "Specialist Referral",
-    },
-    {
-      date: "2024-11-12",
-      enrolleeName: "David Lee",
-      provider: "Provider A",
-      enrolleeID: "12351",
-      requestStatus: "Rejected",
-      comment: "Request rejected due to invalid details.",
-      approvedRejectedDate: "2024-11-13",
-      diagnosis: "Back Pain",
-      request: "Physical Therapy",
-    },
-  ],
-};
+  ];
 
-
-const getStatusColor = (status) => {
-  if (status === "Approved") return "text-green-500";
-  if (status === "Pending") return "text-orange-500";
-  if (status === "Rejected") return "text-red-500";
-  return "";
-};
-
-
-const handleTabClick = (tab) => {
-  setSelectedTab(tab);
-};
-
-
-// const handleRowClick = (enrolleeID) => {
-//   navigate(`/enrolleeInformations/${enrolleeID}`);
-// };
-const handleRowClick = () => { //its not getting the userID yet
-  navigate("/enrolleeInformations");
-};
-return (
-  <div className="bg-lightblue">
-
-     <div className="w-32 bg-lightgray rounded-[5px]">
-       <div className="flex space-x-1 mt-4 bg-lightblue-500 w-[577px] h-[43px] bg-white rounded-[5px]">
-         <button
-           className={`px-4 py-2 w-[142px] h-[43px] ${
-             selectedTab === "All"
-               ? "bg-white text-green-600"
-               : "bg-gray-400 text-black"
-           }`}
-           onClick={() => handleTabClick("All")}
-         >
-           All
-         </button>
-         <button
-           className={`px-4 py-2 w-[142px] h-[43px] ${
-             selectedTab === "Pending"
-               ? "bg-white text-green-600"
-               : "bg-pink-300 text-red-700"
-           }`}
-           onClick={() => handleTabClick("Pending")}
-         >
-           Pending
-         </button>
-         <button
-           className={`px-4 py-2 w-[142px] h-[43px] ${
-             selectedTab === "Approved"
-               ? "bg-white text-green-600"
-               : "bg-green-500 text-white"
-           }`}
-           onClick={() => handleTabClick("Approved")}
-         >
-           Approved
-         </button>
-         <button
-           className={`px-4 py-2 w-[142px] h-[43px] ${
-             selectedTab === "Rejected"
-               ? "bg-white text-green-600"
-               : "bg-red-600 text-white"
+  return (
+    <div className=" bg-gray-100">
+      <div className="flex border-b border-gray-300">
+        <div className="space-x-2">
+          {["Overview", "Exclusions", "Principals", "Hospital List"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 text-sm font-medium ${
+                activeTab === tab
+                  ? "bg-white border-b-2 border-green-500 text-green-500"
+                  : "text-white bg-green-500"
               }`}
-              onClick={() => handleTabClick("Rejected")}
             >
-              Rejected
+              {tab}
             </button>
-          </div>
+          ))}
         </div>
-   
-   
-        <div className="mb-10 w-[1110px] shadow-md ">
-          <table className="bg-white table-auto">
-            <thead className="text-[#1F4173]">
-              <tr className="text-sm text-left">
-                <th className="px-4 py-2 border">Date</th>
-                <th className="px-4 py-2 border">Enrollee</th>
-                <th className="px-4 py-2 border">Provider</th>
-                <th className="px-4 py-2 border">EnrolleeID</th>
-                <th className="px-4 py-2 border">Diagnosis</th>
-                <th className="px-4 py-2 border">Request</th>
-                <th className="px-4 py-2 border">Status</th>
-                <th className="px-4 py-2 border">Comment</th>
-                <th className="px-4 py-2 border">App/Rej Date</th>
+        <button className="ml-auto px-4 py-2 bg-red-500 text-white font-semibold">Customize</button>
+        <button className="px-4 py-2 bg-gray-400 text-white font-semibold">Pro Max</button>
+      </div>
+
+      <div className="mt-4 bg-white rounded-lg">
+        {activeTab === "Overview" && (
+          <div className="p-6">
+            <div className="bg-white p-4">
+              <h2 className="text-lg font-bold mb-2">Description</h2>
+                <p>
+                  This plan offers cover for medical care, inpatient or outpatient treatment, maternity, major medical cases and chronic diseases. It providers cover for emergency medical and hospitalization and dental expenses. Members on this plan can access care within our provider network within their benefit limit.
+                </p>
+            </div>
+            <ul className="list-disc text-black">
+              <li>Red icon bullet point 1</li>
+              <li>Red icon bullet point 2</li>
+            </ul>
+          </div>
+        )}
+        {activeTab === "Exclusions" && (
+          <div className="p-6">
+            <ul className="list-disc text-red-500">
+              <li>Red icon bullet point 1</li>
+              <li>Red icon bullet point 2</li>
+            </ul>
+          </div>
+        )}
+        {activeTab === "Principals" && (
+          <table className="w-full text-left border-collapse border border-gray-300">
+            <thead>
+              <tr>
+                <th className="p-2 border border-gray-300">ID</th>
+                <th className="p-2 border border-gray-300">Region</th>
+                <th className="p-2 border border-gray-300">State</th>
+                <th className="p-2 border border-gray-300">City</th>
+                <th className="p-2 border border-gray-300">Hospital</th>
+                <th className="p-2 border border-gray-300">Address</th>
+                <th className="p-2 border border-gray-300">Grade</th>
+                <th className="p-2 border border-gray-300">Plans</th>
+                <th className="p-2 border border-gray-300">Specialty</th>
               </tr>
             </thead>
             <tbody>
-              {tableData[selectedTab.toLowerCase()].map((request, index) => (
-                <tr
-                  key={index}
-                  className="text-sm cursor-pointer"
-                  onClick={() => handleRowClick(request.enrolleeID)}
-                >
-                  <td className="px-4 py-2 border">{request.date}</td>
-                  <td className="px-4 py-2 border">{request.enrolleeName}</td>
-                  <td className="px-4 py-2 border">{request.provider}</td>
-                  <td className="px-4 py-2 border">{request.enrolleeID}</td>
-                  <td className="px-4 py-2 border">{request.diagnosis}</td>
-                  <td className="px-4 py-2 border">{request.request}</td>
-                  <td
-                    className={`px-4 py-2 border ${getStatusColor(
-                      request.requestStatus
-                    )}`}
-                  >
-{request.requestStatus}
-               </td>
-               <td className="px-4 py-2 border">{request.comment}</td>
-             </tr>
-           ))}
-         </tbody>
-       </table>
-     </div>
-   </div>
- );
-}
-
+              {tableData.map((row, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="p-2 border border-gray-300">{row.id}</td>
+                  <td className="p-2 border border-gray-300">{row.region}</td>
+                  <td className="p-2 border border-gray-300">{row.state}</td>
+                  <td className="p-2 border border-gray-300">{row.city}</td>
+                  <td className="p-2 border border-gray-300">{row.hospital}</td>
+                  <td className="p-2 border border-gray-300">{row.address}</td>
+                  <td className="p-2 border border-gray-300">{row.grade}</td>
+                  <td className="p-2 border border-gray-300">{row.plans}</td>
+                  <td className="p-2 border border-gray-300">{row.specialty}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        {activeTab === "Hospital List" && (
+          <table className="w-full text-left border-collapse border border-gray-300">
+            <thead>
+              <tr>
+                <th className="p-2 border border-gray-300">ID</th>
+                <th className="p-2 border border-gray-300">Region</th>
+                <th className="p-2 border border-gray-300">State</th>
+                <th className="p-2 border border-gray-300">City</th>
+                <th className="p-2 border border-gray-300">Hospital</th>
+                <th className="p-2 border border-gray-300">Address</th>
+                <th className="p-2 border border-gray-300">Grade</th>
+                <th className="p-2 border border-gray-300">Plans</th>
+                <th className="p-2 border border-gray-300">Specialty</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map((row, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td className="p-2 border border-gray-300">{row.id}</td>
+                  <td className="p-2 border border-gray-300">{row.region}</td>
+                  <td className="p-2 border border-gray-300">{row.state}</td>
+                  <td className="p-2 border border-gray-300">{row.city}</td>
+                  <td className="p-2 border border-gray-300">{row.hospital}</td>
+                  <td className="p-2 border border-gray-300">{row.address}</td>
+                  <td className="p-2 border border-gray-300">{row.grade}</td>
+                  <td className="p-2 border border-gray-300">{row.plans}</td>
+                  <td className="p-2 border border-gray-300">{row.specialty}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default CoveragePlanTable;
-   

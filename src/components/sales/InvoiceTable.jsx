@@ -1,335 +1,173 @@
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
+const invoiceData = [
+  { name: "Smiths Hospital", email: "smiths@hospital.com", type: "Corporate", staffId: "01786568", invoiceId: "Invoice ID", date: "22 Aug 2022", status: "Rejected" },
+  { name: "Smiths Hospital", email: "smiths@hospital.com", type: "Corporate", staffId: "01786568", invoiceId: "Invoice ID", date: "22 Aug 2022", status: "Paid" },
+  { name: "Smiths Hospital", email: "smiths@hospital.com", type: "Corporate", staffId: "01786568", invoiceId: "Invoice ID", date: "22 Aug 2022", status: "Pending" },
+  // Duplicate rows for pagination simulation
+  { name: "Smiths Hospital", email: "smiths@hospital.com", type: "Corporate", staffId: "01786568", invoiceId: "Invoice ID", date: "22 Aug 2022", status: "Rejected" },
+  { name: "Smiths Hospital", email: "smiths@hospital.com", type: "Corporate", staffId: "01786568", invoiceId: "Invoice ID", date: "22 Aug 2022", status: "Paid" },
+  { name: "Smiths Hospital", email: "smiths@hospital.com", type: "Corporate", staffId: "01786568", invoiceId: "Invoice ID", date: "22 Aug 2022", status: "Pending" },
+];
 
 const InvoiceTable = () => {
- const navigate = useNavigate();
- const [selectedTab, setSelectedTab] = useState("All");
+  const [selectedTab, setSelectedTab] = useState("All");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate()
+  const filteredData = selectedTab === "All" ? invoiceData : invoiceData.filter((row) => row.status === selectedTab);
 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
- const tableData = {
-   all: [
-     {
-       date: "2024-11-01",
-       enrolleeName: "John Doe",
-       provider: "Provider A",
-       enrolleeID: "12345",
-       requestStatus: "Approved",
-       comment: "Request approved successfully.",
-       approvedRejectedDate: "2024-11-02",
-       diagnosis: "Hypertension",
-       request: "Routine Checkup",
-     },
-     {
-       date: "2024-11-03",
-       enrolleeName: "Jane Smith",
-       provider: "Provider B",
-       enrolleeID: "12346",
-       requestStatus: "Pending",
-       comment: "Pending approval.",
-       approvedRejectedDate: "-",
-       diagnosis: "Diabetes",
-       request: "Emergency Care",
-     },
-     {
-       date: "2024-11-05",
-       enrolleeName: "Mark Johnson",
-       provider: "Provider C",
-       enrolleeID: "12347",
-       requestStatus: "Rejected",
-       comment: "Request rejected due to missing documents.",
-       approvedRejectedDate: "2024-11-06",
-       diagnosis: "Asthma",
-       request: "Specialist Referral",
-     },
-     {
-       date: "2024-11-07",
-       enrolleeName: "Emily Davis",
-       provider: "Provider A",
-       enrolleeID: "12348",
-       requestStatus: "Approved",
-       comment: "Request approved successfully.",
-       approvedRejectedDate: "2024-11-08",
-       diagnosis: "Pneumonia",
-       request: "Hospitalization",
-     },
-     {
-       date: "2024-11-09",
-       enrolleeName: "Michael Brown",
-       provider: "Provider B",
-       enrolleeID: "12349",
-       requestStatus: "Pending",
-       comment: "Awaiting further review.",
-       approvedRejectedDate: "-",
-       diagnosis: "Anemia",
-       request: "Blood Transfusion",
-     },
-     {
-      date: "2024-11-10",
-      enrolleeName: "Sarah Wilson",
-      provider: "Provider C",
-      enrolleeID: "12350",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-11",
-      diagnosis: "Migraine",
-      request: "Pain Management",
-    },
-    {
-      date: "2024-11-12",
-      enrolleeName: "David Lee",
-      provider: "Provider A",
-      enrolleeID: "12351",
-      requestStatus: "Rejected",
-      comment: "Request rejected due to invalid details.",
-      approvedRejectedDate: "2024-11-13",
-      diagnosis: "Back Pain",
-      request: "Physical Therapy",
-    },
-    {
-      date: "2024-11-13",
-      enrolleeName: "Laura Taylor",
-      provider: "Provider B",
-      enrolleeID: "12352",
-      requestStatus: "Pending",
-      comment: "Under review.",
-      approvedRejectedDate: "-",
-      diagnosis: "Depression",
-      request: "Psychiatric Evaluation",
-    },
-    {
-      date: "2024-11-14",
-      enrolleeName: "James Harris",
-      provider: "Provider C",
-      enrolleeID: "12353",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-15",
-      diagnosis: "COVID-19",
-      request: "Isolation Care",
-    },
-  ],
-  pending: [
-    {
-      date: "2024-11-03",
-      enrolleeName: "Jane Smith",
-      provider: "Provider B",
-      enrolleeID: "12346",
-      requestStatus: "Pending",
-      comment: "Pending approval.",
-      approvedRejectedDate: "-",
-      diagnosis: "Diabetes",
-      request: "Emergency Care",
-    },
-    {
-      date: "2024-11-09",
-      enrolleeName: "Michael Brown",
-      provider: "Provider B",
-      enrolleeID: "12349",
-      requestStatus: "Pending",
-      comment: "Awaiting further review.",
-      approvedRejectedDate: "-",
-      diagnosis: "Anemia",
-      request: "Blood Transfusion",
-    },
-    {
-      date: "2024-11-13",
-      enrolleeName: "Laura Taylor",
-      provider: "Provider B",
-      enrolleeID: "12352",
-      requestStatus: "Pending",
-      comment: "Under review.",
-      approvedRejectedDate: "-",
-      diagnosis: "Depression",
-      request: "Psychiatric Evaluation",
-    },
-  ],
-  approved: [
-    {
-      date: "2024-11-01",
-      enrolleeName: "John Doe",
-      provider: "Provider A",
-      enrolleeID: "12345",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-02",
-      diagnosis: "Hypertension",
-      request: "Routine Checkup",
-    },
-    {
-      date: "2024-11-07",
-      enrolleeName: "Emily Davis",
-      provider: "Provider A",
-      enrolleeID: "12348",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-08",
-      diagnosis: "Pneumonia",
-      request: "Hospitalization",
-    },
-    {
-      date: "2024-11-10",
-      enrolleeName: "Sarah Wilson",
-      provider: "Provider C",
-      enrolleeID: "12350",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-11",
-      diagnosis: "Migraine",
-      request: "Pain Management",
-    },
-    {
-      date: "2024-11-14",
-      enrolleeName: "James Harris",
-      provider: "Provider C",
-      enrolleeID: "12353",
-      requestStatus: "Approved",
-      comment: "Request approved successfully.",
-      approvedRejectedDate: "2024-11-15",
-      diagnosis: "COVID-19",
-      request: "Isolation Care",
-    },
-  ],
-  rejected: [
-    {
-      date: "2024-11-05",
-      enrolleeName: "Mark Johnson",
-      provider: "Provider C",
-      enrolleeID: "12347",
-      requestStatus: "Rejected",
-      comment: "Request rejected due to missing documents.",
-      approvedRejectedDate: "2024-11-06",
-      diagnosis: "Asthma",
-      request: "Specialist Referral",
-    },
-    {
-      date: "2024-11-12",
-      enrolleeName: "David Lee",
-      provider: "Provider A",
-      enrolleeID: "12351",
-      requestStatus: "Rejected",
-      comment: "Request rejected due to invalid details.",
-      approvedRejectedDate: "2024-11-13",
-      diagnosis: "Back Pain",
-      request: "Physical Therapy",
-    },
-  ],
-};
+  const closeDropdown = (e) => {
+    if (!e.target.closest("#menu-button") && !e.target.closest("#dropdown")) {
+      setDropdownOpen(false);
+    }
+  };
 
+  useEffect(() => {
+    document.addEventListener("click", closeDropdown);
+    return () => {
+      document.removeEventListener("click", closeDropdown);
+    };
+  }, []);
 
-const getStatusColor = (status) => {
-  if (status === "Approved") return "text-green-500";
-  if (status === "Pending") return "text-orange-500";
-  if (status === "Rejected") return "text-red-500";
-  return "";
-};
+  const handleRowClick = () => {
+    navigate('/SalesDashboard/invoice-review');
+  };
 
+  return (
+    <div className="p-4 bg-white rounded-lg">
+      {/* Tabs */}
+      <div className="flex space-x-0.5">
+        {["All", "Pending", "Rejected", "Paid"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setSelectedTab(tab)}
+            className={`px-12 py-2 rounded-sm font-semibold ${
+              selectedTab === tab ? "bg-white text-red-600 underline" : "bg-red-600 text-white"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
 
-const handleTabClick = (tab) => {
-  setSelectedTab(tab);
-};
-
-
-// const handleRowClick = (enrolleeID) => {
-//   navigate(`/enrolleeInformations/${enrolleeID}`);
-// };
-const handleRowClick = () => { //its not getting the userID yet
-  navigate("/SalesDashboard/invoice-review");
-};
-return (
-  <div className="bg-lightblue">
-
-     <div className="w-32 bg-lightgray rounded-[5px]">
-       <div className="flex space-x-1 mt-4 bg-lightblue-500 w-[577px] h-[43px] bg-white rounded-[5px]">
-         <button
-           className={`px-4 py-2 w-[142px] h-[43px] ${
-             selectedTab === "All"
-              ? "bg-white text-red-700 underline font-semibold"
-              : "bg-red-700 text-white"
-           }`}
-           onClick={() => handleTabClick("All")}
-         >
-           All
-         </button>
-         <button
-           className={`px-4 py-2 w-[142px] h-[43px] ${
-             selectedTab === "Pending"
-               ? "bg-white text-red-700 underline font-semibold"
-               : "bg-red-700 text-white"
-           }`}
-           onClick={() => handleTabClick("Pending")}
-         >
-           Pending
-         </button>
-         <button
-           className={`px-4 py-2 w-[142px] h-[43px] ${
-             selectedTab === "Approved"
-              ? "bg-white text-red-700 underline font-semibold"
-              : "bg-red-700 text-white"  
-           }`}
-           onClick={() => handleTabClick("Approved")}
-         >
-           Approved
-         </button>
-         <button
-           className={`px-4 py-2 w-[142px] h-[43px] ${
-             selectedTab === "Rejected"
-               ? "bg-white text-red-700 underline font-semibold"
-               : "bg-red-700 text-white"
-              }`}
-              onClick={() => handleTabClick("Rejected")}
-            >
-              Rejected
-            </button>
-          </div>
-        </div>
-   
-   
-        <div className="mb-10 w-[1110px] shadow-md ">
-          <table className="bg-white table-auto">
-            <thead className="text-[#1F4173]">
-              <tr className="text-sm text-left">
-                <th className="px-4 py-2 border">Date</th>
-                <th className="px-4 py-2 border">Enrollee</th>
-                <th className="px-4 py-2 border">Provider</th>
-                <th className="px-4 py-2 border">EnrolleeID</th>
-                <th className="px-4 py-2 border">Diagnosis</th>
-                <th className="px-4 py-2 border">Request</th>
-                <th className="px-4 py-2 border">Status</th>
-                <th className="px-4 py-2 border">Comment</th>
-                <th className="px-4 py-2 border">App/Rej Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData[selectedTab.toLowerCase()].map((request, index) => (
-                <tr
-                  key={index}
-                  className="text-sm cursor-pointer"
-                  onClick={() => handleRowClick(request.enrolleeID)}
-                >
-                  <td className="px-4 py-2 border">{request.date}</td>
-                  <td className="px-4 py-2 border">{request.enrolleeName}</td>
-                  <td className="px-4 py-2 border">{request.provider}</td>
-                  <td className="px-4 py-2 border">{request.enrolleeID}</td>
-                  <td className="px-4 py-2 border">{request.diagnosis}</td>
-                  <td className="px-4 py-2 border">{request.request}</td>
-                  <td
-                    className={`px-4 py-2 border ${getStatusColor(
-                      request.requestStatus
-                    )}`}
+      {/* Table */}
+      <div className="overflow-x-auto border rounded-md">
+        <table className="w-full text-sm text-left text-gray-600">
+          <thead className="bg-white border-b text-gray-700 uppercase text-xs">
+            <tr>
+              <th className="py-3 px-4">Name</th>
+              <th className="py-3 px-4">Email Address</th>
+              <th className="py-3 px-4">Type</th>
+              <th className="py-3 px-4">Staff ID</th>
+              <th className="py-3 px-4">Invoice ID</th>
+              <th className="py-3 px-4">Date</th>
+              <th className="py-3 px-4">Status</th>
+              <th className="py-3 px-4">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredData.map((row, index) => (
+              <tr key={index} className="border-b hover:bg-gray-50 cursor-pointer" onClick={handleRowClick}>
+                <td className="py-3 px-4 flex items-center">
+                  <img
+                    src="/Avatar.svg"
+                    alt="avatar"
+                    className="w-8 h-8 rounded-full mr-2"
+                  />
+                  {row.name}
+                </td>
+                <td className="py-3 px-4">{row.email}</td>
+                <td className="py-3 px-4">{row.type}</td>
+                <td className="py-3 px-4">{row.staffId}</td>
+                <td className="py-3 px-4">{row.invoiceId}</td>
+                <td className="py-3 px-4">{row.date}</td>
+                <td className="py-3 px-4">
+                  <span
+                    className={`px-2 py-1 rounded-md text-xs font-semibold ${
+                      row.status === "Rejected"
+                        ? "text-red-600"
+                        : row.status === "Paid"
+                        ? "text-green-600"
+                        : "text-yellow-600"
+                    }`}
                   >
-{request.requestStatus}
-               </td>
-               <td className="px-4 py-2 border">{request.comment}</td>
-             </tr>
-           ))}
-         </tbody>
-       </table>
-     </div>
-   </div>
- );
-}
+                    {row.status}
+                  </span>
+                </td>
+                <td className="py-4 text-right">
+                    <div className="relative inline-block text-left">
+                      {/* Button */}
+                      <button
+                        id="menu-button"
+                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                        onClick={toggleDropdown}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 mr-8">
+                          <circle cx="5" cy="12" r="2.5"></circle>
+                          <circle cx="12" cy="12" r="2.5"></circle>
+                          <circle cx="19" cy="12" r="2.5"></circle>
+                        </svg>
+                      </button>
 
+                      {/* Dropdown Menu */}
+                      {dropdownOpen && (
+                        <div
+                          id="dropdown"
+                          className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg border border-gray-200 z-10"
+                        >
+                          <ul className="py-1">
+                            <li>
+                              <a
+                                href="/SalesDashboard/sending-proposals"
+                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                              >
+                                View
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                href="#"
+                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                              >
+                                Option 2
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                href="#"
+                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                              >
+                                Option 3
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-4">
+        <span className="text-sm text-gray-500">1 - 15 of {invoiceData.length} entries</span>
+        <div className="flex items-center space-x-2">
+          <button className="px-3 py-1 rounded-md bg-gray-200 text-gray-700">1</button>
+          <button className="px-3 py-1 rounded-md bg-gray-200 text-gray-700">2</button>
+          <span>...</span>
+          <button className="px-3 py-1 rounded-md bg-gray-200 text-gray-700">6</button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default InvoiceTable;
-   
