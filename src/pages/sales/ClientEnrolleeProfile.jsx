@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import SatisfactionChart from "./SatisfactionChart"; // Import the SatisfactionChart component
 
 const ClientEnrolleeProfile = () => {
@@ -70,9 +71,11 @@ const ClientEnrolleeProfile = () => {
           <button className="bg-red-100 border border-red-600 text-red-600 px-10 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
             Send E-Card
           </button>
-          <button className="bg-red-100 border border-red-600 text-red-600 px-12 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
-            See Plan
-          </button>
+          <Link to='/SalesDashboard/coverage-plan'>
+            <button className="bg-red-100 border border-red-600 text-red-600 px-12 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
+              See Plan
+            </button>
+          </Link>
           <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
             Add Dependents
           </button>

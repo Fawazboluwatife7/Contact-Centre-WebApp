@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ClientsProfile = () => {
   return (
@@ -72,16 +73,20 @@ const ClientsProfile = () => {
           <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
             Create Invoice
           </button>
-          <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
-            See Plans
-          </button>
+          <Link to='/SalesDashboard/coverage-plan'>
+            <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
+              See Plans
+            </button>
+          </Link>
           <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
             Send E-Card
           </button>
         </div>
-        <button className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
-          Add Enrollees
-        </button>
+        <Link to='/SalesDashboard/add-enrollee'>
+          <button className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
+            Add Enrollees
+          </button>
+        </Link>
       </div>
 
       {/* Tabs */}
