@@ -57,7 +57,7 @@ const ClientEnrolleeProfile = () => {
 
             {/* Update Profile Button */}
             <div className="pt-4">
-              <Link to='/SalesDashboard/update-profile'>
+              <Link to=''>
               <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
                 Update Profile
               </button>
