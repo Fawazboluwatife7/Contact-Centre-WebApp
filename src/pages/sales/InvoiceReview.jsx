@@ -56,7 +56,7 @@ function InvoiceReview() {
         <div className="flex">
           {/* Image Section */}
           <div className="flex flex-col items-center w-1/4 border-r-2">
-            <img src="/Finance & Settlement@3x.svg" alt="Building" className="w-32 h-32 object-contain mb-4 brightness-50" />
+          <img src="/Building.jpg" alt="Building" className="w-44 h-44 object-contain " />
             <h2 className="text-lg font-semibold text-gray-800">Leadway Assurance</h2>
           </div>
 
