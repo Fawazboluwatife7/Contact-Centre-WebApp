@@ -67,20 +67,26 @@ const ClientsProfile = () => {
       {/* Action Buttons */}
       <div className="flex justify-between mb-6">
         <div className="flex space-x-4">
-          <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
-            Send Proposal
-          </button>
-          <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
-            Create Invoice
-          </button>
+          <Link to='/SalesDashboard/manage-proposal'>
+            <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
+            Manage Proposal
+            </button>
+          </Link>
+          <Link to='/SalesDashboard/invoice-review'>
+            <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
+              Create Invoice
+            </button>
+          </Link>
           <Link to='/SalesDashboard/coverage-plan'>
             <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
               See Plans
             </button>
           </Link>
-          <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
+          <Link to='/SalesDashboard/send-ecard'>
+            <button className="bg-red-100 border border-red-600 text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-red-700 hover:text-white transition">
             Send E-Card
-          </button>
+            </button>
+          </Link>
         </div>
         <Link to='/SalesDashboard/add-enrollee'>
           <button className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">

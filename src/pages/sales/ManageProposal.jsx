@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 const ManageProposal = () => {
   return (
@@ -34,6 +35,7 @@ const ManageProposal = () => {
         {/* Options Section */}
         <div className="md:flex sm:flex justify-center gap-6 mt-12">
           {/* Send Proposal Card */}
+          <Link to='/SalesDashboard/sending-proposals'>
           <div className="relative w-72 h-76 bg-white cursor-pointer hover:border-[#C61531] hover:border-4 border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6">
             {/* Individual Icon */}
             <svg
@@ -50,9 +52,11 @@ const ManageProposal = () => {
               />
             </svg>
             <div className="text-[#C61531] font-product-sans font-bold text-2xl">Send Proposal</div>
-          </div>
+            </div>
+          </Link>
 
           {/* Send Hospital Proposal Card */}
+          <Link to='/SalesDashboard/sending-proposals'>
           <div className="relative w-72 h-72 bg-white border cursor-pointer hover:border-[#C61531] hover:border-4 border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6">
             {/* Multiple Icon */}
             <svg
@@ -69,7 +73,8 @@ const ManageProposal = () => {
             <div className="text-[#C61531] font-product-sans font-bold text-2xl">
               Send Hospital Proposal
             </div>
-          </div>
+            </div>
+           </Link> 
         </div>
       </div>
     </div>

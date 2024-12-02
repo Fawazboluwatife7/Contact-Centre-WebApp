@@ -10,14 +10,14 @@ const SendECardPage = () => {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className="p-6 bg-gray-200 min-h-full">
+    <div className="p-4 min-h-full">
       {/* Page Title */}
       <h1 className="top-4 left-4 text-black font-bold text-3xl ml-2">
         Send E-Cards
       </h1>
 
       {/* Back to Prospects Link */}
-      <div className="flex items-center pl-[87%] space-x-2 cursor-pointer">
+      <div className="flex items-center pl-[80%] space-x-2 cursor-pointer">
         {/* Backward Arrow Icon */}
         <svg
           width="18"
@@ -40,7 +40,7 @@ const SendECardPage = () => {
       </div>
 
       {/* Content Area */}
-      <div className="py-20 mt-1 bg-white min-h-full">
+      <div className="py-10 mt-1 bg-white min-h-full">
         {/* Main Heading */}
         <div className="flex justify-center">
           <h1 className="text-2xl md:text-3xl text-[#34475E] font-normal font-product-sans">
