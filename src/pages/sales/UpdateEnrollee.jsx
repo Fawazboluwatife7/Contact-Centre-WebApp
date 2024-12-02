@@ -39,7 +39,7 @@ const UpdateEnrollee = () => {
     <div className="p-8 flex flex-col">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-black font-bold text-2xl">Update Enrollee</h1>
+        <h1 className="text-black font-bold text-2xl">Update Profile</h1>
         <a
           href="#"
           className="flex items-center text-[#C61531] font-bold text-lg cursor-pointer gap-3"
