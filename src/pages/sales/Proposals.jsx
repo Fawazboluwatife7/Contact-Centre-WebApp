@@ -47,7 +47,7 @@ const Proposals = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F6FB]">
+    <div className="min-h-full ">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Proposals</h1>

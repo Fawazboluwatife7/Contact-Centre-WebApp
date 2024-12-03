@@ -34,21 +34,8 @@ const AddEnrolleeMultiple = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Option 1 */}
           <div className="flex flex-col items-center text-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 100 100"
-              width="200"
-              height="200"
-            >
-              <rect x="10" y="20" width="80" height="60" fill="#D0D7E5" rx="8" />
-              <path d="M10 20l40 30 40-30v-5H10v5z" fill="#FF4B5C" />
-              <path d="M10 80V50l40 30 40-30v30H10z" fill="#FFFFFF" />
-              <path
-                d="M50 55L10 20v-5l40 30 40-30v5L50 55z"
-                fill="#B91C1C"
-              />
-            </svg>
-
+          <img src="/ManageInd.jpg" alt="Building" className="w-[200px] h-[200px] object-contain mb-4" />
+            
             <p className="text-gray-600 mb-4">
               Send a link to your Enrollees to provide this information
             </p>
@@ -85,26 +72,7 @@ const AddEnrolleeMultiple = () => {
 
           {/* Option 2 */}
           <div className="flex flex-col items-center text-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 100 100"
-              width="200"
-              height="200"
-            >
-              <rect x="5" y="15" width="90" height="70" rx="8" fill="#D0D7E5" />
-              <rect x="20" y="50" width="10" height="20" fill="#FF4B5C" />
-              <rect x="40" y="40" width="10" height="30" fill="#B91C1C" />
-              <rect x="60" y="30" width="10" height="40" fill="#FF8A65" />
-              <rect x="80" y="20" width="10" height="50" fill="#FF4B5C" />
-              <line
-                x1="10"
-                y1="70"
-                x2="90"
-                y2="70"
-                stroke="#000"
-                strokeWidth="1"
-              />
-            </svg>
+          <img src="/ManageMulti.jpg" alt="Building" className="w-[200px] h-[200px] object-contain mb-4" />
 
             <p className="text-gray-600 mb-4">
               Enrol multiple employees at once using the{" "}
