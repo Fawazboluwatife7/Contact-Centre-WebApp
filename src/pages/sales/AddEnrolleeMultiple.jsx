@@ -1,9 +1,9 @@
 
 const AddEnrolleeMultiple = () => {
   return (
-    <div className=" w-full mx-auto px-32 py-1">
+    <div className=" w-full px-8 mx-auto">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-3">
         <h1 className="text-2xl font-bold text-black">Add Enrollee</h1>
         <a
           href="#"
