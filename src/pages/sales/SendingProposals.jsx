@@ -20,7 +20,7 @@ const SendingProposals = () => {
         {/* Header Section */}
         <div className="mb-4 flex justify-between">
           <h1 className="text-2xl font-bold text-gray-700">Proposal - Smiths Hospital</h1>
-          <a href="#" className="flex items-center text-red-600 font-semibold mt-2">
+          <a href="/SalesDashboard/Proposals" className="flex items-center text-red-600 font-semibold mt-2">
             <svg
               className="w-5 h-5 mr-2"
               fill="none"
