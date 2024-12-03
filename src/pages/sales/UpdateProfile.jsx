@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SuccessModal from '../../components/sales/SuccessModal'; // Ensure the correct path to the SuccessModal
 
