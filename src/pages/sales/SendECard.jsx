@@ -1,4 +1,4 @@
-import React, { useState } from "react"; // Adjust the path to your modal component
+import { useState } from "react"; // Adjust the path to your modal component
 import ECardModal from "../../components/sales/ECardModal";
 
 const SendECardPage = () => {

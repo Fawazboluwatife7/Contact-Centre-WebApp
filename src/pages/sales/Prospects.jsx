@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const Prospects = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -41,8 +42,14 @@ const Prospects = () => {
     );
   }, [searchTerm]);
 
+  const navigate = useNavigate(); // Initialize the navigate function
+  // Function to handle navigation
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
   return (
-    <div className="min-h-screen bg-[#F5F6FB]">
+    <div className="min-h-full ">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Prospects</h1>
@@ -92,7 +99,7 @@ const Prospects = () => {
           <table className="w-full text-left table-auto border-collapse">
             <tbody>
               {filteredProspects.map((prospect) => (
-                <tr key={prospect.id} className="bg-white hover:bg-gray-100 border-2 border-gray-300">
+                <tr onClick={() => handleNavigate("/SalesDashboard/sme-client-profile")} key={prospect.id} className="bg-white hover:bg-gray-100 border-2 border-gray-300">
                   <td className="py-4 px-6 flex items-center space-x-3">
                     <img className="h-8 w-8 rounded-full" src="/Avatar.svg" alt="Profile" />
                     <span>{prospect.name}</span>

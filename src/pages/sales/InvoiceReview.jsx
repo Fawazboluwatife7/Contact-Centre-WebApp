@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import InvoiceModal from "../../components/sales/InvoiceModal";
 
@@ -46,9 +46,9 @@ function InvoiceReview() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-2">
+    <div className=" min-h-full p-2">
       {showInvoiceModal && <InvoiceModal onClose={handleCloseModal} />}
-      <div className="relative mr-auto mb-5 text-black text-3xl">
+      <div className=" mr-auto mb-2 text-black text-3xl">
         Invoice - Smiths Hospital
       </div>
       {/* Header Section */}
@@ -109,7 +109,7 @@ function InvoiceReview() {
           </div>
         </div>
       </div>
-      <div className="bg-white p-6 rounded-lg shadow-lg">
+      <div className="bg-white p-6 rounded-lg shadow-lg mb-5">
 
         {/* Invoice Section */}
         <div>

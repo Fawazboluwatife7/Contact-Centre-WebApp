@@ -25,9 +25,9 @@ const SMEClientProfile = () => {
   };
 
   return (
-    <div className="px-20 min-h-full p-4">
+    <div className="px-2 min-h-full">
       {/* Page Title */}
-      <h1 className="relative mr-auto mb-5 text-black font-bold text-3xl">
+      <h1 className="mr-auto text-black font-bold text-3xl">
         Prospect Profile
       </h1>
 
