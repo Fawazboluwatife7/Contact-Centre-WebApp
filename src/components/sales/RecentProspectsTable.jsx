@@ -10,7 +10,7 @@ const RecentProspectsTable = () => {
   ];
 
   return (
-    <div className="w-[45%] ml-[54%] h-80 -mt-[30.1%] bg-white border border-[#EDF2F6] shadow-lg rounded-[5px] p-4">
+    <div className="w-[45%] ml-[54%] h-72 bg-white border border-[#EDF2F6] shadow-lg rounded-[5px] p-4">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="font-product-sans font-bold text-[17px] text-[#222B45]">Recent Prospects</h2>

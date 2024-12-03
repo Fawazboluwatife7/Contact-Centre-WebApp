@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const CardDisplay = () => {
 
   return (
-    <div className="flex flex-col py-2">
+    <div className="flex flex-col py-2 -mb-80">
       {/* First Row */}
       <div className="flex space-x-3 mb-2">
         {/* Prospects Card */}
