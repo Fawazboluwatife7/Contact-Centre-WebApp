@@ -27,7 +27,7 @@ const AddEnrolleeMultiple = () => {
       </div>
 
       {/* Content */}
-      <div className="bg-white rounded-lg shadow-lg p-8">
+      <div className="bg-white rounded-lg shadow-lg p-8 h-[650px]">
         <h2 className="text-center text-lg md:text-2xl font-bold text-gray-800 mb-10">
           Select Preferred Method
         </h2>
