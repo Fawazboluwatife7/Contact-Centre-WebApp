@@ -7,7 +7,7 @@ const ClientsProfileTable = () => {
   const handleNavigate = () => {
     navigate('/SalesDashboard/client-enrollees');
   };
-  const [activeTab, setActiveTab] = useState("Proposal History");
+  const [activeTab, setActiveTab] = useState("Enrollees");
 
   const [activeMenuIndex, setActiveMenuIndex] = useState(null); // Track which menu is open
 
@@ -39,7 +39,7 @@ const ClientsProfileTable = () => {
 
   const enrolleeData = [
     {
-      name: "Smiths Hospital",
+      name: "Rock of Ages Hospital",
       id: "LAC/1251",
       policyNumber: "2100201/0",
       phone: "08035647363",
@@ -49,7 +49,7 @@ const ClientsProfileTable = () => {
       date: "22 Aug 2022",
     },
     {
-      name: "Smiths Hospital",
+      name: "Jesus bu Eze Hospital",
       id: "LAC/1251",
       policyNumber: "2100201/0",
       phone: "08035647363",
@@ -69,8 +69,8 @@ const ClientsProfileTable = () => {
       date: "22 Aug 2022",
     },
     {
-      name: "Smiths Hospital",
-      id: "LAC/1251",
+      name: "Intercontinental Clinic",
+      id: "LAC/1248",
       policyNumber: "2100201/0",
       phone: "08035647363",
       plan: "Gold",
@@ -116,48 +116,51 @@ const ClientsProfileTable = () => {
             <td className="px-4 py-2">{renderStatus(row.status)}</td>
             <td className="px-4 py-2">{row.date}</td>
             {/* Options Button */}
-            <td className="px-4 py-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the closeMenu handler
-                      toggleMenu(index);
-                    }}
-                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      className="w-6 h-6"
-                    >
-                      <circle cx="5" cy="12" r="2.5"></circle>
-                      <circle cx="12" cy="12" r="2.5"></circle>
-                      <circle cx="19" cy="12" r="2.5"></circle>
-                    </svg>
-                  </button>
+<td className="px-4 py-2">
+  <button
+    onClick={(e) => {
+      e.stopPropagation(); // Prevent triggering the closeMenu handler
+      toggleMenu(index);
+    }}
+    className="text-gray-500 hover:text-gray-700 focus:outline-none"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      className="w-6 h-6"
+    >
+      <circle cx="5" cy="12" r="2.5"></circle>
+      <circle cx="12" cy="12" r="2.5"></circle>
+      <circle cx="19" cy="12" r="2.5"></circle>
+    </svg>
+  </button>
 
-                  {/* Dropdown Menu */}
-                  {activeMenuIndex === index && (
-                    <div
-                      className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10 w-32"
-                      onClick={(e) => e.stopPropagation()} // Prevent dropdown from closing when clicked inside
-                    >
-                      <ul className="text-sm text-gray-700">
-                        {["View", "Edit Profile", "Send E-Card", "Dependents", "Change Plan", "Remove"].map(
-                          (option, idx) => (
-                            <li
-                              key={idx}
-                              className="px-4 py-1 hover:bg-gray-100 cursor-pointer"
-                              onClick={handleNavigate} // Placeholder for actions
-                            >
-                              {option}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                </td>
+  {/* Dropdown Menu */}
+  {activeMenuIndex === index && (
+    <div
+      className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10 w-32"
+      onClick={(e) => e.stopPropagation()} // Prevent dropdown from closing when clicked inside
+    >
+      <ul className="text-sm text-gray-700">
+        {["View", "Edit Profile", "Send E-Card", "Dependents", "Change Plan", "Remove"].map(
+          (option, idx) => (
+            <li
+              key={idx}
+              className={`px-4 py-1 hover:bg-gray-100 cursor-pointer ${
+                option === "Remove" ? "text-red-600" : ""
+              }`}
+              onClick={handleNavigate} // Placeholder for actions
+            >
+              {option}
+            </li>
+          )
+        )}
+      </ul>
+    </div>
+  )}
+</td>
+
           </tr>
         ))}
       </tbody>
