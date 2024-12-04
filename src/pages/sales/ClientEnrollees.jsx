@@ -141,81 +141,76 @@ const ClientEnrollees = () => {
       <div>
         <h2 className="text-base font-semibold text-[#2D2D2D] mb-4">Recent search result:</h2>
         <div className="overflow-hidden rounded-lg shadow-sm border bg-white border-[#E5E7EB]">
-          <div className="divide-y divide-[#E5E7EB]">
-            {searchResults.map((row, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-4 hover:bg-[#F8F9FC] transition relative"
-              >
-                {/* Avatar + Name */}
-                <div className="flex items-center gap-3">
-                  <img
-                    src={row.avatar}
-                    alt="avatar"
-                    className="w-10 h-10 rounded-full border border-[#E5E7EB]"
-                  />
-                  <span className="text-[#2D2D2D] text-sm font-medium">{row.name}</span>
-                </div>
-                {/* Other Details */}
-                <div className="text-sm font-medium text-[#2D2D2D]">{row.id}</div>
-                <div className="text-sm font-medium text-[#2D2D2D]">{row.policyNumber}</div>
-                <div className="text-sm font-medium text-[#2D2D2D]">{row.phone}</div>
-                <div className="text-sm font-medium text-[#2D2D2D]">{row.plan}</div>
-                <div className="text-sm font-medium text-[#2D2D2D]">{row.count}</div>
-                <div
-                  className="text-sm font-medium"
-                  style={{ color: row.statusColor }}
-                >
-                  {row.status}
-                </div>
-                <div className="text-sm font-medium text-[#2D2D2D]">{row.date}</div>
+          <table className="min-w-full divide-y divide-[#E5E7EB]">
+            
+            <tbody className="bg-white divide-y divide-[#E5E7EB]">
+              {searchResults.map((row, index) => (
+                <tr key={index} className="hover:bg-[#F8F9FC] transition">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <img
+                      src={row.avatar}
+                      alt="avatar"
+                      className="w-10 h-10 rounded-full border border-[#E5E7EB]"
+                    />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2D2D2D]">{row.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2D2D2D]">{row.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2D2D2D]">{row.policyNumber}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2D2D2D]">{row.phone}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2D2D2D]">{row.plan}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2D2D2D]">{row.count}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" style={{ color: row.statusColor }}>
+                    {row.status}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2D2D2D]">{row.date}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+                    <div className="relative">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering the closeMenu handler
+                          toggleMenu(index);
+                        }}
+                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          className="w-6 h-6"
+                        >
+                          <circle cx="5" cy="12" r="2.5"></circle>
+                          <circle cx="12" cy="12" r="2.5"></circle>
+                          <circle cx="19" cy="12" r="2.5"></circle>
+                        </svg>
+                      </button>
 
-                {/* Options Button */}
-                <div className="relative">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the closeMenu handler
-                      toggleMenu(index);
-                    }}
-                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      className="w-6 h-6"
-                    >
-                      <circle cx="5" cy="12" r="2.5"></circle>
-                      <circle cx="12" cy="12" r="2.5"></circle>
-                      <circle cx="19" cy="12" r="2.5"></circle>
-                    </svg>
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  {activeMenuIndex === index && (
-                    <div
-                      className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10 w-32"
-                      onClick={(e) => e.stopPropagation()} // Prevent dropdown from closing when clicked inside
-                    >
-                      <ul className="text-sm text-gray-700">
-                        {["View", "Edit Profile", "Send E-Card", "Dependents", "Change Plan", "Remove"].map(
-                          (option, idx) => (
-                            <li
-                              key={idx}
-                              className="px-4 py-1 hover:bg-gray-100 cursor-pointer"
-                              onClick={handleNavigate} // Placeholder for actions
-                            >
-                              {option}
-                            </li>
-                          )
-                        )}
-                      </ul>
+                      {/* Dropdown Menu */}
+                      {activeMenuIndex === index && (
+                        <div
+                          className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10 w-32"
+                          onClick={(e) => e.stopPropagation()} // Prevent dropdown from closing when clicked inside
+                        >
+                          <ul className="text-sm text-gray-700">
+                            {["View", "Edit Profile", "Send E-Card", "Dependents", "Change Plan", "Remove"].map(
+                              (option, idx) => (
+                                <li
+                                  key={idx}
+                                  className="px-4 py-1 hover:bg-gray-100 cursor-pointer"
+                                  onClick={handleNavigate} // Placeholder for actions
+                                >
+                                  {option}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
