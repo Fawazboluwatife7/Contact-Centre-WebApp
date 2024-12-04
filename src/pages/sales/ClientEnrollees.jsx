@@ -1,7 +1,12 @@
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ClientEnrollees = () => {
+
+  const navigate = useNavigate()
+  const handleNavigate = () => {
+    navigate('/SalesDashboard/client-enrollee-profile')
+  }
   const [activeMenuIndex, setActiveMenuIndex] = useState(null); // Track which menu is open
 
   const toggleMenu = (index) => {
@@ -198,7 +203,7 @@ const ClientEnrollees = () => {
                             <li
                               key={idx}
                               className="px-4 py-1 hover:bg-gray-100 cursor-pointer"
-                              onClick={() => alert(`${option} clicked!`)} // Placeholder for actions
+                              onClick={handleNavigate} // Placeholder for actions
                             >
                               {option}
                             </li>

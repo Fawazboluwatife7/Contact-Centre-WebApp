@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ClientsProfileTable from '../../components/sales/ClientProfileTable';
 
 const ClientsProfile = () => {
+
   return (
-    <div className="bg-gray-200 min-h-screen p-6">
+    <div className="bg-gray-200 min-h-screen p-2">
       <div className="relative mr-auto mb-5 text-black font-bold text-3xl">
         Clients Profile
       </div>
@@ -96,65 +98,7 @@ const ClientsProfile = () => {
           </button>
         </Link>
       </div>
-
-      {/* Tabs */}
-      <div className="flex justify-start">
-        <div className="flex space-x-4 w-1/2">
-          <button className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
-            Enrollees
-          </button>
-          <button className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
-            Invoice History
-          </button>
-          <button className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
-            Proposal History
-          </button>
-          <button className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
-            Recent Activity
-          </button>
-        </div>
-      </div>
-
-      {/* Proposal History Table */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <tbody>
-              <tr className="border-b">
-                <td className="px-4 py-2">
-                  <div className="flex items-center space-x-4">
-                  <img src="/Avatar.svg" alt="Building" className="w-18 h-18 object-contain " />
-                    <span>Customized Plan #01</span>
-                  </div>
-                </td>
-                <td className="px-4 py-2">Retail</td>
-                <td className="px-4 py-2">22 Aug 2022</td>
-              </tr>
-              <tr className="border-b">
-                <td className="px-4 py-2">
-                  <div className="flex items-center space-x-4">
-                  <img src="/Avatar.svg" alt="Building" className="w-18 h-18 object-contain " />
-                    <span>Customized Plan #02</span>
-                  </div>
-                </td>
-                <td className="px-4 py-2">Corporate</td>
-                <td className="px-4 py-2">22 Aug 2022</td>
-              </tr>
-              <tr className="border-b">
-                <td className="px-4 py-2">
-                  <div className="flex items-center space-x-4">
-                  <img src="/Avatar.svg" alt="Building" className="w-18 h-18 object-contain " />
-                    <span>Health Insurance Presentation</span>
-                  </div>
-                </td>
-                <td className="px-4 py-2">Retail</td>
-                <td className="px-4 py-2">22 Aug 2022</td>
-              </tr>
-              {/* Add additional rows as needed */}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <ClientsProfileTable />
     </div>
   );
 };

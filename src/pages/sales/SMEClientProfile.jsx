@@ -144,15 +144,15 @@ const SMEClientProfile = () => {
 
       {/* Tabs */}
       <div className="flex justify-start ">
-        <div className="flex space-x-4 w-1/2">
+        <div className="flex space-x-0.5 w-1/2 text-nowrap">
           {["Proposal History", "Invoice History", "Recent Activity"].map(
             (tabText) => (
               <button
                 key={tabText}
-                className={`px-4 py-2 rounded-t-md font-semibold transition ${
+                className={`px-6 py-3 rounded-t-sm font-semibold transition ${
                   activeTab === tabText
-                    ? "bg-red-600 text-white"
-                    : "bg-gray-200 text-gray-800"
+                    ? "bg-white text-red-500 underline"
+                    : "bg-red-600 text-white"
                 }`}
                 onClick={() => setActiveTab(tabText)}
               >
@@ -173,9 +173,9 @@ const SMEClientProfile = () => {
                   <td className="px-4 py-2">
                     <div className="flex items-center space-x-4">
                       <img
-                        src="path/to/image.png"
+                        src="/family_437491.png"
                         alt={name}
-                        className="w-10 h-10 rounded"
+                        className="w-12 h-12"
                       />
                       <span>{name}</span>
                     </div>

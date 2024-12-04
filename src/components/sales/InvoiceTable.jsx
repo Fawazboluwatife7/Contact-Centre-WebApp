@@ -93,7 +93,7 @@ const InvoiceTable = () => {
                         ? "text-red-600"
                         : row.status === "Paid"
                         ? "text-green-600"
-                        : "text-yellow-600"
+                        : "text-yellow-500"
                     }`}
                   >
                     {row.status}
