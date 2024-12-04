@@ -86,21 +86,39 @@ const CoveragePlanTable = () => {
   return (
     <div className=" bg-gray-100">
       <div className="flex border-gray-300">
-        <div className="space-x-0.5">
-          {["Overview", "Exclusions", "Principals", "Hospital List"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-8 py-3 text-sm font-medium ${
-                activeTab === tab
-                  ? "bg-white border-b-2 border-green-500 text-green-500"
-                  : "text-white bg-green-500"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+      <div className="space-x-0.5">
+  {["Overview", "Exclusions", "Principals", "Hospital List"].map((tab) => {
+    let baseClasses = "px-8 py-3 text-sm font-medium";
+    let activeClasses = "bg-white border-b-2 border-green-500 text-green-500";
+    let inactiveClasses = "";
+
+    switch (tab) {
+      case "Exclusions":
+        inactiveClasses = "text-black bg-blue-200";
+        break;
+      case "Principals":
+        inactiveClasses = "text-red-500 bg-pink-200";
+        break;
+      case "Hospital List":
+        inactiveClasses = "text-white bg-green-500";
+        break;
+      default:
+        inactiveClasses = "text-white bg-green-500";
+    }
+
+    return (
+      <button
+        key={tab}
+        onClick={() => setActiveTab(tab)}
+        className={`${baseClasses} ${
+          activeTab === tab ? activeClasses : inactiveClasses
+        }`}
+      >
+        {tab}
+      </button>
+    );
+  })}
+</div>
         <button className="ml-auto px-4 py-2 bg-red-500 text-white font-semibold">Customize</button>
         <button className="px-4 py-2 bg-gray-400 text-white font-semibold">Pro Max</button>
       </div>
