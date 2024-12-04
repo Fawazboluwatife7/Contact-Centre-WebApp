@@ -41,7 +41,7 @@ const UpdateEnrollee = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-black font-bold text-2xl">Update Profile</h1>
         <a
-          href="#"
+          href="/SalesDashboard/client-enrollee-profile"
           className="flex items-center text-[#C61531] font-bold text-lg cursor-pointer gap-3"
         >
           {/* Back Arrow Icon */}
@@ -191,7 +191,7 @@ const UpdateEnrollee = () => {
           </div>
 
           {/* Plan Type */}
-          <div>
+          <div className="">
             <label className="block text-gray-700 font-medium mb-2" htmlFor="planType">
               Plan Type
             </label>

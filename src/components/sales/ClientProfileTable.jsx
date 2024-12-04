@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ClientsProfileTable = () => {
 
   const navigate = useNavigate()
   const handleNavigate = () => {
-    navigate('/SalesDashboard/client-enrollees');
+    navigate('/SalesDashboard/client-enrollee-profile');
+  };
+  
+  const Viewnavigate = useNavigate(); // Initialize the navigate function
+  // Function to handle navigation
+  const handleViewNavigate = (path) => {
+    Viewnavigate(path);
   };
   const [activeTab, setActiveTab] = useState("Enrollees");
 
@@ -92,7 +98,7 @@ const ClientsProfileTable = () => {
   const renderEnrolleesTab = () => (
     <div>    {/* Header */}
       <div className="flex justify-end">
-        <button onClick={(handleNavigate)} className="justify-right w-[62px] h-[25px] text-[#C61531] text-[10px] rounded-[3px] font-[Lato] bg-red-200 border border-[#C61531]">
+        <button onClick={() => handleViewNavigate("/SalesDashboard/client-enrollees")} className="justify-right w-[62px] h-[25px] text-[#C61531] text-[10px] rounded-[3px] font-[Lato] bg-red-200 border border-[#C61531]">
           View All
         </button>
       </div>
