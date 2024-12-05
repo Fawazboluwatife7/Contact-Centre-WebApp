@@ -34,7 +34,7 @@ const SMEClientProfile = () => {
       {/* Back to Profile Link */}
       <a
         href="#"
-        className="flex items-center text-[#C61531] font-bold text-lg cursor-pointer gap-3 ml-[84%]"
+        className="flex text-nowrap items-center text-[#C61531] font-bold text-lg cursor-pointer gap-3 ml-[84%]"
         onClick={() => navigate("/SalesDashboard/prospects")}
       >
         <svg
@@ -49,7 +49,7 @@ const SMEClientProfile = () => {
             fill="#C61531"
           />
         </svg>
-        Back To Profile
+        Back To Prospect
       </a>
 
       {/* Profile Section */}
@@ -109,7 +109,7 @@ const SMEClientProfile = () => {
                 className="bg-pink-100 border border-red-600 text-red-600 px-4 py-2 rounded-sm font-semibold hover:bg-red-700 hover:text-white transition"
                 onClick={() => navigate("/SalesDashboard/update-profile")}
               >
-                Update Profile
+                Edit Profile
               </button>
             </div>
           </div>
@@ -121,7 +121,7 @@ const SMEClientProfile = () => {
         <div className="flex space-x-4">
           {[
             { text: "Manage Proposal", route: "/SalesDashboard/manage-proposal" },
-            { text: "Create Invoice", route: "/SalesDashboard/create-invoice" },
+            { text: "Create Invoice", route: "/SalesDashboard/invoice-review" },
             { text: "See Plans", route: "/SalesDashboard/coverage-plan" },
             { text: "Send E-Card", route: "/SalesDashboard/send-ecard" },
           ].map(({ text, route }) => (

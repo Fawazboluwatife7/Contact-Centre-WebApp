@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Clients = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredClients, setFilteredClients] = useState([]);
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate()
+  }
+  const [activeMenuIndex, setActiveMenuIndex] = useState(null); // Track which menu is open
 
   const clients = [
     { id: 1, name: "Smiths Hospital", email: "smith@hospital.com", type: "Corporate", idNumber: "01786568", broker: "Broker Name", date: "22 Aug 2022" },
@@ -15,33 +21,42 @@ const Clients = () => {
     { id: 7, name: "MedLife", email: "contact@medlife.com", type: "Corporate", idNumber: "01786574", broker: "Broker F", date: "30 Nov 2022" },
   ];
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+  const toggleMenu = (index) => {
+    setActiveMenuIndex(activeMenuIndex === index ? null : index);
   };
 
-  const closeDropdown = (e) => {
-    if (!e.target.closest("#menu-button") && !e.target.closest("#dropdown")) {
-      setDropdownOpen(false);
-    }
+  const closeMenu = () => {
+    setActiveMenuIndex(null);
+  };
+
+  const handleViewNavigate = (path) => {
+    navigate(path);
+    closeMenu();
   };
 
   useEffect(() => {
-    document.addEventListener("click", closeDropdown);
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".menu-button, .dropdown-menu")) {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener("click", closeDropdown);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
   useEffect(() => {
     setFilteredClients(
-      clients.filter((clients) =>
-        clients.name.toLowerCase().includes(searchTerm.toLowerCase())
+      clients.filter((client) =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [searchTerm]);
 
   return (
-    <div className="min-h-full ">
+    <div className="min-h-full">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Clients</h1>
@@ -70,7 +85,7 @@ const Clients = () => {
           placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="ml-5 flex-grow mr-6 p-3 bg-white rounded-r border border-[#E5E7EB] text-sm focus:outline-red-500 "
+          className="ml-5 flex-grow mr-6 p-3 bg-white rounded-r border border-[#E5E7EB] text-sm focus:outline-red-500"
         />
         {/* Button */}
         <button className="bg-[#C61531] hover:bg-[#B5132A] text-white font-medium text-sm px-16 py-4 rounded-md shadow-sm">
@@ -85,24 +100,27 @@ const Clients = () => {
           {/* Table */}
           <table className="w-full text-left table-auto border-collapse">
             <tbody>
-              {filteredClients.map((clients) => (
-                <tr key={clients.id} className="bg-white hover:bg-gray-100 border-2 border-gray-300">
+              {filteredClients.map((client, index) => (
+                <tr key={client.id} className="bg-white hover:bg-gray-100 border-2 border-gray-300">
                   <td className="py-4 px-6 flex items-center space-x-3">
                     <img className="h-8 w-8 rounded-full" src="/Avatar.svg" alt="Profile" />
-                    <span>{clients.name}</span>
+                    <span>{client.name}</span>
                   </td>
-                  <td className="py-4 px-6">{clients.type}</td>
-                  <td className="py-4 px-6">{clients.email}</td>
-                  <td className="py-4 px-6">{clients.idNumber}</td>
-                  <td className="py-4 px-6">{clients.broker}</td>
-                  <td className="py-4 px-6">{clients.date}</td>
+                  <td className="py-4 px-6">{client.type}</td>
+                  <td className="py-4 px-6">{client.email}</td>
+                  <td className="py-4 px-6">{client.idNumber}</td>
+                  <td className="py-4 px-6">{client.broker}</td>
+                  <td className="py-4 px-6">{client.date}</td>
                   <td className="py-4 px-6 text-right">
                     <div className="relative inline-block text-left">
                       {/* Button */}
                       <button
                         id="menu-button"
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                        onClick={toggleDropdown}
+                        className="menu-button text-gray-500 hover:text-gray-700 focus:outline-none"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering the closeMenu handler
+                          toggleMenu(index);
+                        }}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
                           <circle cx="5" cy="12" r="2.5"></circle>
@@ -112,51 +130,39 @@ const Clients = () => {
                       </button>
 
                       {/* Dropdown Menu */}
-                      {dropdownOpen && (
+                      {activeMenuIndex === index && (
                         <div
                           id="dropdown"
-                          className="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg border border-gray-200 z-10"
+                          className="dropdown-menu absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg border border-gray-200 z-10"
+                          onClick={(e) => e.stopPropagation()} // Prevent dropdown from closing when clicked inside
                         >
                           <ul className="py-1">
-                            <li>
-                              <a
-                                href="/SalesDashboard/clients-profile"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                View
-                              </a>
+                            <li
+                              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                              onClick={() => handleViewNavigate('/SalesDashboard/clients-profile')}
+                            >
+                              View
                             </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                Option 2
-                              </a>
+                            <li
+                              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                              onClick={() => handleNavigate('/SalesDashboard/clients-profile')}
+                            >
+                              Edit Profile
                             </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                Option 3
-                              </a>
+                            <li className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer">
+                              Send E-Card
                             </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                Option 4
-                              </a>
+                            <li className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer">
+                              Dependents
                             </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                Option 5
-                              </a>
+                            <li className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer">
+                              Change Plan
+                            </li>
+                            <li
+                              className="block px-4 py-2 text-red-600 hover:bg-gray-100 hover:text-red-800 cursor-pointer"
+                              onClick={() => handleNavigate('/SalesDashboard/clients-profile')}
+                            >
+                              Remove
                             </li>
                           </ul>
                         </div>
