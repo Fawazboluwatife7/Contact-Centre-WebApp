@@ -35,6 +35,7 @@ import SendECard from '../../pages/sales/SendECard';
 import SendingProposals from '../../pages/sales/SendingProposals';
 import UpdateEnrollee from '../../pages/sales/UpdateEnrollee';
 import ViewFile from '../../pages/sales/ViewFile';
+import ProposalView from '../../pages/sales/ProposalView';
 
 function SalesDashboardRoutes() {
   return (
@@ -78,6 +79,7 @@ function SalesDashboardRoutes() {
           <Route path="/sending-proposals" element={<SendingProposals />} />
           <Route path="/update-enrollee" element={<UpdateEnrollee />} />
           <Route path="/view-file" element={<ViewFile />} />
+          <Route path="/proposal-view" element={<ProposalView />} />
         </>
         
         <Route path="/invoice-review" element={<InvoiceReview />} />
