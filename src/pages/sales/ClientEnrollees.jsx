@@ -107,7 +107,7 @@ const ClientEnrollees = () => {
   ];
 
   return (
-    <div className="min-h-full bg-none p-4" onClick={closeMenu}>
+    <div className="min-h-full bg-none" onClick={closeMenu}>
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Client Enrollee</h1>
@@ -150,7 +150,7 @@ const ClientEnrollees = () => {
                     <img
                       src={row.avatar}
                       alt="avatar"
-                      className="w-10 h-10 rounded-full border border-[#E5E7EB]"
+                      className="w-8 h-8 rounded-full border border-[#E5E7EB]"
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2D2D2D]">{row.name}</td>
