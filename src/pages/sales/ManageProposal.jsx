@@ -9,7 +9,7 @@ const ManageProposal = () => {
       </h1>
 
       {/* Back to Clients Link */}
-      <div className="flex items-center pl-[87%] mt-1 space-x-2 cursor-pointer">
+      <div className="flex items-center pl-[85%] mt-1 space-x-2 cursor-pointer">
         {/* Backward Arrow Icon */}
         <svg
           width="18"
@@ -25,7 +25,7 @@ const ManageProposal = () => {
         </svg>
 
         {/* Back to Clients Text */}
-        <a href="/SalesDashboard/sme-client-profile" className="text-[#C61531] text-[19px] font-[Product Sans] font-bold">
+        <a href="/SalesDashboard/sme-client-profile" className="text-[#C61531] text-[19px] font-[Product Sans] text-nowrap font-bold">
           Back To Clients
         </a>
       </div>
@@ -36,12 +36,10 @@ const ManageProposal = () => {
         <div className="md:flex sm:flex justify-center gap-6 mt-12">
           {/* Send Proposal Card */}
           <Link to='/SalesDashboard/sending-proposals'>
-          <div className="relative w-72 h-76 bg-white cursor-pointer hover:border-[#C61531] hover:border-4 border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6">
+          <div className="relative w-72 h-72 bg-white cursor-pointer hover:border-[#C61531] hover:border-4 border-gray-300 rounded-md shadow-lg flex flex-col items-center py-6">
             {/* Individual Icon */}
             <svg
               className="w-24 h-24 mt-8 mb-12 text-[#C61531]"
-              width="76"
-              height="80"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 76 80"
@@ -63,7 +61,7 @@ const ManageProposal = () => {
               className="w-24 h-24 mt-8 mb-12 text-[#C61531]"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 100 81"
+              viewBox="0 0 100 80"
             >
               <path
                 d="M50 19.2a19.2 19.2 0 1 1-38.5 0 19.2 19.2 0 0 1 38.5 0m27 19.3a15.4 15.4 0 1 0 0-30.8 15.4 15.4 0 0 0 0 30.8m-7.8 20v-.8q0-6.4-3.8-11.5h25.2c5.2 0 9.4 4.2 9.4 9.4 0 0 0 17.5-23 17.5q-7 0-11.3-1.8a30 30 0 0 0 3.5-12.1zm-7.7-.8A11.5 11.5 0 0 0 50 46.2H11.5A11.5 11.5 0 0 0 0 57.7v.6s0 22.5 30.8 22.5c29.3 0 30.7-20.5 30.7-22.4z"

@@ -13,17 +13,17 @@ const invoiceData = [
 
 const InvoiceTable = () => {
   const [selectedTab, setSelectedTab] = useState("All");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const navigate = useNavigate()
+  const [dropdownOpen, setDropdownOpen] = useState(-1);
+  const navigate = useNavigate();
   const filteredData = selectedTab === "All" ? invoiceData : invoiceData.filter((row) => row.status === selectedTab);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+  const toggleDropdown = (index) => {
+    setDropdownOpen(dropdownOpen === index ? -1 : index);
   };
 
   const closeDropdown = (e) => {
-    if (!e.target.closest("#menu-button") && !e.target.closest("#dropdown")) {
-      setDropdownOpen(false);
+    if (!e.target.closest("#menu-button")) {
+      setDropdownOpen(-1);
     }
   };
 
@@ -34,7 +34,7 @@ const InvoiceTable = () => {
     };
   }, []);
 
-  const handleRowClick = () => {
+  const handleViewClick = () => {
     navigate('/SalesDashboard/invoice-review');
   };
 
@@ -46,9 +46,7 @@ const InvoiceTable = () => {
           <button
             key={tab}
             onClick={() => setSelectedTab(tab)}
-            className={`px-12 py-2 rounded-sm font-semibold ${
-              selectedTab === tab ? "bg-white text-red-600 underline" : "bg-red-600 text-white"
-            }`}
+            className={`px-12 py-2 rounded-sm font-semibold ${selectedTab === tab ? "bg-white text-red-600 underline" : "bg-red-600 text-white"}`}
           >
             {tab}
           </button>
@@ -56,7 +54,7 @@ const InvoiceTable = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto border rounded-md">
+      <div className="overflow-x-auto border rounded-md mt-4">
         <table className="w-full text-sm text-left text-gray-600">
           <thead className="bg-white border-b text-gray-700 uppercase text-xs">
             <tr>
@@ -72,13 +70,9 @@ const InvoiceTable = () => {
           </thead>
           <tbody>
             {filteredData.map((row, index) => (
-              <tr key={index} className="border-b hover:bg-gray-50 cursor-pointer" onClick={handleRowClick}>
+              <tr key={index} className="border-b hover:bg-gray-50 cursor-pointer">
                 <td className="py-3 px-4 flex items-center">
-                  <img
-                    src="/Avatar.svg"
-                    alt="avatar"
-                    className="w-8 h-8 rounded-full mr-2"
-                  />
+                  <img src="/Avatar.svg" alt="avatar" className="w-8 h-8 rounded-full mr-2" />
                   {row.name}
                 </td>
                 <td className="py-3 px-4">{row.email}</td>
@@ -87,69 +81,56 @@ const InvoiceTable = () => {
                 <td className="py-3 px-4">{row.invoiceId}</td>
                 <td className="py-3 px-4">{row.date}</td>
                 <td className="py-3 px-4">
-                  <span
-                    className={`px-2 py-1 rounded-md text-xs font-semibold ${
-                      row.status === "Rejected"
-                        ? "text-red-600"
-                        : row.status === "Paid"
-                        ? "text-green-600"
-                        : "text-yellow-500"
-                    }`}
-                  >
+                  <span className={`px-2 py-1 rounded-md text-xs font-semibold ${
+                    row.status === "Rejected" ? "text-red-600" :
+                    row.status === "Paid" ? "text-green-600" :
+                    "text-yellow-500"
+                  }`}>
                     {row.status}
                   </span>
                 </td>
-                <td className="py-4 text-right">
-                    <div className="relative inline-block text-left">
-                      {/* Button */}
-                      <button
-                        id="menu-button"
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                        onClick={toggleDropdown}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 mr-8">
-                          <circle cx="5" cy="12" r="2.5"></circle>
-                          <circle cx="12" cy="12" r="2.5"></circle>
-                          <circle cx="19" cy="12" r="2.5"></circle>
-                        </svg>
-                      </button>
+                <td className="py-4 text-center">
+                  <button
+                    id="menu-button"
+                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDropdown(index);
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 mr-8">
+                      <circle cx="5" cy="12" r="2.5"></circle>
+                      <circle cx="12" cy="12" r="2.5"></circle>
+                      <circle cx="19" cy="12" r="2.5"></circle>
+                    </svg>
+                  </button>
 
-                      {/* Dropdown Menu */}
-                      {dropdownOpen && (
-                        <div
-                          id="dropdown"
-                          className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg border border-gray-200 z-10"
+                  {/* Dropdown Menu */}
+                  {dropdownOpen === index && (
+                    <div id="dropdown" className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                      <ul className="py-1">
+                        <li
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                          onClick={handleViewClick}
                         >
-                          <ul className="py-1">
-                            <li>
-                              <a
-                                href="/SalesDashboard/sending-proposals"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                View
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                Option 2
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              >
-                                Option 3
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
+                          View
+                        </li>
+                        <li
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+                          onClick={() => console.log('Edit')}
+                        >
+                          Edit
+                        </li>
+                        <li
+                          className="block px-4 py-2 text-red-600 hover:bg-gray-100 hover:text-red-800 cursor-pointer"
+                          onClick={() => console.log('Delete')}
+                        >
+                          Delete
+                        </li>
+                      </ul>
                     </div>
-                  </td>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

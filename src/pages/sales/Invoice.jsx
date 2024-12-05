@@ -23,7 +23,7 @@ const Invoice = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F5F6FB] p-2">
+    <div className="min-h-screen p-2">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-[#2D2D2D]">Invoice</h1>

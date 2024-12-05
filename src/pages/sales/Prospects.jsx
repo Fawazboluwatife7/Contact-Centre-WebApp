@@ -23,9 +23,18 @@ const Prospects = () => {
     setActiveMenuIndex(activeMenuIndex === index ? null : index);
   };
 
-  const closeMenu = () => {
-    setActiveMenuIndex(null);
+  const closeMenu = (e) => {
+    if (!e.target.closest(".menu-button, .dropdown-menu")) {
+      setActiveMenuIndex(null);
+    }
   };
+
+  useEffect(() => {
+    document.addEventListener("click", closeMenu);
+    return () => {
+      document.removeEventListener("click", closeMenu);
+    };
+  }, []);
 
   useEffect(() => {
     setFilteredProspects(
@@ -103,7 +112,7 @@ const Prospects = () => {
                         e.stopPropagation();
                         toggleMenu(index);
                       }}
-                      className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                      className="menu-button text-gray-500 hover:text-gray-700 focus:outline-none"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +129,7 @@ const Prospects = () => {
                     {/* Dropdown Menu */}
                     {activeMenuIndex === index && (
                       <div
-                        className="absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10 w-32"
+                        className="dropdown-menu absolute right-0 mt-2 bg-white border border-gray-200 rounded shadow-lg z-10 w-32"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <ul className="text-sm text-gray-700">
