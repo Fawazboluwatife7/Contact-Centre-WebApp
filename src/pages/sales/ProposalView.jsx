@@ -6,7 +6,7 @@ const ProposalView = () => {
         <h1 className="text-2xl font-bold text-gray-800 mb-10">
           Leadway Health Corporate Proposal
         </h1>
-        <a href="#" className="flex items-center text-red-600 font-semibold">
+        <a href="/SalesDashboard/sending-proposals" className="flex items-center text-red-600 font-semibold">
           <svg
             className="w-5 h-5 mr-2"
             xmlns="http://www.w3.org/2000/svg"

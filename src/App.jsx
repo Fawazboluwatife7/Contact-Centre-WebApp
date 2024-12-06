@@ -33,7 +33,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/Sidebar" element={<Sidebar />} />
         <Route path="/CsSideBar" element={<CsSideBar />} />
         <Route path="/CsDashboard" element={<CsDashboardLayoutPage />} />
@@ -55,8 +55,8 @@ function App() {
         <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
         // Sales
         <Route path="/salesLogin" element={<SalesLogin />} />
-        <Route path="/SalesDashboard/*" element={<SalesDashboardRoutes />} />
-        <Route path="/LandingPage" element={<LandingPage />} />
+        <Route path="/salesDashboard/*" element={<SalesDashboardRoutes />} />
+        <Route path="/login-caseManagement" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
