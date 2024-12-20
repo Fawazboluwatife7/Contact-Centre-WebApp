@@ -1,5 +1,6 @@
 import React from "react";
-import backgroundImage from "../../../assets/SalesModuleImages/Designer1.png"; // Update the path to your background image
+import backgroundImage from "../../../assets/SalesModuleImages/Designer1.png"; 
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
@@ -57,32 +58,23 @@ const LandingPage = () => {
             <p className="text-center font-['Product Sans'] text-[14px] text-[#585858] leading-[20px] mb-4">
               Manage your clients and prospects with ease.
             </p>
-            <button
-              onClick={() => (window.location.href = "/sales-login")}
-              className="w-full max-w-[200px] h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
-            >
+            <Link to='/salesLogin'>
+              <button className="w-52 h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
+              >
               Go to Sales
-            </button>
+              </button>
+            </Link>
           </div>
 
           {/* Case Management Module */}
           <div className="flex flex-col items-center p-6 bg-white shadow-lg rounded-md">
             <div className="w-[64px] h-[64px] bg-[#F3F5F6] flex items-center justify-center rounded-full mb-4">
-              <svg className="w-[40px] h-[40px]" fill="none" viewBox="0 0 55 64">
-                <path
-                  d="M53 17 27.5 2 2 17v30l25.5 15L53 47z"
-                  stroke="#C61531"
-                  strokeWidth="2.5"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M27.5 29v12m12-18v18m-24-6v6"
-                  stroke="#C61531"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {/* Add your logo image here */}
+                <img
+                src="/redMenuIcon.svg"
+                alt=""
+                className="w-[40px] h-[40px]" fill="none" viewBox="0 0 55 64"
+                /> {/* Replace with your logo path */}
             </div>
             <h2 className="font-['Product Sans'] font-bold text-[18px] text-[#585858] mb-2">
               Case Management
@@ -92,7 +84,7 @@ const LandingPage = () => {
             </p>
             <button
               onClick={() => (window.location.href = "/case-management-login")}
-              className="w-full max-w-[200px] h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
+              className="w-52 h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
             >
               Go to Case Management
             </button>
@@ -101,21 +93,13 @@ const LandingPage = () => {
           {/* Customer Service Module */}
           <div className="flex flex-col items-center p-6 bg-white shadow-lg rounded-md">
             <div className="w-[64px] h-[64px] bg-[#F3F5F6] flex items-center justify-center rounded-full mb-4">
-              <svg className="w-[40px] h-[40px]" fill="none" viewBox="0 0 55 64">
-                <path
-                  d="M53 17 27.5 2 2 17v30l25.5 15L53 47z"
-                  stroke="#C61531"
-                  strokeWidth="2.5"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M27.5 29v12m12-18v18m-24-6v6"
-                  stroke="#C61531"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+               {/* Add your logo image here */}
+               <img
+                src="/Lcustomer-service.svg"
+                alt=""
+                className="w-[40px] h-[40px] " fill="#C61531" viewBox="0 0 55 64"
+                /> {/* Replace with your logo path */}
+              
             </div>
             <h2 className="font-['Product Sans'] font-bold text-[18px] text-[#585858] mb-2">
               Customer Service
@@ -127,7 +111,7 @@ const LandingPage = () => {
               onClick={() =>
                 (window.location.href = "/customer-service-login")
               }
-              className="w-full max-w-[200px] h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
+              className="w-52 h-[50px] bg-[#C61531] rounded-md text-white font-['Product Sans'] font-bold text-[16px]"
             >
               Go to Customer Service
             </button>

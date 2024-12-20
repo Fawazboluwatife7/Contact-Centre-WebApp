@@ -1,12 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Logo from "../../assets/SalesModuleImages/Leadway Health Logo.svg"
 import Background from "../../assets/SalesModuleImages/Background.svg"
 import Help from "../../assets/SalesModuleImages/Help.svg"
 import salesIcon from "../../assets/SalesModuleImages/SalesIcon.svg"
 
 const SalesLogin = () => {
-
-  const navigate = useNavigate();
 
   return (
     <div className="relative w-full h-screen bg-[#F0F2FA] bg-contain overflow-auto">
@@ -49,7 +47,7 @@ const SalesLogin = () => {
           <path d="M13.077 8.462H4.615a.77.77 0 0 1-.769-.77V5c0-2.757 2.243-5 5-5s5 2.243 5 5v2.692a.77.77 0 0 1-.769.77M5.385 6.923h6.923V5a3.466 3.466 0 0 0-3.462-3.462A3.466 3.466 0 0 0 5.385 5z" fill="#7A7C87"/>
           <path d="M15.385 20H2.308A2.31 2.31 0 0 1 0 17.692V9.231a2.31 2.31 0 0 1 2.308-2.308h13.077a2.31 2.31 0 0 1 2.307 2.308v8.461A2.31 2.31 0 0 1 15.385 20M2.308 8.462a.77.77 0 0 0-.77.769v8.461a.77.77 0 0 0 .77.77h13.077a.77.77 0 0 0 .769-.77V9.231a.77.77 0 0 0-.77-.77z" fill="#7A7C87"/>
         </svg>
-        <span className="absolute right-6 top-6 font-['Mulish'] font-bold text-[10px] text-[#C61531] cursor-pointer">SHOW</span>
+        <span className="right-6 top-6 font-['Mulish'] font-bold text-[10px] text-[#C61531] cursor-pointer">SHOW</span>
       </div>
 
       {/* Keep Me Logged In & Reset Password */}
@@ -62,11 +60,11 @@ const SalesLogin = () => {
       </div>
 
       {/* Log In Button */}
-      <button className="absolute top-[753px] left-24 w-[474px] h-[71px] bg-[#C61531] shadow-md rounded-md text-white text-[24px] font-bold"
-      onClick={() => navigate("/dashboard")} 
-      >
-        Log In
-      </button>
+      <Link to='/SalesDashboard'>
+        <button className="absolute top-[753px] left-24 w-[474px] h-[71px] bg-[#C61531] shadow-md rounded-md text-white text-[24px] font-bold">
+          Log In
+        </button>
+      </Link>
 
       {/* Image Section */}
       <div className="absolute top-0 right-0 w-[758px] h-auto">

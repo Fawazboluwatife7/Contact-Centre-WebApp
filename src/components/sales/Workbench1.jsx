@@ -38,11 +38,11 @@ const Workbench1 = () => {
   ];
 
   return (
-    <div className="w-[100%] mt-20 mx-auto p-8 bg-white border border-[#EDF2F6] shadow-lg rounded-[5px]">
+    <div className="w-[99%] mt-14 mx-auto p-8 bg-white border border-[#EDF2F6] shadow-lg rounded-[5px]">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="ml-9 text-[#353535] font-bold text-[25px] leading-[23px]">Workbench</h2>
-        <button onClick={() => handleNavigate("/WorkbenchPage")} className="mr-[8%] w-[62px] h-[25px] text-[#C61531] text-[10px] rounded-[3px] font-[Lato] bg-red-200 border border-[#C61531]">
+        <button onClick={() => handleNavigate("/SalesDashboard/pending-task")} className="mr-[8%] w-[62px] h-[25px] text-[#C61531] text-[10px] rounded-[3px] font-[Lato] bg-red-200 border border-[#C61531]">
           View All
         </button>
       </div>

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 const CardDisplay = () => {
 
   return (
-    <div className="flex flex-col px-8 py-6">
+    <div className="flex flex-col py-2 -mb-80">
       {/* First Row */}
-      <div className="flex space-x-6">
+      <div className="flex space-x-3 mb-2">
         {/* Prospects Card */}
         <div className="relative w-[292px] h-[132px] bg-[#D15573] rounded-[5px]">
           {/* Value and Upward Arrow Icon */}
@@ -56,7 +56,7 @@ const CardDisplay = () => {
       </div>
 
       {/* Second Row */}
-      <div className="flex space-x-6">
+      <div className="flex space-x-3">
         {/* Outstanding Production Card */}
         <div className="relative w-[292px] h-[132px] bg-[#6990EB] rounded-[5px]">
           {/* Value and Upward Arrow Icon */}
@@ -113,17 +113,17 @@ const CardDisplay = () => {
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-4 mt-8">
+      <div className="flex gap-4 mt-4">
         {/* Send Proposal Button */}
         <div className="relative w-[168px] h-[45px] bg-[rgba(198,21,49,0.1)] border border-[#C61531] rounded-md flex items-center justify-center">
-          <Link to=''>
+          <Link to='/SalesDashboard/proposals'>
             <span className="text-[#C61531] cursor-pointer font-bold text-[15px] leading-[18px] tracking-[0.01em]">Send Proposal</span>
           </Link>
         </div>
 
         {/* Create Invoice Button */}
         <div className="relative w-[168px] h-[45px] bg-[rgba(198,21,49,0.1)] border border-[#C61531] rounded-md flex items-center justify-center">
-          <Link to=''>
+          <Link to='/SalesDashboard/invoice'>
             <span className="text-[#C61531] cursor-pointer font-bold text-[15px] leading-[18px] tracking-[0.01em]">Create Invoice</span>
           </Link>
         </div>

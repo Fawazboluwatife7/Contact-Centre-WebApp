@@ -86,10 +86,11 @@ const SMEClientForm2 = () => {
           </div>
         </div>
         <div className="flex justify-end px-4 md:px-8 pb-6">
-          <Link to='/SalesDashboard/create-prospect1'></Link>
-          <button className="mt-2 md:w-auto px-20 py-3 bg-[#C61531] text-white rounded-md text-lg font-medium">
+          <Link to='/SalesDashboard/sme-client-onboarding2'>
+            <button className="mt-2 md:w-auto px-20 py-3 bg-[#C61531] text-white rounded-md text-lg font-medium">
             Proceed
-          </button>
+            </button>
+          </Link>
         </div>
       </div>
     </div>

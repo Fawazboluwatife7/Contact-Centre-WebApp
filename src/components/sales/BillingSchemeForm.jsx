@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 const BillingSchemeForm = () => {
 
   return (
-    <div className="p-6 bg-gray-200 min-h-full">
+    <div className=" bg-none h-[70%]">
       {/* Page Title */}
       <div className="top-4 left-4 text-black font-bold text-3xl ml-2">
         Client Onboarding
       </div>
       {/* Content area */}
-      <div className="py-10 mt-8 bg-white min-h-[75%]">
+      <div className="py-8 mt-6 bg-white h-[65%]">
         {/* Page Header */}
         <div className="relative mx-auto max-w-4xl">
           {/* Main Heading */}
