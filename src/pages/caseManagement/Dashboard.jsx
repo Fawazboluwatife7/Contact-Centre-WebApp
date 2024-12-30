@@ -1,16 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../../pages/caseManagement/CMSidebar";
 import Navbar from "../../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+    const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log(user);
+
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
+
+    useEffect(() => {
+        if (!user) {
+            navigate("/");
+        }
+    }, []);
+
     return (
         <div>
             <Sidebar />
-            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh]">
+            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-full">
                 <Navbar />
-                <div className="mx-7">
+                <div className="mx-7 mt-9">
                     <div className="flex justify-between">
-                        <p className="text-[#7E7E7E]">Hi, Jay Jay</p>
+                        <p className="text-[#7E7E7E]">
+                            Hi, {user?.result[0]?.UserName}
+                        </p>
                         <div className="flex gap-1 items-center bg-white rounded-md px-2 py-1 mt-1">
                             <img src="CalenderIcon.svg" alt="" />
                             <p>1st July, 2024</p>
@@ -68,7 +85,14 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                                 <div className="cursor-pointer flex items-center gap-2">
-                                    <h1 className="text-[#C61531]">See all</h1>
+                                    <h1
+                                        className="text-[#C61531]"
+                                        onClick={() =>
+                                            handleNavigate("/admission")
+                                        }
+                                    >
+                                        See all
+                                    </h1>
                                     <img
                                         src="sideArrow.svg"
                                         alt="Arrow"
@@ -145,20 +169,34 @@ const Dashboard = () => {
                         </div>
                     </div>
                     <div className="flex mt-3 gap-4 py-1 w-full items-center">
-                        <button className="bg-[#C61531] text-white w-[9rem] rounded-md py-1 px-2">
+                        <button
+                            className="bg-[#C61531] text-white w-[9rem] rounded-md py-1 px-2"
+                            onClick={() => handleNavigate("/enrollee")}
+                        >
                             Search Enrollee
                         </button>
-                        <button className="bg-[#C61531] text-white w-[9rem] rounded-md py-1 px-2">
+                        <button
+                            className="bg-[#C61531] text-white w-[9rem] rounded-md py-1 px-2"
+                            onClick={() => handleNavigate("/admission")}
+                        >
                             View Admission
                         </button>
-                        <button className="bg-[#C61531] text-white w-[9rem] rounded-md py-1 px-2 flex items-center justify-center gap-1">
+                        <button
+                            className="bg-[#C61531] text-white w-[9rem] rounded-md py-1 px-2 flex items-center justify-center gap-1"
+                            onClick={() => handleNavigate("/cmticket")}
+                        >
                             <img src="Plus.svg" alt="Add new" />
                             Create ticket
                         </button>
                     </div>
                     <div className=" justify-between flex py-1 px-2 w-full">
-                        <div className="flex gap-1 mt-5">
-                            <h2 className="text-[#4D4D4D]">Workbench</h2>
+                        <div className="flex gap-1 mt-5 cursor-pointer">
+                            <h2
+                                className="text-[#4D4D4D]"
+                                onClick={() => handleNavigate("/workbench")}
+                            >
+                                Workbench
+                            </h2>
                             <span className="text-[#C61531] font-semibold">
                                 (72)
                             </span>
@@ -203,7 +241,12 @@ const Dashboard = () => {
                                     </th>
                                     <th class="px-4 py-2 text-right text-sm font-semibold text-gray-600">
                                         <div class="flex items-center justify-end gap-2 cursor-pointer">
-                                            <h1 class="text-[#C61531]">
+                                            <h1
+                                                class="text-[#C61531]"
+                                                onClick={() =>
+                                                    handleNavigate("/workbench")
+                                                }
+                                            >
                                                 See all
                                             </h1>
                                             <img

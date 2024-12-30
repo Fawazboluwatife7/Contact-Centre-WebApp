@@ -116,7 +116,7 @@ const EnrolleeDetails = () => {
                                 <tr>
                                     <td colspan="7" class="text-center py-4">
                                         <img
-                                            src="noRecordFound.svg"
+                                            src=" grey cross.svg"
                                             alt="No records found"
                                             class="mx-auto"
                                         />
