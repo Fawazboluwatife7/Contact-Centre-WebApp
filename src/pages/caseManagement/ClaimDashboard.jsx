@@ -32,6 +32,8 @@ const ClaimDashboard = () => {
     const [open, setOpen] = useState("");
 
     const [items, setItems] = useState([]);
+    const [filteredClaimsItems, setClaimsItems] = useState([]);
+    const [totalApiData, setTotalApiData] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
     const [startDate, setStartDate] = useState("2024-11-12");
     const [endDate, setEndDate] = useState("2024-12-29");
@@ -74,7 +76,6 @@ const ClaimDashboard = () => {
     }, []);
 
     async function getDashboardData() {
-        setIsLoading(true);
         const response = await fetch(
             `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${startDate}&Todate=${endDate}&DateType=${dateType}`,
             {
@@ -82,58 +83,55 @@ const ClaimDashboard = () => {
             },
         );
 
+        const data = await response.json();
+
+        if (data.status === 200) {
+            const validStatuses = [
+                "Awaiting Adjudication",
+                "Open                ",
+                "Quality Assurance",
+                "Adjudicated",
+            ];
+
+            const filteredData = data.result.filter((item) =>
+                validStatuses.includes(item.BatchStatus),
+            );
+            setClaimsItems(filteredData);
+        }
+        setTotalApiData(data);
     }
-    
-    const data = await response.json();
-    if (data.status === 200) {
-        const validStatuses = [
-            "Awaiting Adjudication",
-            "Open",
-            "Quality Assurance",
-            "Adjudicated",
-        ];
 
-        const filteredData = data.result.filter((item) =>
-            validStatuses.includes(item.BatchStatus),
-        );
-        setItems(filteredData);
+    const totalUnits = filteredClaimsItems.reduce(
+        (sum, item) => sum + (item.Units || 0),
+        0,
+    );
 
-        setTurnAroundTAT(data);
+    const totalBatchTotal = filteredClaimsItems.reduce(
+        (sum, item) => sum + (item.BatchTotal || 0),
+        0,
+    );
 
-        const totalUnits = filteredData.reduce(
-            (sum, item) => sum + (item.Units || 0),
-            0,
-        );
+    const formattedTotal = totalBatchTotal.toLocaleString("en-US", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 2,
+    });
+    const unitsTotal = totalUnits.toLocaleString("en-US", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 2,
+    });
 
-        const totalBatchTotal = filteredData.reduce(
-            (sum, item) => sum + (item.BatchTotal || 0),
-            0,
-        );
+    console.log("total batch total", formattedTotal);
+    console.log("total batch total", unitsTotal);
 
-        // Format the total with commas (e.g., 997,252.5)
-        const formattedTotal = totalBatchTotal.toLocaleString("en-US", {
-            minimumFractionDigits: 1,
-            maximumFractionDigits: 2,
-        });
-        const unitsTotal = totalUnits.toLocaleString("en-US", {
-            minimumFractionDigits: 1,
-            maximumFractionDigits: 2,
-        });
+    // const filteredItems = filteredClaimsItems.reduce(
+    //     (sum, item) =>
+    //         item.DateDiffWithoutWeekend > 5 ? sum + (item.Units || 0) : sum,
+    //     0,
+    // );
 
-        const filteredItems = filteredData.reduce(
-            (sum, item) =>
-                item.DateDiffWithoutWeekend > 5
-                    ? sum + (item.Units || 0)
-                    : sum,
-            0,
-        );
+    // const formattedfilteredItems = filteredItems.toLocaleString("en-US");
 
-        const formattedfilteredItems =
-            filteredItems.toLocaleString("en-US");
-
-        // Get the total number of such items
-        setClaimAboveFiveDaysDuration(formattedfilteredItems);
-
+    // setClaimAboveFiveDaysDuration(formattedfilteredItems);
 
     return <div>ClaimDashboard</div>;
 };

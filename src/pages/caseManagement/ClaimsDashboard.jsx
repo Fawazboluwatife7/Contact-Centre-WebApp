@@ -67,9 +67,13 @@ const ClaimsDashboard = () => {
     const [financeTAT, setFinanceTAT] = useState(0);
     const [turnAroundTAT, setTurnAroundTAT] = useState(0);
 
-    useEffect(() => {
-        getDashboardData();
+    const [adjudicated, setAdjudicated] = useState("");
+    const [awaitingAdj, setAwaitingAdj] = useState("");
+    const [opens, setOpens] = useState("");
+    const [qualityAssuarance, setQualityAssuarance] = useState("");
+    const [thrirtyDaysPaidBatches, setThrirtyDaysPaidBatches] = useState(0);
 
+    useEffect(() => {
         const today = new Date();
         const end = today.toISOString().split("T")[0];
 
@@ -79,6 +83,9 @@ const ClaimsDashboard = () => {
 
         setStartDate(start);
         setEndDate(end);
+
+        getDashboardData(start, end);
+        getBatchTotalOfTheLastThirtyDays();
     }, []);
 
     async function getDashboardData() {
@@ -95,7 +102,7 @@ const ClaimsDashboard = () => {
         if (data.status === 200) {
             const validStatuses = [
                 "Awaiting Adjudication",
-                "Open",
+                "Open                ",
                 "Quality Assurance",
                 "Adjudicated",
             ];
@@ -107,11 +114,36 @@ const ClaimsDashboard = () => {
 
             setTurnAroundTAT(data);
 
+            const adjudicatedItems = filteredData.filter(
+                (item) => item.BatchStatus.toLowerCase() === "adjudicated",
+            );
+
+            const awaitingAdjudicationItems = filteredData.filter(
+                (item) =>
+                    item.BatchStatus.toLowerCase() === "awaiting adjudication",
+            );
+
+            const open = filteredData.filter(
+                (item) =>
+                    item.BatchStatus.toLowerCase() === "open                ",
+            );
+
+            const qualityAssurance = filteredData.filter(
+                (item) =>
+                    item.BatchStatus.toLowerCase() === "quality assurance",
+            );
+
+            setAdjudicated(adjudicatedItems.length);
+            setAwaitingAdj(awaitingAdjudicationItems.length);
+            setOpens(open.length);
+            setQualityAssuarance(qualityAssurance.length);
+
             const totalUnits = filteredData.reduce(
                 (sum, item) => sum + (item.Units || 0),
                 0,
             );
 
+            console.log("filtered data", filteredData.length);
             const totalBatchTotal = filteredData.reduce(
                 (sum, item) => sum + (item.BatchTotal || 0),
                 0,
@@ -144,8 +176,6 @@ const ClaimsDashboard = () => {
             // Get the total number of such items
 
             // Calculate TAT values using the logic
-
-            console.log("data.result", data.result);
 
             const calculateTAT = () => {
                 const validItems = data?.result.filter(
@@ -340,8 +370,6 @@ const ClaimsDashboard = () => {
                 //     return 0;
                 // }
 
-                console.log("dataresult***", data);
-
                 const validItems = data.filter(
                     (item) =>
                         item.PaidDate !== null &&
@@ -498,6 +526,66 @@ const ClaimsDashboard = () => {
         }
     }
 
+    async function getBatchTotalOfTheLastThirtyDays() {
+        const response = await fetch(
+            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${startDate}&Todate=${endDate}&DateType=2`,
+            {
+                method: "GET",
+            },
+        );
+
+        const data = await response.json();
+
+        console.log("zzz", data);
+
+        const currentDate = new Date(); // Current date
+        const last30DaysDate = new Date(currentDate);
+        last30DaysDate.setDate(last30DaysDate.getDate() - 30);
+
+        // Assume `data.result` contains the seeded data
+        const filteredDa = data.result.filter((batch) => {
+            const paidDate = new Date(batch.PaidDate);
+            return paidDate >= last30DaysDate && paidDate <= currentDate;
+        });
+
+        console.log("current date", currentDate);
+        console.log("last date", last30DaysDate);
+
+        // Calculate the total batch total (rounded off)
+        const totalBatchTot = Math.round(
+            filteredDa.reduce((sum, batch) => sum + batch.BatchTotal, 0),
+        );
+
+        // Output filtered data and total
+
+        console.log(
+            "Total paid batches in thirty days:",
+            totalBatchTot.toLocaleString("en-US"),
+        );
+
+        const filteredDat = data.result.filter((batch) => {
+            const paidDate = new Date(batch.PaidDate);
+            return (
+                batch.BatchStatus === "Payment Requisition" &&
+                paidDate >= last30DaysDate &&
+                paidDate <= currentDate
+            );
+        });
+
+        // Calculate the total BatchTotal for the filtered data
+        const totalBatchTotal = Math.round(
+            filteredDat.reduce(
+                (sum, batch) => sum + (batch.BatchTotal || 0),
+                0,
+            ),
+        );
+
+        console.log(
+            "Total BatchTotal for 'Payment Requisition':",
+            totalBatchTotal.toLocaleString("en-US"),
+        );
+    }
+
     async function getDashboardRefreshData() {
         setIsLoading(true);
         const response = await fetch(
@@ -512,7 +600,7 @@ const ClaimsDashboard = () => {
         if (data.status === 200) {
             const validStatuses = [
                 "Awaiting Adjudication",
-                "Open",
+                "Open                ",
                 "Quality Assurance",
                 "Adjudicated",
             ];
@@ -523,6 +611,30 @@ const ClaimsDashboard = () => {
             setItems(filteredData);
 
             setTurnAroundTAT(data);
+
+            const adjudicatedItems = filteredData.filter(
+                (item) => item.BatchStatus.toLowerCase() === "adjudicated",
+            );
+
+            const awaitingAdjudicationItems = filteredData.filter(
+                (item) =>
+                    item.BatchStatus.toLowerCase() === "awaiting adjudication",
+            );
+
+            const open = filteredData.filter(
+                (item) =>
+                    item.BatchStatus.toLowerCase() === "open                ",
+            );
+
+            const qualityAssurance = filteredData.filter(
+                (item) =>
+                    item.BatchStatus.toLowerCase() === "quality assurance",
+            );
+
+            setAdjudicated(adjudicatedItems.length);
+            setAwaitingAdj(awaitingAdjudicationItems.length);
+            setOpens(open.length);
+            setQualityAssuarance(qualityAssurance.length);
 
             const totalUnits = filteredData.reduce(
                 (sum, item) => sum + (item.Units || 0),
@@ -1147,7 +1259,7 @@ const ClaimsDashboard = () => {
             </div>
 
             <div className="flex  w-full pt-3 gap-3 rounded-md px-3">
-                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[18rem] rounded-md">
+                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[20rem] rounded-md">
                     <div className="">
                         <div className="">
                             <h1 className="  text-white  py-2 px-3 text-[50px] underline">
@@ -1164,20 +1276,66 @@ const ClaimsDashboard = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[18rem] rounded-md">
+                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[20rem] rounded-md">
+                    <div className="">
+                        <div className="">
+                            <h1 className="  text-white  py-2 px-3 text-[30px] underline">
+                                Total unpaid claims
+                            </h1>
+                            <div className=" flex">
+                                <h1 className="  text-white  py-1 px-3 text-[30px] ">
+                                    Total Adjudicated: {adjudicated}
+                                </h1>
+                            </div>
+
+                            <div className=" flex">
+                                <h1 className="  text-white  py-1 px-3 text-[30px] ">
+                                    Total Awaiting Adjudication: {awaitingAdj}
+                                </h1>
+                            </div>
+
+                            <div className=" flex">
+                                <h1 className="  text-white  py-1 px-3 text-[30px] ">
+                                    Total Open: {opens}
+                                </h1>
+                            </div>
+
+                            <div className=" flex">
+                                <h1 className="  text-white  py-1 px-3 text-[30px] ">
+                                    Total Q.A: {qualityAssuarance}
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[20rem] rounded-md">
+                    <div className="">
+                        <div className="">
+                            <h2 className="capitalize underline text-white pb-2  px-3 text-[30px] ">
+                                Break Down of average turn around time
+                            </h2>
+
+                            <h2 className="  text-white  py-3 px-3 text-[30px] ">
+                                Claims TAT: {claimsOperationsTAT}
+                            </h2>
+
+                            <h2 className="  text-white  py-3 px-3 text-[30px] ">
+                                Internal Control TAT: {internalControlTAT}
+                            </h2>
+                            <h2 className="  text-white  py-3 px-3 text-[30px] ">
+                                Finance TAT: {financeTAT}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[20rem] rounded-md">
                     <div className="">
                         <div className="">
                             <h2 className="capitalize underline text-white pb-4 pt-2 px-3 text-[30px] ">
-                                Break Down of average turn around time
+                                Total claims paid in the past 30 days:
                             </h2>
-                            <h2 className="  text-white  py-4 px-3 text-[30px] ">
-                                Claims Operations TAT: {claimsOperationsTAT}
-                            </h2>
-                            <h2 className="  text-white  py-4 px-3 text-[30px] ">
-                                Internal Control TAT: {internalControlTAT}
-                            </h2>
-                            <h2 className="  text-white  py-4 px-3 text-[30px] ">
-                                Finance TAT: {financeTAT}
+                            <h2 className="  text-white  py-2 px-3 text-[60px] ">
+                                #{thrirtyDaysPaidBatches}
                             </h2>
                         </div>
                     </div>

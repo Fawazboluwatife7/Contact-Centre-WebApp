@@ -44,6 +44,7 @@ import Workbench from "./pages/caseManagement/Workbench";
 
 import SSDashboard from "./pages/caseManagement/SSDashboard";
 import ClaimsDashboard from "./pages/caseManagement/ClaimsDashboard";
+import ClaimDashboard from "./pages/caseManagement/ClaimDashboard";
 
 function App() {
     return (
@@ -102,6 +103,7 @@ function App() {
 
                 <Route path="/ssdashboard" element={<SSDashboard />} />
                 <Route path="/claimsdashboard" element={<ClaimsDashboard />} />
+                <Route path="/claimdashboard" element={<ClaimDashboard />} />
             </Routes>
         </BrowserRouter>
     );
