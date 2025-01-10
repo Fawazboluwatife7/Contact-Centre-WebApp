@@ -214,35 +214,35 @@ const Dashboard = () => {
                             />
                         </div>
                     </div>
-                    <div class="overflow-x-auto rounded-md">
-                        <table class="min-w-full bg-white">
+                    <div className="overflow-x-auto rounded-md">
+                        <table className="min-w-full bg-white">
                             <thead>
-                                <tr class="border-b border-gray-200">
-                                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                <tr className="border-b border-gray-200">
+                                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                                         S/N
                                     </th>
-                                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                                         #ID
                                     </th>
-                                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                                         Title
                                     </th>
-                                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                                         Category
                                     </th>
-                                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                                         Assigned
                                     </th>
-                                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                                         Date Created
                                     </th>
-                                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+                                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">
                                         Status
                                     </th>
-                                    <th class="px-4 py-2 text-right text-sm font-semibold text-gray-600">
-                                        <div class="flex items-center justify-end gap-2 cursor-pointer">
+                                    <th className="px-4 py-2 text-right text-sm font-semibold text-gray-600">
+                                        <div className="flex items-center justify-end gap-2 cursor-pointer">
                                             <h1
-                                                class="text-[#C61531]"
+                                                className="text-[#C61531]"
                                                 onClick={() =>
                                                     handleNavigate("/workbench")
                                                 }
@@ -252,144 +252,144 @@ const Dashboard = () => {
                                             <img
                                                 src="sideArrow.svg"
                                                 alt="Arrow"
-                                                class="h-4"
+                                                className="h-4"
                                             />
                                         </div>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                    <td class="px-4 py-2 text-center">
+                                <tr className="border-b border-gray-200 hover:bg-gray-50">
+                                    <td className="px-4 py-2 text-center">
                                         <img
                                             src="hospitalCross@3x.svg"
                                             alt="Icon"
-                                            class="w-8 h-8 rounded-full bg-red-100 mx-auto"
+                                            className="w-8 h-8 rounded-full bg-red-100 mx-auto"
                                         />
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         947736
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Tunde Bakare Osun
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Call
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Valerie O.
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         22 Aug 2022 9:14AM
                                     </td>
-                                    <td class="px-4 py-2 text-sm font-semibold text-red-500">
+                                    <td className="px-4 py-2 text-sm font-semibold text-red-500">
                                         Open
                                     </td>
-                                    <td class="px-4 py-2 text-center">
-                                        <button class="text-gray-500 hover:text-gray-700">
-                                            <span class="text-lg">•••</span>
+                                    <td className="px-4 py-2 text-center">
+                                        <button className="text-gray-500 hover:text-gray-700">
+                                            <span className="text-lg">•••</span>
                                         </button>
                                     </td>
                                 </tr>
                             </tbody>
                             <tbody>
-                                <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                    <td class="px-4 py-2 text-center">
+                                <tr className="border-b border-gray-200 hover:bg-gray-50">
+                                    <td className="px-4 py-2 text-center">
                                         <img
                                             src="hospitalCross@3x.svg"
                                             alt="Icon"
-                                            class="w-8 h-8 rounded-full bg-red-100 mx-auto"
+                                            className="w-8 h-8 rounded-full bg-red-100 mx-auto"
                                         />
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         947736
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Tunde Bakare Osun
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Call
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Valerie O.
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         22 Aug 2022 9:14AM
                                     </td>
-                                    <td class="px-4 py-2 text-sm font-semibold text-red-500">
+                                    <td className="px-4 py-2 text-sm font-semibold text-red-500">
                                         Open
                                     </td>
-                                    <td class="px-4 py-2 text-center">
-                                        <button class="text-gray-500 hover:text-gray-700">
-                                            <span class="text-lg">•••</span>
+                                    <td className="px-4 py-2 text-center">
+                                        <button className="text-gray-500 hover:text-gray-700">
+                                            <span className="text-lg">•••</span>
                                         </button>
                                     </td>
                                 </tr>
                             </tbody>
                             <tbody>
-                                <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                    <td class="px-4 py-2 text-center">
+                                <tr className="border-b border-gray-200 hover:bg-gray-50">
+                                    <td className="px-4 py-2 text-center">
                                         <img
                                             src="hospitalCross@3x.svg"
                                             alt="Icon"
-                                            class="w-8 h-8 rounded-full bg-red-100 mx-auto"
+                                            className="w-8 h-8 rounded-full bg-red-100 mx-auto"
                                         />
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         947736
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Tunde Bakare Osun
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Call
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Valerie O.
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         22 Aug 2022 9:14AM
                                     </td>
-                                    <td class="px-4 py-2 text-sm font-semibold text-red-500">
+                                    <td className="px-4 py-2 text-sm font-semibold text-red-500">
                                         Open
                                     </td>
-                                    <td class="px-4 py-2 text-center">
-                                        <button class="text-gray-500 hover:text-gray-700">
-                                            <span class="text-lg">•••</span>
+                                    <td className="px-4 py-2 text-center">
+                                        <button className="text-gray-500 hover:text-gray-700">
+                                            <span className="text-lg">•••</span>
                                         </button>
                                     </td>
                                 </tr>
                             </tbody>
                             <tbody>
-                                <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                    <td class="px-4 py-2 text-center">
+                                <tr className="border-b border-gray-200 hover:bg-gray-50">
+                                    <td className="px-4 py-2 text-center">
                                         <img
                                             src="hospitalCross@3x.svg"
                                             alt="Icon"
-                                            class="w-8 h-8 rounded-full bg-red-100 mx-auto"
+                                            className="w-8 h-8 rounded-full bg-red-100 mx-auto"
                                         />
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         947736
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Tunde Bakare Osun
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Call
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         Valerie O.
                                     </td>
-                                    <td class="px-4 py-2 text-sm text-gray-800">
+                                    <td className="px-4 py-2 text-sm text-gray-800">
                                         22 Aug 2022 9:14AM
                                     </td>
-                                    <td class="px-4 py-2 text-sm font-semibold text-red-500">
+                                    <td className="px-4 py-2 text-sm font-semibold text-red-500">
                                         Open
                                     </td>
-                                    <td class="px-4 py-2 text-center">
-                                        <button class="text-gray-500 hover:text-gray-700">
-                                            <span class="text-lg">•••</span>
+                                    <td className="px-4 py-2 text-center">
+                                        <button className="text-gray-500 hover:text-gray-700">
+                                            <span className="text-lg">•••</span>
                                         </button>
                                     </td>
                                 </tr>

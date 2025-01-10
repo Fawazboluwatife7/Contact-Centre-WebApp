@@ -1,7 +1,6 @@
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/caseManagement/Login";
-import Sidebar from "./components/Sidebar";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+// import Login from "./pages/caseManagement/Login";
+import Sidebar from "./components/Landing/Sidebar";
 import CsSideBar from "./components/cs/csSideBar";
 import "./index.css";
 import CsDashboardLayoutPage from "./pages/csPages/DashboardLayoutPage";
@@ -45,6 +44,10 @@ import Workbench from "./pages/caseManagement/Workbench";
 import SSDashboard from "./pages/caseManagement/SSDashboard";
 import ClaimsDashboard from "./pages/caseManagement/ClaimsDashboard";
 import ClaimDashboard from "./pages/caseManagement/ClaimDashboard";
+import Login from "./pages/caseManagement/Login";
+import SalesLogin from "./pages/sales/SalesLogin";
+import DashboardCarousels from "./pages/caseManagement/DashboardCarousels";
+import ClaimSideDashboard from "./pages/caseManagement/ClaimSideDashboard";
 
 function App() {
     return (
@@ -100,10 +103,17 @@ function App() {
                 />
                 <Route path="/notification" element={<Notification />} />
                 <Route path="/workbench" element={<Workbench />} />
-
                 <Route path="/ssdashboard" element={<SSDashboard />} />
                 <Route path="/claimsdashboard" element={<ClaimsDashboard />} />
                 <Route path="/claimdashboard" element={<ClaimDashboard />} />
+                {/* Sales */}
+                <Route path="/salesLogin" element={<SalesLogin />} />
+                {/* <Route
+                    path="/salesDashboard/*"
+                    element={<SalesDashboardRoutes />}
+                /> */}
+                <Route path="/login-caseManagement" element={<Login />} />
+                <Route path="/sidedash" element={<ClaimSideDashboard />} />
             </Routes>
         </BrowserRouter>
     );

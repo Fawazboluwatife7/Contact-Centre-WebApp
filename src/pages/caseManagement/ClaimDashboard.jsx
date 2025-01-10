@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MdFilterAlt } from "react-icons/md";
+import DashboardCarousels from "./DashboardCarousels";
 
 function DateDropdown({ options, sendNumber, className }) {
     const [dateType, setDateType] = useState("1");
@@ -73,6 +74,8 @@ const ClaimDashboard = () => {
 
         setStartDate(start);
         setEndDate(end);
+
+        getBatchTotalOfTheLastThirtyDays();
     }, []);
 
     async function getDashboardData() {
@@ -120,9 +123,6 @@ const ClaimDashboard = () => {
         maximumFractionDigits: 2,
     });
 
-    console.log("total batch total", formattedTotal);
-    console.log("total batch total", unitsTotal);
-
     // const filteredItems = filteredClaimsItems.reduce(
     //     (sum, item) =>
     //         item.DateDiffWithoutWeekend > 5 ? sum + (item.Units || 0) : sum,
@@ -133,7 +133,26 @@ const ClaimDashboard = () => {
 
     // setClaimAboveFiveDaysDuration(formattedfilteredItems);
 
-    return <div>ClaimDashboard</div>;
+    async function getBatchTotalOfTheLastThirtyDays() {
+        const response = await fetch(
+            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${startDate}&Todate=${endDate}&DateType=2`,
+            {
+                method: "GET",
+            },
+        );
+        const data = await response.json();
+
+        const paidItemsCount = data.result.filter(
+            (item) => item.BatchStatus === "Paid",
+        ).length;
+
+        console.log(`Total paid items: ${paidItemsCount}`);
+    }
+    return (
+        <div className=" w-full h-[100vh]">
+            <DashboardCarousels />
+        </div>
+    );
 };
 
 export default ClaimDashboard;

@@ -12,6 +12,23 @@ const Login = () => {
     const [alertType, setAlertType] = useState("");
     const [msg, setMsg] = useState("");
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const [selectedImages, setSelectedImages] = useState("");
+    const imagesArray = [
+        "/LeadwayLogo.svg",
+        "../../assets/SalesModuleImages/Background.svg",
+    ];
+    const loginTypeArray = [
+        {
+            img: "/redMenuIcon.svg",
+            title: "case Management",
+            description: "Follow up on enrolles care",
+        },
+        {
+            img: "../../assets/SalesModuleImages/SalesIcon.svg",
+            title: "sales",
+            description: "Manage all your clients and prospects.",
+        },
+    ];
 
     const user = JSON.parse(localStorage.getItem("user"));
     useEffect(() => {
@@ -162,22 +179,26 @@ const Login = () => {
                     <img src="questionMark.svg" alt="Help" />
                     <p>Help</p>
                 </div>
-                <div className="flex rounded-lg absolute bottom-[30px] justify-center w-full">
-                    <div className="bg-[#F3F5F6] rounded-l-lg items-center justify-items-center py-2">
-                        <img
-                            src="/redMenuIcon.svg"
-                            alt="Menu Icon"
-                            className="w-[80%]"
-                        />
-                    </div>
-                    <div className="bg-white w-[45%] rounded-r-lg py-2">
-                        <p className="font-500 cursor-pointer ml-2">
-                            Case Management
-                        </p>
-                        <p className="font-500 cursor-pointer mt-2 ml-2">
-                            Follow up on enrollees' care
-                        </p>
-                    </div>
+                <div className="relative">
+                    {loginTypeArray.map((loginType, index) => (
+                        <div className="flex rounded-lg mt-[-60px] bottom-[30px] justify-center w-full">
+                            <div className="bg-[#F3F5F6] rounded-l-lg items-center justify-items-center py-2">
+                                <img
+                                    src="/redMenuIcon.svg"
+                                    alt="Menu Icon"
+                                    className="w-[80%]"
+                                />
+                            </div>
+                            <div className="bg-white w-[45%] rounded-r-lg py-2">
+                                <p className="font-500 cursor-pointer ml-2">
+                                    Case Management
+                                </p>
+                                <p className="font-500 cursor-pointer mt-2 ml-2">
+                                    Follow up on enrollees' care
+                                </p>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
             {msg && <Alert msg={msg} setMsg={setMsg} alertType={alertType} />}

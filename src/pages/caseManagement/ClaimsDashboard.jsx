@@ -6,10 +6,10 @@ function DateDropdown({ options, sendNumber, className }) {
     const [dateType, setDateType] = useState("1"); // Remember your choice
 
     const pickDate = (event) => {
-        const number = event.target.value; // Find the number associated wth the dateType  you picked
-        setDateType(number); // Remember what you picked
-        console.log("Number selected:", number);
-        sendNumber(number); // Send the number to the (API)
+        const number = event.target.value;
+        setDateType(number);
+
+        sendNumber(number);
     };
 
     return (
@@ -34,9 +34,7 @@ const ClaimsDashboard = () => {
     const [open, setOpen] = useState("");
 
     const [items, setItems] = useState([]);
-    const [totalItems, setTotalItems] = useState(0);
-    const [topProviders, setTopProviders] = useState([]);
-    const [batchTotals, setBatchTotals] = useState([]);
+
     const [startDate, setStartDate] = useState("2024-11-12");
     const [endDate, setEndDate] = useState("2024-12-29");
     const [dateType, setDateType] = useState("1");
@@ -72,6 +70,27 @@ const ClaimsDashboard = () => {
     const [opens, setOpens] = useState("");
     const [qualityAssuarance, setQualityAssuarance] = useState("");
     const [thrirtyDaysPaidBatches, setThrirtyDaysPaidBatches] = useState(0);
+    const [sixtyDaysPaidBatches, setSixtyDaysPaidBatches] = useState(0);
+
+    // useEffect(() => {
+    //     const today = new Date();
+    //     const end = today.toISOString().split("T")[0];
+
+    //     const pastDate = new Date();
+    //     pastDate.setDate(today.getDate() - 30);
+    //     const start = pastDate.toISOString().split("T")[0];
+
+    //     setStartDate(start);
+    //     setEndDate(end);
+    //     console.log("start", start), console.log("end", end);
+
+    //     if (start && end) {
+    //         getDashboardData(start, end);
+    //         getBatchTotalOfTheLastThirtyDays();
+    //     }
+
+    //     console.log("start", start), console.log("end", end);
+    // }, []);
 
     useEffect(() => {
         const today = new Date();
@@ -81,17 +100,23 @@ const ClaimsDashboard = () => {
         pastDate.setDate(today.getDate() - 30);
         const start = pastDate.toISOString().split("T")[0];
 
+        // Update state
         setStartDate(start);
         setEndDate(end);
 
-        getDashboardData(start, end);
-        getBatchTotalOfTheLastThirtyDays();
+        if (start.trim() && end.trim()) {
+            getDashboardData(start, end);
+            getBatchTotalOfTheLastThirtyDays(start, end);
+            getLastMonthBatchTotal();
+            getMonthlyCurrentPaidBatchTotal();
+        }
     }, []);
 
-    async function getDashboardData() {
-        setIsLoading(true);
+    async function getDashboardData(fromDate, toDate) {
+        console.log("start", fromDate), console.log("end", toDate);
+        // setIsLoading(true);
         const response = await fetch(
-            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${startDate}&Todate=${endDate}&DateType=${dateType}`,
+            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${fromDate}&Todate=${toDate}&DateType=${dateType}`,
             {
                 method: "GET",
             },
@@ -143,7 +168,6 @@ const ClaimsDashboard = () => {
                 0,
             );
 
-            console.log("filtered data", filteredData.length);
             const totalBatchTotal = filteredData.reduce(
                 (sum, item) => sum + (item.BatchTotal || 0),
                 0,
@@ -172,10 +196,6 @@ const ClaimsDashboard = () => {
 
             // Get the total number of such items
             setClaimAboveFiveDaysDuration(formattedfilteredItems);
-
-            // Get the total number of such items
-
-            // Calculate TAT values using the logic
 
             const calculateTAT = () => {
                 const validItems = data?.result.filter(
@@ -511,7 +531,7 @@ const ClaimsDashboard = () => {
             // Step 3: Set the total sum in state
             setTotalClaimValueAboveFiveDays(formattedTotalClaimAboveFiveDays);
 
-            setIsLoading(false);
+            // setIsLoading(false);
 
             const sortedItems = data.result.sort(
                 (a, b) => b.BatchTotal - a.BatchTotal,
@@ -526,70 +546,60 @@ const ClaimsDashboard = () => {
         }
     }
 
-    async function getBatchTotalOfTheLastThirtyDays() {
+    async function getBatchTotalOfTheLastThirtyDays(fromDate, toDate) {
+        console.log("startzz", fromDate), console.log("endzzz", toDate);
+
         const response = await fetch(
-            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${startDate}&Todate=${endDate}&DateType=2`,
+            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${fromDate}&Todate=${toDate}&DateType=2`,
             {
                 method: "GET",
             },
         );
-
         const data = await response.json();
 
-        console.log("zzz", data);
-
-        const currentDate = new Date(); // Current date
-        const last30DaysDate = new Date(currentDate);
-        last30DaysDate.setDate(last30DaysDate.getDate() - 30);
-
-        // Assume `data.result` contains the seeded data
-        const filteredDa = data.result.filter((batch) => {
-            const paidDate = new Date(batch.PaidDate);
-            return paidDate >= last30DaysDate && paidDate <= currentDate;
-        });
-
-        console.log("current date", currentDate);
-        console.log("last date", last30DaysDate);
-
-        // Calculate the total batch total (rounded off)
-        const totalBatchTot = Math.round(
-            filteredDa.reduce((sum, batch) => sum + batch.BatchTotal, 0),
+        const paidItems = data.result.filter(
+            (item) => item.BatchStatus === "Paid",
         );
 
-        // Output filtered data and total
+        // Count the number of paid items
+        const paidItemsCount = paidItems.length;
 
-        console.log(
-            "Total paid batches in thirty days:",
-            totalBatchTot.toLocaleString("en-US"),
+        // Calculate the total BatchTotal for paid items
+        const totalBatchTotal = paidItems.reduce(
+            (sum, item) => sum + item.BatchTotal,
+            0,
+        );
+        const paymentItems = data.result.filter(
+            (item) => item.BatchStatus === "Payment Requisition",
         );
 
-        const filteredDat = data.result.filter((batch) => {
-            const paidDate = new Date(batch.PaidDate);
-            return (
-                batch.BatchStatus === "Payment Requisition" &&
-                paidDate >= last30DaysDate &&
-                paidDate <= currentDate
-            );
-        });
+        // Count the number of paid items
+        const paymentCount = paymentItems.length;
 
-        // Calculate the total BatchTotal for the filtered data
-        const totalBatchTotal = Math.round(
-            filteredDat.reduce(
-                (sum, batch) => sum + (batch.BatchTotal || 0),
-                0,
-            ),
+        // Calculate the total BatchTotal for paid items
+        const tpaymentTotal = paymentItems.reduce(
+            (sum, item) => sum + item.BatchTotal,
+            0,
         );
 
-        console.log(
-            "Total BatchTotal for 'Payment Requisition':",
-            totalBatchTotal.toLocaleString("en-US"),
-        );
+        const totalThirty = totalBatchTotal;
+
+        // console.log("jkdcwc1", totalBatchTotal);
+        // console.log("jkdcwc2", tpaymentTotal);
+        // console.log("jkdcwc3", totalThirty);
+
+        // console.log(`Total paid items: ${paidItemsCount}`);
+        // console.log(`Total BatchTotal for paid items: ${totalBatchTotal}`);
+        // console.log(`Total payment items: ${paymentCount}`);
+        // console.log(`Total BatchTotal for payment : ${tpaymentTotal}`);
+
+        setThrirtyDaysPaidBatches(totalThirty.toLocaleString("en-US"));
     }
 
-    async function getDashboardRefreshData() {
-        setIsLoading(true);
+    async function getDashboardRefreshData(fromDate, toDate) {
+        //  setIsLoading(true);
         const response = await fetch(
-            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${startDate}&Todate=${endDate}&DateType=${dateType}`,
+            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${fromDate}&Todate=${toDate}&DateType=${dateType}`,
             {
                 method: "GET",
             },
@@ -670,12 +680,6 @@ const ClaimsDashboard = () => {
             // Get the total number of such items
             setClaimAboveFiveDaysDuration(formattedfilteredItems);
 
-            // Get the total number of such items
-
-            // Calculate TAT values using the logic
-
-            console.log("data.result", data.result);
-
             const calculateTAT = () => {
                 const validItems = data?.result.filter(
                     (item) =>
@@ -700,11 +704,7 @@ const ClaimsDashboard = () => {
 
                 const calculateAverageInternalClaimByDay = () => {
                     // // Filter out items with null PaidDate
-                    // const validEntries = data.filter(
-                    //     (item) => item.PaidDate !== null,
-                    // );
 
-                    // Calculate time differences in whole days
                     const differences = validItems
                         .map((item) => {
                             const auditDate = new Date(item.AuditOn);
@@ -869,8 +869,6 @@ const ClaimsDashboard = () => {
                 //     return 0;
                 // }
 
-                console.log("dataresult***", data);
-
                 const validItems = data.filter(
                     (item) =>
                         item.PaidDate !== null &&
@@ -1012,7 +1010,7 @@ const ClaimsDashboard = () => {
             // Step 3: Set the total sum in state
             setTotalClaimValueAboveFiveDays(formattedTotalClaimAboveFiveDays);
 
-            setIsLoading(false);
+            // setIsLoading(false);
 
             const sortedItems = data.result.sort(
                 (a, b) => b.BatchTotal - a.BatchTotal,
@@ -1024,15 +1022,134 @@ const ClaimsDashboard = () => {
             console.error(
                 "Failed to fetch data or unexpected response format.",
             );
+        }
+    }
+
+    async function getLastMonthBatchTotal() {
+        const today = new Date();
+        const previousMonth = new Date(
+            today.getFullYear(),
+            today.getMonth() - 1,
+            2,
+        );
+        const lastDayOfPreviousMonth = new Date(
+            previousMonth.getFullYear(),
+            previousMonth.getMonth() + 1,
+            1,
+        );
+
+        // Format dates to YYYY-MM-DD
+        const start = previousMonth.toISOString().split("T")[0];
+        const end = lastDayOfPreviousMonth.toISOString().split("T")[0];
+        console.log("Last month start date:", start);
+        console.log("Last month end date:", end);
+
+        try {
+            // Fetch data from the API
+            const response = await fetch(
+                `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${start}&Todate=${end}&DateType=2`,
+                {
+                    method: "GET",
+                },
+            );
+
+            // Parse the JSON response
+            const data = await response.json();
+
+            // Check if the data is valid
+            if (!data || !data.result) {
+                console.error("Invalid API response:", data);
+                return 0;
+            }
+
+            // Filter items where BatchStatus is "Paid" and PaidDate is within the last month
+            const paidItems = data.result.filter(
+                (item) =>
+                    item.BatchStatus === "Paid" &&
+                    item.PaidDate &&
+                    new Date(item.PaidDate) >= previousMonth &&
+                    new Date(item.PaidDate) <= lastDayOfPreviousMonth,
+            );
+
+            // Sum up BatchTotal for the filtered items
+            const totalBatchTotal = paidItems.reduce(
+                (sum, item) => sum + (item.BatchTotal || 0),
+                0,
+            );
+
+            console.log("paid for last month December", totalBatchTotal);
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return 0;
+        }
+    }
+
+    async function getMonthlyCurrentPaidBatchTotal() {
+        const today = new Date();
+        const firstDayOfMonth = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            1,
+        );
+        const firsttDate = firstDayOfMonth.toLocaleDateString("en-CA");
+
+        const PresentDate = today.toLocaleDateString("en-CA");
+
+        console.log("FirstDate:", firsttDate);
+        console.log("EndDate:", PresentDate);
+
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${firsttDate}&Todate=${PresentDate}&DateType=2`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+
+            if (!data || !data.result) {
+                console.error("Invalid API response:", data);
+                return 0;
+            }
+
+            const paidItems = data.result.filter(
+                (item) => item.BatchStatus === "Paid",
+            );
+
+            console.log("current month total items", paidItems.length);
+
+            const totalBatchTotal = paidItems.reduce(
+                (sum, item) => sum + (item.BatchTotal || 0),
+                0,
+            );
+
+            console.log(`Total Paid Batch Amount: ${totalBatchTotal}`);
+            return totalBatchTotal;
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return 0;
         }
     }
 
     useEffect(() => {
-        getDashboardData();
-
         const intervalId = setInterval(
             () => {
-                getDashboardRefreshData();
+                const today = new Date();
+                const end = today.toISOString().split("T")[0];
+
+                const pastDate = new Date();
+                pastDate.setDate(today.getDate() - 30);
+                const start = pastDate.toISOString().split("T")[0];
+
+                // Update state
+                setStartDate(start);
+                setEndDate(end);
+
+                if (start.trim() && end.trim()) {
+                    getDashboardData(start, end);
+                    getBatchTotalOfTheLastThirtyDays(start, end);
+                }
             },
             5 * 60 * 1000,
         );
@@ -1116,7 +1233,7 @@ const ClaimsDashboard = () => {
                 <img
                     src="/leadway_health_logo-dashboard.png"
                     alt=""
-                    className=" w-[20rem] h-[5rem]"
+                    className=" w-[10rem] h-[5rem]"
                 />
                 <div className=" flex gap-7 py-3 px-3">
                     <div className="   rounded-sm">
@@ -1315,31 +1432,36 @@ const ClaimsDashboard = () => {
                                 Break Down of average turn around time
                             </h2>
 
-                            <h2 className="  text-white  py-3 px-3 text-[30px] ">
+                            <h2 className="  text-white   px-3 text-[30px] ">
                                 Claims TAT: {claimsOperationsTAT}
                             </h2>
 
-                            <h2 className="  text-white  py-3 px-3 text-[30px] ">
+                            <h2 className="  text-white  px-3 text-[30px] ">
                                 Internal Control TAT: {internalControlTAT}
                             </h2>
-                            <h2 className="  text-white  py-3 px-3 text-[30px] ">
+                            <h2 className="  text-white  px-3 text-[30px] ">
                                 Finance TAT: {financeTAT}
                             </h2>
                         </div>
                     </div>
                 </div>
-                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[20rem] rounded-md">
+                {/* <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[20rem] rounded-md">
                     <div className="">
                         <div className="">
                             <h2 className="capitalize underline text-white pb-4 pt-2 px-3 text-[30px] ">
                                 Total claims paid in the past 30 days:
                             </h2>
-                            <h2 className="  text-white  py-2 px-3 text-[60px] ">
+
+                            <h2 className="capitalize  text-white pb-4 pt-2 px-3 text-[50px] ">
                                 #{thrirtyDaysPaidBatches}
                             </h2>
+                            <h2 className="capitalize underline text-white pb-4 pt-2 px-3 text-[15px] ">
+                                Total claims paid in the past 60 days: #
+                                {sixtyDaysPaidBatches}
+                            </h2> 
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             {isLoading && (

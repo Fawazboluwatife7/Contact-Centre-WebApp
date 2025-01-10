@@ -76,7 +76,7 @@ const CsSidebar = () => {
         </div>
         <div
           className="mt-2 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
-          onClick={() => handleNavigate("/enrollees")} // Navigate to /enrollees
+          onClick={() => handleNavigate("/enrollees")}
         >
           <img src="people-group@3x.svg" alt="" />
           <p className="ml-2">Enrollees</p>
