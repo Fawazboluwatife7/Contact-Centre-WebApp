@@ -1432,14 +1432,14 @@ const ClaimsDashboard = () => {
                                 Break Down of average turn around time
                             </h2>
 
-                            <h2 className="  text-white   px-3 text-[30px] ">
+                            <h2 className="  text-white   px-3 text-[35px] ">
                                 Claims TAT: {claimsOperationsTAT}
                             </h2>
 
-                            <h2 className="  text-white  px-3 text-[30px] ">
+                            <h2 className="  text-white  px-3 text-[35px] ">
                                 Internal Control TAT: {internalControlTAT}
                             </h2>
-                            <h2 className="  text-white  px-3 text-[30px] ">
+                            <h2 className="  text-white  px-3 text-[35px] ">
                                 Finance TAT: {financeTAT}
                             </h2>
                         </div>

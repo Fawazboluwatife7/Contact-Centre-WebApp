@@ -6,6 +6,8 @@ const ClaimSideDashboard = () => {
     const [lastMonthPaidClaims, setLastMonthPaidClaims] = useState("");
     const [currentMonthPaidClaims, setCurrentMonthPaidClaims] = useState("");
     const [thrirtyDaysPaidBatches, setThrirtyDaysPaidBatches] = useState("");
+    const [totalPaidBatchesForTheYear, setTotalPaidBatchesForTheYear] =
+        useState("");
 
     useEffect(() => {
         const today = new Date();
@@ -22,6 +24,7 @@ const ClaimSideDashboard = () => {
         }
         getLastMonthBatchTotal();
         getMonthlyCurrentPaidBatchTotal();
+        getBatchTotalOfNewYear();
     }, []);
 
     async function getLastMonthBatchTotal() {
@@ -156,7 +159,42 @@ const ClaimSideDashboard = () => {
             0,
         );
 
+        console.log("payment req", tpaymentTotal);
         setThrirtyDaysPaidBatches(tpaymentTotal.toLocaleString("en-US"));
+    }
+
+    async function getBatchTotalOfNewYear() {
+        const today = new Date();
+        const startOfYear = new Date(today.getFullYear(), 0, 2);
+
+        const startDate = startOfYear.toISOString().split("T")[0];
+        const endDate = today.toISOString().split("T")[0];
+
+        // console.log("total Start Date:", startDate);
+        // console.log("total End Date:", endDate);
+
+        const response = await fetch(
+            `${apiUrl}/api/EnrolleeClaims/GetBatchSumaary?Fromdate=${startDate}&Todate=${endDate}&DateType=2`,
+            {
+                method: "GET",
+            },
+        );
+        const data = await response.json();
+
+        const paymentItems = data.result.filter(
+            (item) => item.BatchStatus === "Paid",
+        );
+
+        const paymentCount = paymentItems.length;
+
+        const totalPaymentForTheYear = paymentItems.reduce(
+            (sum, item) => sum + item.BatchTotal,
+            0,
+        );
+
+        setTotalPaidBatchesForTheYear(
+            totalPaymentForTheYear.toLocaleString("en-US"),
+        );
     }
 
     useEffect(() => {
@@ -165,6 +203,7 @@ const ClaimSideDashboard = () => {
                 getLastMonthBatchTotal();
                 getMonthlyCurrentPaidBatchTotal();
                 getBatchTotalOfTheLastThirtyDays();
+                getBatchTotalOfNewYear();
             },
             30 * 60 * 1000,
         );
@@ -173,51 +212,58 @@ const ClaimSideDashboard = () => {
     }, []);
 
     return (
-        <div className="bg-[#1B1464] w-full  h-[100vh]">
-            <div className="justify-between flex">
+        <div className="bg-[#1B1464] w-full h-[100vh] flex flex-col items-center">
+            <div className="justify-between flex w-full px-3">
                 <img
                     src="/leadway_health_logo-dashboard.png"
                     alt=""
-                    className=" w-[10rem] h-[5rem]"
+                    className="w-[10rem] h-[5rem]"
                 />
             </div>
 
-            <div className="flex  w-full pt-3 gap-3 rounded-md px-3">
-                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[28rem] rounded-md">
+            <div className="flex w-full pt-3 gap-3 rounded-md px-3 justify-center">
+                <div className="flex-1 bg-[#5f5f8c84] border-white h-[19rem] rounded-md items-center justify-center">
                     <div>
-                        <h1 className="  text-white  py-4 px-3 text-[51px] pt-[3rem]  underline">
+                        <h1 className="text-white py-4 [7rem] px-[7rem] text-[51px] pt-[3rem] underline">
                             Total paid claims for last month
                         </h1>
-
-                        <h1 className="  text-white  py-4 px-3 text-[90px]">
+                        <h1 className="text-white py-2 px-[7rem] text-[50px]">
                             #{lastMonthPaidClaims}
                         </h1>
                     </div>
                 </div>
-                <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[28rem] rounded-md">
+                <div className="flex-1 bg-[#5f5f8c84] border-white h-[19rem] rounded-md items-center justify-center">
                     <div className="">
-                        <div className="">
-                            <h1 className="  text-white  py-2 px-3 text-[51px] pt-[3rem]  underline">
-                                Total Paid claims for this month
-                            </h1>
-                            <h1 className="  text-white  py-2 px-3 text-[90px] ">
-                                {currentMonthPaidClaims}
-                            </h1>
-                        </div>
+                        <h1 className="text-white py-2 px-[7rem] text-[51px] pt-[3rem] underline ">
+                            Total Paid claims for this month
+                        </h1>
+                        <h1 className="text-white py-2 text-[50px] px-[7rem]">
+                            #{currentMonthPaidClaims}
+                        </h1>
                     </div>
                 </div>
-                {/* <div className="flex-1 bg-bl  bg-[#5f5f8c84] border-white h-[28rem] rounded-md">
-                    <div className="">
-                        <div className="">
-                            <h1 className="  text-white  py-2 px-3 text-[45px] pt-[3rem] underline">
-                                Payment Requisition in the last 30 days:
-                            </h1>
-                            <h1 className="  text-white  py-2 px-3 text-[70px] ">
-                                #{thrirtyDaysPaidBatches}
-                            </h1>
-                        </div>
+            </div>
+            <div className="flex w-full pt-3 gap-3 rounded-md px-3 justify-center mt-2">
+                <div className="flex-1 bg-[#5f5f8c84] border-white h-[19rem] rounded-md items-center justify-center">
+                    <div>
+                        <h1 className="text-white py-4 [7rem] px-[7rem] text-[51px] pt-[3rem] underline">
+                            Total amount in Payment Requisition
+                        </h1>
+                        <h1 className="text-white py-2 px-[7rem] text-[50px]">
+                            #{thrirtyDaysPaidBatches}
+                        </h1>
                     </div>
-                </div> */}
+                </div>
+                <div className="flex-1 bg-[#5f5f8c84] border-white h-[19rem] rounded-md items-center justify-center">
+                    <div className="">
+                        <h1 className="text-white py-2 px-[7rem] text-[51px] pt-[3rem] underline ">
+                            Total Batches Paid from 1st of January Till Date
+                        </h1>
+                        <h1 className="text-white py-2 text-[50px] px-[7rem]">
+                            #{totalPaidBatchesForTheYear}
+                        </h1>
+                    </div>
+                </div>
             </div>
         </div>
     );
