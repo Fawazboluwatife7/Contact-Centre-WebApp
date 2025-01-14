@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import TicketsGraph from "./TicketsGraph";
+
 import { MdFilterAlt } from "react-icons/md";
 
 function DateDropdown({ options, sendNumber, className }) {
@@ -11,7 +11,6 @@ function DateDropdown({ options, sendNumber, className }) {
 
         sendNumber(number);
     };
-
     return (
         <div>
             <select value={dateType} onChange={pickDate} className={className}>

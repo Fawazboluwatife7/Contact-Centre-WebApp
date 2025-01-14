@@ -30,12 +30,12 @@ const Login = () => {
         },
     ];
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    useEffect(() => {
-        if (user) {
-            navigate("/dashboard");
-        }
-    }, []);
+    // const user = JSON.parse(localStorage.getItem("user"));
+    // useEffect(() => {
+    //     if (user) {
+    //         navigate("/dashboard");
+    //     }
+    // }, []);
     const handleLogin = async () => {
         if (!email || !password) {
             setMsg("Email and password are required.");
@@ -56,7 +56,7 @@ const Login = () => {
                     body: JSON.stringify({
                         email,
                         password,
-                        logInSource: "Sales",
+                        logInSource: "CaseManangement",
                     }),
                 },
             );
@@ -72,8 +72,8 @@ const Login = () => {
             }
 
             // Login successful
-            localStorage.setItem("user", JSON.stringify(data));
-            navigate("/dashboard");
+            // localStorage.setItem("user", JSON.stringify(data));
+            // navigate("/dashboard");
         } catch (err) {
             setLoading(false);
             setError("An error occurred. Please try again later.");

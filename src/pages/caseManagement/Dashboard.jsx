@@ -12,11 +12,11 @@ const Dashboard = () => {
         navigate(path);
     };
 
-    useEffect(() => {
-        if (!user) {
-            navigate("/");
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (!user) {
+    //         navigate("/");
+    //     }
+    // }, []);
 
     return (
         <div>
