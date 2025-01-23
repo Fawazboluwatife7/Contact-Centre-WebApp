@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import Sidebar from "../../pages/caseManagement/CMSidebar";
 import Navbar from "../../components/Navbar";
@@ -157,6 +158,7 @@ const headers = {
 };
 
 const EnrolleeCustomerPage = () => {
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const navigate = useNavigate();
 
     const handleNavigate = (path) => {
@@ -185,6 +187,9 @@ const EnrolleeCustomerPage = () => {
         setIsHospitalModalOpen(true); // Show the modal
     };
 
+    const location = useLocation();
+    const enrollee = location.state?.enrollee;
+
     const closeHospitalModal = () => {
         setSelectedHospitalItem(null); // Clear the selected item
         setIsHospitalModalOpen(false); // Hide the modal
@@ -211,6 +216,47 @@ const EnrolleeCustomerPage = () => {
         }
     };
 
+    console.log(
+        "getting PA",
+        fetch(
+            `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid
+            `,
+            {
+                method: "GET",
+            },
+        ),
+    );
+    useEffect(() => {
+        GetPAHistory();
+    }, []);
+
+    async function GetPAHistory() {
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.result.json();
+
+            console.log("All:", data);
+
+            setClaimsPaid(getAllClaimsPaid.toLocaleString("en-US"));
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+
     return (
         <div>
             <Sidebar />
@@ -219,7 +265,8 @@ const EnrolleeCustomerPage = () => {
                 <div className="mx-7 mt-3">
                     <div className=" flex justify-between">
                         <span className="text-xl  text-[2.2rem] font-medium">
-                            Tunde Bakare - Enrollee #LH233344
+                            {enrollee?.Member_CustomerName} - Enrollee #
+                            {enrollee?.Member_EnrolleeID}
                         </span>
                         <div className=" flex gap-3">
                             <button
@@ -231,7 +278,10 @@ const EnrolleeCustomerPage = () => {
                             </button>
                         </div>
                     </div>
-                    <CustomerModal selectedStatus={selectedStatus} />
+                    <CustomerModal
+                        selectedStatus={selectedStatus}
+                        enrollee={enrollee}
+                    />
                     {/* Table */}
                     {/* Tabs Section */}
                     <div className="flex mt-6 border-b space-x-1">

@@ -2,47 +2,17 @@ import React, { useState } from "react";
 import Sidebar from "../../pages/caseManagement/CMSidebar";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
-
-import { PiCross } from "react-icons/pi";
+import { CgSearch } from "react-icons/cg";
+import axios from "axios";
 
 const Enrollee = () => {
     const navigate = useNavigate();
-    const handleNavigate = (path) => {
-        navigate(path);
+    const handleNavigate = (enrollee) => {
+        navigate("/enrolleeCustomerinfo", { state: { enrollee } });
     };
-    const [enrollees] = useState([
-        {
-            id: 1,
-            firstName: "John",
-            lastName: "Doe",
-            enrolleeId: "EN123",
-            phone: "1234567890",
-            email: "john@example.com",
-            group: "Group A",
-            image: "Avatar.svg",
-        },
-        {
-            id: 2,
-            firstName: "Jane",
-            lastName: "Smith",
-            enrolleeId: "EN124",
-            phone: "0987654321",
-            email: "jane@example.com",
-            group: "Group B",
-            image: "Avatar.svg",
-        },
-        {
-            id: 3,
-            firstName: "Alice",
-            lastName: "Johnson",
-            enrolleeId: "EN125",
-            phone: "1112223333",
-            email: "alice@example.com",
-            group: "Group C",
-            image: "Avatar.svg",
-        },
-    ]);
 
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const [enrollees, setEnrollees] = useState([]);
     const [searchInputs, setSearchInputs] = useState({
         firstName: "",
         lastName: "",
@@ -51,98 +21,132 @@ const Enrollee = () => {
         email: "",
         group: "",
     });
+    const [isLoading, setIsLoading] = useState(false);
 
-    const getFilteredEnrollees = () => {
-        const areAllInputsEmpty = Object.values(searchInputs).every(
-            (value) => value === "",
-        );
+    const [results, setResults] = useState([]); // Stores the fetched results
+    const [currentPage, setCurrentPage] = useState(1); // Tracks the current page
+    const itemsPerPage = 10; // Limit items per page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedResults = results.slice(startIndex, endIndex);
 
-        if (areAllInputsEmpty) return [];
-
-        return enrollees.filter((enrollee) =>
-            Object.keys(searchInputs).every((key) =>
-                searchInputs[key]
-                    ? enrollee[key]
-                          ?.toLowerCase()
-                          .includes(searchInputs[key].toLowerCase())
-                    : true,
-            ),
-        );
-    };
+    // Dynamic fields array
+    const fields = [
+        { name: "firstname", label: "First Name" },
+        { name: "lastname", label: "Last Name" },
+        { name: "enrolleeid", label: "Enrollee ID" },
+        { name: "mobileNo", label: "Phone" },
+        { name: "email", label: "Email" },
+        { name: "group_id", label: "Group" },
+    ];
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setSearchInputs({ ...searchInputs, [name]: value });
     };
 
-    const filteredEnrollees = getFilteredEnrollees();
+    const fetchEnrollees = async () => {
+        setIsLoading(true);
+        try {
+            const params = {
+                firstname: searchInputs.firstname || null,
+                lastname: searchInputs.lastname || null,
+                enrolleeid: searchInputs.enrolleeid || null,
+                mobileNo: searchInputs.mobileNo || null,
+                email: searchInputs.email || null,
+                group_id: searchInputs.group_id || null,
+            };
+
+            // Construct the query string, excluding empty or null values
+            const queryParams = Object.entries(params)
+                .filter(([_, value]) => value) // Keep only non-empty values
+                .map(
+                    ([key, value]) =>
+                        `${encodeURIComponent(key)}=${encodeURIComponent(
+                            value,
+                        )}`,
+                )
+                .join("&");
+
+            console.log(
+                "enrollee",
+                await fetch(
+                    `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByDetails?${queryParams}`,
+                    {
+                        method: "GET",
+                    },
+                ),
+            );
+
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByDetails?${queryParams}`,
+                {
+                    method: "GET",
+                },
+            );
+            const data = await response.json();
+            setEnrollees(data.resultS);
+            console.log("Data:", data.result);
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+
+            setResults(data.result);
+        } catch (error) {
+            console.error("Error fetching enrollees:", error);
+            setEnrollees([]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="flex bg-white-500">
             <Sidebar />
-            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh]">
+            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-full ">
                 <Navbar />
                 <div className="mx-7">
-                    <div className="mb-2 mt-4">
-                        <h1 className="text-[#353535] font-normal text-[25px]">
+                    <div className="mb-2 mt-4 flex justify-between">
+                        <h1 className="text-[#353535]  text-[25px] font-bold">
                             Enrollees
                         </h1>
+                        <button
+                            onClick={fetchEnrollees}
+                            className="bg-red-700 text-white px-4 py-2 rounded-md flex"
+                        >
+                            <CgSearch className=" w-5 h-5 mt-1 mr-2" />
+                            Search
+                        </button>
                     </div>
                     {/* Search Inputs */}
                     <div className="bg-white grid md:grid-cols-3 gap-4 p-4 w-full rounded-md">
-                        {[
-                            "firstName",
-                            "lastName",
-                            "enrolleeId",
-                            "phone",
-                            "email",
-                            "group",
-                        ].map((field) => (
-                            <div key={field}>
+                        {fields.map((field) => (
+                            <div key={field.name}>
                                 <label
-                                    htmlFor={field}
+                                    htmlFor={field.name}
                                     className="text-[#353535] block capitalize"
                                 >
-                                    {field.replace(/([A-Z])/g, " $1")}
+                                    {field.label}
                                 </label>
                                 <div className="relative">
-                                    {/* Input with icon */}
                                     <input
                                         type="text"
-                                        name={field}
-                                        placeholder={`Search ${field}...`}
+                                        name={field.name}
+                                        placeholder={`Search ${field.label}...`}
                                         className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
-                                        value={searchInputs[field]}
+                                        value={searchInputs[field.name]}
                                         onChange={handleInputChange}
                                     />
-                                    {/* Search Icon */}
-                                    {!searchInputs[field] && (
-                                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth={1.5}
-                                                stroke="currentColor"
-                                                className="w-5 h-5"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M21 21l-4.35-4.35m2.325-5.915a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z"
-                                                />
-                                            </svg>
-                                        </span>
-                                    )}
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     {/* Table */}
-                    <div className="relative overflow-x-auto shadow-md mt-3 ">
-                        <table className="w-full text-sm text-left rtl:text-right text-black">
-                            <thead className="text-xs uppercase bg-white text-black">
+                    <div className="relative overflow-x-auto shadow-md mt-3 rounded-md">
+                        <table className="w-full text-sm text-left rtl:text-right text-black rounded-md">
+                            <thead className="text-base uppercase bg-white text-black   border-b-2 border-black ">
                                 <tr>
                                     <th className="px-2 py-3"></th>
                                     <th className="px-6 py-3">Name</th>
@@ -152,28 +156,48 @@ const Enrollee = () => {
                                     <th className="px-6 py-3">Group</th>
                                 </tr>
                             </thead>
-                            <tbody
-                                className="bg-white cursor-pointer"
-                                onClick={() =>
-                                    handleNavigate("/enrolleeCustomerinfo")
-                                }
-                            >
-                                {filteredEnrollees.length > 0 ? (
-                                    filteredEnrollees.map((enrollee) => (
-                                        <tr key={enrollee.id}>
-                                            <td className="px-2 py-3"></td>
-                                            <td className="px-6 py-3">{`${enrollee.firstName} ${enrollee.lastName}`}</td>
-                                            <td className="px-6 py-3">
-                                                {enrollee.enrolleeId}
+                            <tbody>
+                                {isLoading ? (
+                                    <tr>
+                                        <td
+                                            colSpan="6"
+                                            className="text-center py-4 "
+                                        >
+                                            <p>Loading...</p>
+                                        </td>
+                                    </tr>
+                                ) : paginatedResults &&
+                                  paginatedResults.length > 0 ? (
+                                    paginatedResults.map((enrollee, index) => (
+                                        <tr
+                                            key={index}
+                                            className="bg-white border-b border-black hover:bg-gray-200 cursor-pointer"
+                                            onClick={() =>
+                                                handleNavigate(enrollee)
+                                            }
+                                        >
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {index + 1}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.Member_CustomerName ||
+                                                    "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.Member_EnrolleeID ||
+                                                    "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.Member_Phone_One ||
+                                                    "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.Member_EmailAddress_One ||
+                                                    "N/A"}
                                             </td>
                                             <td className="px-6 py-3">
-                                                {enrollee.phone}
-                                            </td>
-                                            <td className="px-6 py-3">
-                                                {enrollee.email}
-                                            </td>
-                                            <td className="px-6 py-3">
-                                                {enrollee.group}
+                                                {enrollee.Client_GroupID ||
+                                                    "N/A"}
                                             </td>
                                         </tr>
                                     ))
@@ -183,19 +207,38 @@ const Enrollee = () => {
                                             colSpan="6"
                                             className="text-center py-4"
                                         >
-                                            <img
-                                                src="noRecordFound.svg"
-                                                alt="No records found"
-                                                className="mx-auto"
-                                            />
-                                            <p className="mt-2 text-gray-500">
-                                                No matching records found
-                                            </p>
+                                            No matching records found
                                         </td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
+                        {/* 
+                         This is for navigation */}
+                        {results.length > itemsPerPage && (
+                            <div className="flex justify-center mt-4">
+                                <button
+                                    className="px-4 py-2 mx-1 bg-blue-500 text-white rounded"
+                                    disabled={currentPage === 1}
+                                    onClick={() =>
+                                        setCurrentPage((prev) =>
+                                            Math.max(prev - 1, 1),
+                                        )
+                                    }
+                                >
+                                    Previous
+                                </button>
+                                <button
+                                    className="px-4 py-2 mx-1 bg-blue-500 text-white rounded"
+                                    disabled={endIndex >= results.length}
+                                    onClick={() =>
+                                        setCurrentPage((prev) => prev + 1)
+                                    }
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
