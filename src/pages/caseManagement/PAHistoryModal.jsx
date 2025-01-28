@@ -48,10 +48,14 @@ const PAHistoryModal = ({ item, onClose }) => {
                         <tbody>
                             <tr className="text-gray-700">
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.code}
+                                    {item.diagcode?.split(" ")[0] || "N/A"}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.provider}
+                                    {item.diagcode
+                                        ?.split(",")[0]
+                                        ?.split(" ")
+                                        .slice(1)
+                                        .join(" ") || "N/A"}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
                                     {item.status}

@@ -144,9 +144,9 @@ const CustomerModal = ({ selectedStatus }) => {
                             </span>
                             <span className="block font-medium text-[14px]">
                                 {
-                                    new Date(enrollee.Member_DateOfBirth)
-                                        .toISOString()
-                                        .split("T")[0]
+                                    new Date(
+                                        enrollee.Member_DateOfBirth,
+                                    ).toLocaleDateString("en-GB") // Formats the date as day/month/year
                                 }
                             </span>
                         </div>
@@ -230,15 +230,15 @@ const CustomerModal = ({ selectedStatus }) => {
 
                             <span className=" block font-medium break-words text-[14px] leading-tight">
                                 {
-                                    new Date(enrollee.Client_DateAccepted)
-                                        .toISOString()
-                                        .split("T")[0]
+                                    new Date(
+                                        enrollee.Client_DateAccepted,
+                                    ).toLocaleDateString("en-GB") // Formats the date as day/month/year
                                 }
-                                /
+                                -
                                 {
-                                    new Date(enrollee.Client_Expiry_date)
-                                        .toISOString()
-                                        .split("T")[0]
+                                    new Date(
+                                        enrollee.Client_Expiry_date,
+                                    ).toLocaleDateString("en-GB") // Formats the date as day/month/year
                                 }
                             </span>
                         </div>

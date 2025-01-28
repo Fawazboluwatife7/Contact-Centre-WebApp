@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { MdFilterAlt } from "react-icons/md";
 
 function DateDropdown({ options, sendNumber, className }) {
-    const [dateType, setDateType] = useState("1"); // Remember your choice
+    const [dateType, setDateType] = useState("1");
 
     const pickDate = (event) => {
         const number = event.target.value;

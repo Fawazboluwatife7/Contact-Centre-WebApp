@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { FaFilter } from "react-icons/fa";
 
 import Sidebar from "../../pages/caseManagement/CMSidebar";
 import Navbar from "../../components/Navbar";
@@ -11,75 +12,32 @@ import { RiCrossFill } from "react-icons/ri";
 import PAHistoryModal from "./PAHistoryModal";
 import HospitalVisitModal from "./HospitalVisitModal";
 
-const PAHistoryArray = [
-    {
-        id: "947736",
-        name: "Yamal bakare",
-        date: "29/10/2024",
-        plan: "Magnum",
-        diagnosis: "persistant stomachaches",
-        code: "R59.9",
-        provider: "Rexxon Healthcare",
-        procedure: "Headache and stitches",
-        issuer: "Ode p.",
-        casemanager: " Valery O.",
-        status: "Discharged",
-        drugs: "Paracetamol, Folic acid, Calcium suppplement",
-        investigation: "X-ray scan",
-        treatment: "Had head stitches",
-    },
-    {
-        id: "9436",
-        name: "Yag Lanbre",
-        date: "29/10/2024",
-        plan: "Magnum",
-        diagnosis: "persistant stomachaches",
-        code: "R59.9",
-        provider: "Rexxon Healthcare",
-        procedure: "Headache and stitches",
-        issuer: "Ode p.",
-        casemanager: " Valery O.",
-        status: "Discharged",
-        drugs: "Dolamata B tab",
-        investigation: "specialist consultation",
-        treatment: "none",
-    },
-];
+function DateDropdown({ options, sendNumber, className }) {
+    const [selectedValue, setSelectedValue] = useState("");
 
-const HospitalVisitArray = [
-    {
-        visitType: "Outpatients",
-        status: "Accepted",
-        diagnosis: "persistant stomachaches",
-        date: "29/10/2024",
-        benefits: "specialist consultation",
-        hospitalvisitdate: "01/02/2022",
-        provider: "Rexxon Healthcare",
-        diagnosis: "Paracetamol",
-        description: "Cardiologist consultation",
-        chargeamount: "#10,000",
-        qty: "30",
+    const handleChange = (event) => {
+        const value = event.target.value;
+        setSelectedValue(value);
+        sendNumber(value);
+    };
 
-        preauthcode: "LH/RAD/248225",
-        visitType: "Outpatient",
-        hospitalstatus: "Approved",
-    },
-    {
-        diagnosis: "persistant stomachaches",
-        date: "29/10/2024",
-        benefits: "specialist consultation",
-        hospitalvisitdate: "01/02/20212",
-        provider: "Rexxon Healthcare",
-        diagnosis: "Paracetamol",
-        description: "Cardiologist consultation",
-        chargeamount: "#30,000",
-        qty: "40",
-        preauthcode: "LH/RAD/248225",
-        visitType: "Outpatient",
-        hospitalstatus: "Approved",
-    },
-];
-
+    return (
+        <select
+            value={selectedValue}
+            onChange={handleChange}
+            className={`border border-gray-300 rounded p-2 ${className}`}
+        >
+            <option value="" disabled>
+                Select Service Type
+            </option>
+            {options.map((option) => (
+                <option key={option.value} value={option.value}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
+    );
+}
 const BenefitsArray = [
     {
         sn: "",
@@ -125,7 +83,6 @@ const headers = {
         "ID",
         "Name",
         "Date",
-        "Plan",
         "Diagnosis",
         "Provider",
         "Procedure",
@@ -139,19 +96,20 @@ const headers = {
         "Provider",
         "Diagnosis",
         "Description",
-        "Charge Amount",
+        "Billed Amount",
         "Qty",
+        "Amount Paid",
         "Preauth code",
         "Visit Type",
         "Status",
     ],
     Benefits: [
-        "SN",
-
-        "Benefits Code",
-        "Benefits Name",
-        "Benefits Name FR",
-        "Date",
+        "Benefit Name",
+        "Service Limit",
+        "Service Amount Used",
+        "Service Balance",
+        "Visit Limit",
+        "Visit USed",
     ],
 
     Concessions: ["Date", "Concession"],
@@ -165,7 +123,28 @@ const EnrolleeCustomerPage = () => {
         navigate(path);
     };
 
+    const servTypes = [
+        { value: 1, label: "Inpatient" },
+        { value: 2, label: "Outpatient" },
+        { value: 51, label: "Major Disease Benefit" },
+        { value: 53, label: "Maternity" },
+        { value: 65, label: "Dentistry" },
+        { value: 91, label: "Additional Benefits" },
+        { value: 92, label: "Advanced Investigations" },
+        { value: 101, label: "Health Check Basic" },
+        { value: 102, label: "Eye Care" },
+        { value: 137, label: "Chronic Diseases Treatment" },
+    ];
+
+    const [selectedValue, setSelectedValue] = useState(null);
+    const [benefit, setBenefit] = useState(null);
+    const [service, setService] = useState([]);
     const [activeTab, setActiveTab] = useState("PA History");
+    const [pa, setPA] = useState([]);
+    const [hospitalHistory, setHospitalHistory] = useState([]);
+
+    const [visitTypes, setVisitTypes] = useState([]);
+    const [selectedServiceId, setSelectedServiceId] = useState(null); // To store the selected servtype_id
 
     const [selectedItem, setSelectedItem] = useState(null); // Track selected item
     const [isModalOpen, setIsModalOpen] = useState(false); // Manage modal visibility
@@ -176,6 +155,13 @@ const EnrolleeCustomerPage = () => {
         setSelectedItem(item); // Set the clicked item's data
         setIsModalOpen(true); // Show the modal
     };
+
+    useEffect(() => {
+        if (selectedValue) {
+            // Only call if there's a selected value
+            GetBenefit();
+        }
+    }, [selectedValue]);
 
     const closeModal = () => {
         setSelectedItem(null); // Clear the selected item
@@ -200,16 +186,7 @@ const EnrolleeCustomerPage = () => {
     const [selectedStatus, setSelectedStatus] = useState(null); // Status state
 
     const [currentPage, setCurrentPage] = useState(1); // Active page
-    const itemsPerPage = 3; // Number of items per page
-    // const totalPages = Math.ceil(filteredData.length / itemsPerPage); // Total pages
-
-    // // Function to calculate the data for the current page
-    // const paginatedData = filteredData.slice(
-    //     (currentPage - 1) * itemsPerPage,
-    //     currentPage * itemsPerPage,
-    // );
-
-    // Handler to change pages
+    const itemsPerPage = 3;
     const changePage = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
@@ -219,8 +196,7 @@ const EnrolleeCustomerPage = () => {
     console.log(
         "getting PA",
         fetch(
-            `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid
-            `,
+            `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid`,
             {
                 method: "GET",
             },
@@ -244,11 +220,118 @@ const EnrolleeCustomerPage = () => {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            const data = await response.result.json();
+            const data = await response.json();
 
             console.log("All:", data);
 
-            setClaimsPaid(getAllClaimsPaid.toLocaleString("en-US"));
+            setPA(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+
+    useEffect(() => {
+        GetHospitalHistory();
+        GetService();
+    }, []);
+
+    async function GetHospitalHistory() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.Member_EnrolleeID}&fromdate=2010-12-31&todate=2025-12-31&network_type=
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("All:", data);
+
+            setHospitalHistory(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+
+    console.log(
+        "getting benefits",
+        fetch(
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedValue}
+            `,
+            {
+                method: "GET",
+            },
+        ),
+    );
+    async function GetBenefit(serviceId) {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${serviceId}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("benefitszzz:", data);
+
+            setBenefit(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+
+    console.log(
+        "service",
+        fetch(
+            `$${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.Member_MemberUniqueID}&Schemeid=${enrollee.Member_PlanID}
+            `,
+            {
+                method: "GET",
+            },
+        ),
+    );
+
+    async function GetService() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.Member_MemberUniqueID}&Schemeid=${enrollee.Member_PlanID}             
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("service:", data);
+
+            setService(data.result);
         } catch (error) {
             console.error(
                 "Error calculating total amount spent on enrollee:",
@@ -282,9 +365,10 @@ const EnrolleeCustomerPage = () => {
                         selectedStatus={selectedStatus}
                         enrollee={enrollee}
                     />
+
                     {/* Table */}
                     {/* Tabs Section */}
-                    <div className="flex mt-6 border-b space-x-1">
+                    <div className="flex border-b space-x-1 mt-5">
                         {tabs.map((tab) => (
                             <button
                                 key={tab}
@@ -298,6 +382,20 @@ const EnrolleeCustomerPage = () => {
                                 {tab}
                             </button>
                         ))}
+
+                        <div className="">
+                            <DateDropdown
+                                options={service.map((type) => ({
+                                    label: type.visittype, // Display text in the dropdown
+                                    value: type.servtype_id, // Value to be sent
+                                }))}
+                                sendNumber={(value) => {
+                                    setSelectedValue(value); // Update selected value
+                                    GetBenefit(value); // Fetch benefit based on selection
+                                }}
+                                className="outline-none bg-red-500 rounded-md ml-[26rem] text-white"
+                            />
+                        </div>
                     </div>
 
                     <div className="overflow-x-auto bg-white p-4 rounded-md">
@@ -316,36 +414,44 @@ const EnrolleeCustomerPage = () => {
                             </thead>
                             <tbody>
                                 {activeTab === "PA History" &&
-                                    PAHistoryArray.map((item, index) => (
+                                    pa.map((item, index) => (
                                         <tr
                                             key={index}
                                             className="hover:bg-gray-100"
                                             onClick={() => openModal(item)}
                                         >
                                             <td className="border px-4 py-2">
-                                                {item.id}
+                                                {item.VisitID}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.name}
+                                                {item.surname} {item.firstname}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.date}
+                                                {
+                                                    new Date(item.DateIssued)
+                                                        .toISOString()
+                                                        .split("T")[0]
+                                                }
                                             </td>
-                                            <td className="border px-4 py-2">
+                                            {/* <td className="border px-4 py-2">
                                                 {item.plan}
-                                            </td>
+                                            </td> */}
                                             <td className="border px-4 py-2">
-                                                {item.diagnosis}
+                                                {item.diagcode
+                                                    ?.split(",")[0]
+                                                    ?.split(" ")
+                                                    .slice(1)
+                                                    .join(" ") || "N/A"}
                                             </td>
                                             <td className="border px-4 py-2">
                                                 {item.provider}
                                             </td>
 
                                             <td className="border px-4 py-2">
-                                                {item.procedure}
+                                                {item.ProcedureDescription}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.issuer}
+                                                {item.issuedBy}
                                             </td>
                                             <td className="border px-4 py-2">
                                                 {item.casemanager}
@@ -357,12 +463,12 @@ const EnrolleeCustomerPage = () => {
                                                         : "text-red-500 border px-4 py-2"
                                                 }
                                             >
-                                                {item.status}
+                                                {item.PAStatus}
                                             </td>
                                         </tr>
                                     ))}
                                 {activeTab === "Hospital Visits" &&
-                                    HospitalVisitArray.map((item, index) => (
+                                    hospitalHistory.map((item, index) => (
                                         <tr
                                             key={index}
                                             className="hover:bg-gray-100"
@@ -374,19 +480,23 @@ const EnrolleeCustomerPage = () => {
                                                 {item.hospitalvisitdate}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.provider}
+                                                {item.Claim_Provider}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.diagnosis}
+                                                {item.Claim_Diagnosis}
                                             </td>
                                             <td className="border px-4 py-2">
                                                 {item.description}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.chargeamount}
+                                                {item.ClaimLine_TariffAmt ||
+                                                    "No Payment made"}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.qty}
+                                                {item.ClaimLine_units}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.ClaimLine_AmtPaid}
                                             </td>
 
                                             <td className="border px-4 py-2">
@@ -408,25 +518,28 @@ const EnrolleeCustomerPage = () => {
                                         </tr>
                                     ))}
                                 {activeTab === "Benefits" &&
-                                    BenefitsArray.map((item, index) => (
+                                    benefit.map((item, index) => (
                                         <tr
                                             key={index}
                                             className="hover:bg-gray-100"
                                         >
                                             <td className="border px-4 py-2">
-                                                <RiCrossFill className=" mx-auto text-red-700  bg-gray-200 rounded-full w-6 h-6" />
+                                                {item.Benefit}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.benefitscode}
+                                                {item.ServiceLimit}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.benefitsname}
+                                                {item.Used}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.benefitsnamefr}
+                                                {item.Balance}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.date}
+                                                {item.VisitsLimit}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.VisitsUsed}
                                             </td>
                                         </tr>
                                     ))}
