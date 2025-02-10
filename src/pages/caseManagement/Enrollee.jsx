@@ -205,9 +205,15 @@ const Enrollee = () => {
                                     <tr>
                                         <td
                                             colSpan="6"
-                                            className="text-center py-4"
+                                            className="h-64 text-center"
                                         >
-                                            No matching records found
+                                            <div className="flex justify-center items-center h-full">
+                                                <img
+                                                    src="/noRecordFound.svg"
+                                                    alt="No records found"
+                                                    className=" py-5 px-20" // Adjust size as needed
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 )}

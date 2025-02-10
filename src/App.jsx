@@ -48,6 +48,13 @@ import Login from "./pages/caseManagement/Login";
 import SalesLogin from "./pages/sales/SalesLogin";
 import DashboardCarousels from "./pages/caseManagement/DashboardCarousels";
 import ClaimSideDashboard from "./pages/caseManagement/ClaimSideDashboard";
+import CsDashboard from "./components/cs/csDashboard";
+import EnrollePaCode from "./components/cs/EnrolleePaCode";
+import EnrolleePaCodePage from "./pages/csPages/EnrolleePaCodePage";
+import GeneratePaCodePage from "./pages/csPages/GeneratePaCodePage";
+import CsPatientHistory from "./pages/csPages/CsPatientHistory";
+import ProviderPage from "./pages/csPages/ProviderPage";
+import ProvidersPage from "./pages/csPages/ProvidersPage";
 
 function App() {
     return (
@@ -70,6 +77,12 @@ function App() {
                     path="/enrolleeInformations"
                     element={<EnrolleeInformations />}
                 />
+                <Route path="/enrolleepa" element={<EnrollePaCode />} />
+                <Route path="/enrolleepage" element={<EnrolleesPage />} />
+                <Route path="/enrolleepp" element={<EnrolleePaCodePage />} />
+                <Route path="/generate" element={<GeneratePaCodePage />} />
+                <Route path="/providers" element={<ProvidersPage />} />
+
                 <Route path="/approve" element={<Approve />} />
                 <Route path="/reject" element={<Reject />} />
                 <Route path="/history" element={<History />} />
@@ -87,6 +100,11 @@ function App() {
                     path="/patienthistory"
                     element={<PatientAdmissionHistory />}
                 />
+                <Route
+                    path="/cspatienthistory"
+                    element={<CsPatientHistory />}
+                />
+                <Route path="/providers" element={<ProviderPage />} />
                 <Route path="/phistorymodal" element={<PatientInformation />} />
                 <Route path="/updateprofile" element={<UpdateProfile />} />
                 <Route path="/cmticket" element={<Ticket />} />
@@ -114,6 +132,7 @@ function App() {
                 /> */}
                 <Route path="/login-caseManagement" element={<Login />} />
                 <Route path="/sidedash" element={<ClaimSideDashboard />} />
+                <Route path="/csdashboard" element={<CsDashboard />} />
             </Routes>
         </BrowserRouter>
     );

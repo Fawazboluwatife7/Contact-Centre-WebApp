@@ -34,9 +34,7 @@ const PAHistoryModal = ({ item, onClose }) => {
                                 <th className="px-4 py-2 border border-gray-200">
                                     Date
                                 </th>
-                                <th className="px-4 py-2 border border-gray-200">
-                                    Drugs
-                                </th>
+
                                 <th className="px-4 py-2 border border-gray-200">
                                     Investigation
                                 </th>
@@ -58,16 +56,18 @@ const PAHistoryModal = ({ item, onClose }) => {
                                         .join(" ") || "N/A"}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.status}
+                                    {
+                                        new Date(item.DateIssued)
+                                            .toISOString()
+                                            .split("T")[0]
+                                    }
+                                </td>
+
+                                <td className="px-4 py-2 border border-gray-200">
+                                    {item.Benefit}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.drugs}
-                                </td>
-                                <td className="px-4 py-2 border border-gray-200">
-                                    {item.investigation}
-                                </td>
-                                <td className="px-4 py-2 border border-gray-200">
-                                    {item.treatment}
+                                    {item.ProcedureDescription}
                                 </td>
                             </tr>
                         </tbody>
@@ -94,11 +94,13 @@ const PAHistoryModal = ({ item, onClose }) => {
                         <tbody>
                             <tr className="text-gray-700">
                                 <td className="px-4 py-2 border border-gray-200 flex items-center gap-2 relative">
-                                    {item.id}
+                                    {item.VisitDetailsID}
 
                                     <FaRegCopy
                                         className="w-4 h-4 ml-4 cursor-pointer"
-                                        onClick={() => handleCopy(item.id)}
+                                        onClick={() =>
+                                            handleCopy(item.VisitDetailsID)
+                                        }
                                     />
 
                                     {showCopied && (
@@ -111,7 +113,7 @@ const PAHistoryModal = ({ item, onClose }) => {
                                     {item.provider}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.status}
+                                    {item.PAStatus}
                                 </td>
                             </tr>
                         </tbody>

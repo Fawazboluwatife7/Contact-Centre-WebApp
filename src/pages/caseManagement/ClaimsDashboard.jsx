@@ -251,6 +251,8 @@ const ClaimsDashboard = () => {
 
                 const totalClaims = validItems.length;
 
+                console.log("total claims", totalClaims);
+
                 function calculateFinanceInternalClaim() {
                     // Filter out items where PaidDate is null
                     const validClaims = validItems.filter(

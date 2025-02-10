@@ -54,28 +54,32 @@ const HospitalVisitModal = ({ item, onClose }) => {
                         <tbody>
                             <tr className="text-gray-700">
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.date}
+                                    {
+                                        new Date(item.ClaimLine_TreatmentDate)
+                                            .toISOString()
+                                            .split("T")[0]
+                                    }
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.diagnosis}
+                                    {item.Claim_Diagnosis}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.benefits}
+                                    {item.ClaimLine_BenefitDepartment}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.description}
+                                    {/* {item.xx} */}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.chargeamount}
+                                    {item.ClaimLine_TariffAmt}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.qty}
+                                    {item.ClaimLine_units}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.visitType}
+                                    {item.Claim_Service_Type}
                                 </td>
                                 <td className="px-4 py-2 border border-gray-200">
-                                    {item.hospitalstatus}
+                                    {item.Claim_status}
                                 </td>
                             </tr>
                         </tbody>

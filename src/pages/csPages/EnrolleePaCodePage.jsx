@@ -3,16 +3,16 @@ import Header from "../../components/cs/Header";
 import EnrolleePaCode from "../../components/cs/EnrolleePaCode";
 
 function EnrolleePaCodePage() {
-  return (
-    <div className="flex  ">
-      <CsSidebar />
+    return (
+        <div className="flex  ">
+            <CsSidebar />
 
-      <div className="flex flex-col ">
-        <Header />
-        <EnrolleePaCode />
-      </div>
-    </div>
-  );
+            <div className=" w-full">
+                <Header />
+                <EnrolleePaCode />
+            </div>
+        </div>
+    );
 }
 
 export default EnrolleePaCodePage;

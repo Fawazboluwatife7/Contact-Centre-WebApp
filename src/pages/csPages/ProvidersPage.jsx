@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CsSidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
 import { useNavigate } from "react-router-dom";
 import { CgSearch } from "react-icons/cg";
 import { useLocation } from "react-router-dom";
 
-const EnrolleesPage = () => {
+const ProvidersPage = () => {
     const navigate = useNavigate();
     const handleNavigate = (enrollee) => {
         navigate("/cspatienthistory", { state: { enrollee } });
@@ -14,16 +14,17 @@ const EnrolleesPage = () => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const [enrollees, setEnrollees] = useState([]);
     const [searchInputs, setSearchInputs] = useState({
-        firstName: "",
-        lastName: "",
-        enrolleeId: "",
-        phone: "",
-        email: "",
-        group: "",
+        "Provider Name": "",
+        "Provider Code": "",
+        Speciality: "",
+        Location: "",
+        Scheme: "",
+        EnrolleeId: "",
     });
     const [isLoading, setIsLoading] = useState(false);
 
     const [results, setResults] = useState([]); // Stores the fetched results
+    const [providers, SetProvider] = useState([]);
     const [currentPage, setCurrentPage] = useState(1); // Tracks the current page
     const itemsPerPage = 10; // Limit items per page
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -32,12 +33,12 @@ const EnrolleesPage = () => {
 
     // Dynamic fields array
     const fields = [
-        { name: "firstname", label: "First Name" },
-        { name: "lastname", label: "Last Name" },
-        { name: "enrolleeid", label: "Enrollee ID" },
-        { name: "mobileNo", label: "Phone" },
-        { name: "email", label: "Email" },
-        { name: "group_id", label: "Group" },
+        { name: "provider name", label: "Provider Name" },
+        { name: "provider code", label: "Provider Code" },
+        { name: "speciality", label: "Speciality" },
+        { name: "location", label: "Location" },
+        { name: "scheme", label: "Scheme" },
+        { name: "enrollee id", label: "Enrolle Id" },
     ];
 
     const handleInputChange = (e) => {
@@ -49,12 +50,12 @@ const EnrolleesPage = () => {
         setIsLoading(true);
         try {
             const params = {
-                firstname: searchInputs.firstname || null,
-                lastname: searchInputs.lastname || null,
-                enrolleeid: searchInputs.enrolleeid || null,
-                mobileNo: searchInputs.mobileNo || null,
-                email: searchInputs.email || null,
-                group_id: searchInputs.group_id || null,
+                "provider name": searchInputs.firstname || null,
+                "provider code": searchInputs.lastname || null,
+                speciality: searchInputs.enrolleeid || null,
+                location: searchInputs.mobileNo || null,
+                scheme: searchInputs.email || null,
+                "enrollee id": searchInputs.group_id || null,
             };
 
             // Construct the query string, excluding empty or null values
@@ -101,6 +102,23 @@ const EnrolleesPage = () => {
         }
     };
 
+    async function SearchProviders() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/ListValues/GetProviders`,
+                {
+                    method: "GET",
+                },
+            );
+            const data = await response.json();
+            SetProvider(data.result);
+        } catch {}
+    }
+
+    useEffect(() => {
+        SearchProviders();
+    }, []);
+
     return (
         <div className="flex bg-white-500">
             <CsSidebar />
@@ -109,7 +127,7 @@ const EnrolleesPage = () => {
                 <div className="mx-7">
                     <div className="mb-2 mt-4 flex justify-between">
                         <h1 className="text-[#353535]  text-[25px] font-bold">
-                            Enrollees
+                            Provider
                         </h1>
                         <button
                             onClick={fetchEnrollees}
@@ -146,14 +164,16 @@ const EnrolleesPage = () => {
                     {/* Table */}
                     <div className="relative overflow-x-auto shadow-md mt-3 rounded-md">
                         <table className="w-full text-sm text-left rtl:text-right text-black rounded-md">
-                            <thead className="text-base uppercase bg-white text-black   border-b-2 border-black ">
+                            <thead className="text-base uppercase bg-white  border-b-2 border-black ">
                                 <tr>
-                                    <th className="px-2 py-3"></th>
-                                    <th className="px-6 py-3">Name</th>
-                                    <th className="px-6 py-3">Enrollee ID</th>
+                                    <th className="px-2 py-3">S/N</th>
+                                    <th className="px-2 py-3">Provider Code</th>
+                                    <th className="px-6 py-3">Provider</th>
+                                    <th className="px-6 py-3">Speciality</th>
+                                    <th className="px-6 py-3">Provider plan</th>
                                     <th className="px-6 py-3">Phone</th>
                                     <th className="px-6 py-3">Email</th>
-                                    <th className="px-6 py-3">Group</th>
+                                    <th className="px-6 py-3">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -166,38 +186,36 @@ const EnrolleesPage = () => {
                                             <p>Loading...</p>
                                         </td>
                                     </tr>
-                                ) : paginatedResults &&
-                                  paginatedResults.length > 0 ? (
-                                    paginatedResults.map((enrollee, index) => (
+                                ) : providers && providers.length > 0 ? (
+                                    providers.map((enrollee, index) => (
                                         <tr
                                             key={index}
                                             className="bg-white border-b border-black hover:bg-gray-200 cursor-pointer"
-                                            onClick={() =>
-                                                handleNavigate(enrollee)
-                                            }
                                         >
                                             <td className="px-6 py-3 border-r border-black">
-                                                {index + 1}
+                                                {enrollee + 1}
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
-                                                {enrollee.Member_CustomerName ||
-                                                    "N/A"}
+                                                {enrollee.ProviderCode}
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
-                                                {enrollee.Member_EnrolleeID ||
-                                                    "N/A"}
+                                                {enrollee.FullName || "N/A"}
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
-                                                {enrollee.Member_Phone_One ||
-                                                    "N/A"}
+                                                {enrollee.Specialty || "N/A"}
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
-                                                {enrollee.Member_EmailAddress_One ||
-                                                    "N/A"}
+                                                {enrollee.vv2 || "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.Contact1 || "N/A"},
+                                                {enrollee.Contact2 || "N/A"}
                                             </td>
                                             <td className="px-6 py-3">
-                                                {enrollee.Client_GroupID ||
-                                                    "N/A"}
+                                                {enrollee.Email || "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                {enrollee.Status || "N/A"}
                                             </td>
                                         </tr>
                                     ))
@@ -252,4 +270,4 @@ const EnrolleesPage = () => {
     );
 };
 
-export default EnrolleesPage;
+export default ProvidersPage;

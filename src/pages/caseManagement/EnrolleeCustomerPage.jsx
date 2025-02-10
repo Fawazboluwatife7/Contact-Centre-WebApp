@@ -95,7 +95,7 @@ const headers = {
         "Date",
         "Provider",
         "Diagnosis",
-        "Description",
+        "Service",
         "Billed Amount",
         "Qty",
         "Amount Paid",
@@ -139,6 +139,7 @@ const EnrolleeCustomerPage = () => {
     const [selectedValue, setSelectedValue] = useState(null);
     const [benefit, setBenefit] = useState(null);
     const [service, setService] = useState([]);
+    const [concession, setConcession] = useState([]);
     const [activeTab, setActiveTab] = useState("PA History");
     const [pa, setPA] = useState([]);
     const [hospitalHistory, setHospitalHistory] = useState([]);
@@ -236,6 +237,7 @@ const EnrolleeCustomerPage = () => {
     useEffect(() => {
         GetHospitalHistory();
         GetService();
+        GetConcession();
     }, []);
 
     async function GetHospitalHistory() {
@@ -333,10 +335,30 @@ const EnrolleeCustomerPage = () => {
 
             setService(data.result);
         } catch (error) {
-            console.error(
-                "Error calculating total amount spent on enrollee:",
-                error,
+            console.error("Error getiing service:", error);
+        }
+    }
+    async function GetConcession() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeClaims/GetEnrolleeFlags?cif=${enrollee.Member_MemberUniqueID}            
+`,
+                {
+                    method: "GET",
+                },
             );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("Concession:", data.result);
+
+            setConcession(data.result);
+        } catch (error) {
+            console.error("Error fetching concession:", error);
         }
     }
 
@@ -366,8 +388,6 @@ const EnrolleeCustomerPage = () => {
                         enrollee={enrollee}
                     />
 
-                    {/* Table */}
-                    {/* Tabs Section */}
                     <div className="flex border-b space-x-1 mt-5">
                         {tabs.map((tab) => (
                             <button
@@ -477,7 +497,13 @@ const EnrolleeCustomerPage = () => {
                                             }
                                         >
                                             <td className="border px-4 py-2">
-                                                {item.hospitalvisitdate}
+                                                {
+                                                    new Date(
+                                                        item.ClaimLine_TreatmentDate,
+                                                    )
+                                                        .toISOString()
+                                                        .split("T")[0]
+                                                }
                                             </td>
                                             <td className="border px-4 py-2">
                                                 {item.Claim_Provider}
@@ -486,7 +512,9 @@ const EnrolleeCustomerPage = () => {
                                                 {item.Claim_Diagnosis}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.description}
+                                                {
+                                                    item.ClaimLine_BenefitDepartment
+                                                }
                                             </td>
                                             <td className="border px-4 py-2">
                                                 {item.ClaimLine_TariffAmt ||
@@ -500,60 +528,88 @@ const EnrolleeCustomerPage = () => {
                                             </td>
 
                                             <td className="border px-4 py-2">
-                                                {item.preauthcode}
+                                                {item.Claim_Authorisation}
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.visitType}
+                                                {item.Claim_Service_Type}
                                             </td>
+                                            <td className="border px-4 py-2">
+                                                {item.Claim_status}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                {activeTab === "Benefits" && // Ensure this only affects Benefits
+                                    (!selectedValue ? ( // If no scheme is selected, show "Please select a scheme"
+                                        <tr>
                                             <td
-                                                className={
-                                                    item.hospitalstatus ===
-                                                    "Approved"
-                                                        ? "text-green-500 border px-4 py-2"
-                                                        : "text-red-500 border px-4 py-2"
-                                                }
+                                                colSpan="6"
+                                                className="h-64 text-center"
                                             >
-                                                {item.hospitalstatus}
+                                                <div className="flex justify-center items-center w-full h-full">
+                                                    <h1 className="text-gray-500 text-lg">
+                                                        Please select a service
+                                                        type
+                                                    </h1>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ) : benefit && benefit.length > 0 ? ( // If benefits exist, display them
+                                        benefit.map((item, index) => (
+                                            <tr
+                                                key={index}
+                                                className="hover:bg-gray-100"
+                                            >
+                                                <td className="border px-4 py-2">
+                                                    {item.Benefit}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.ServiceLimit}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.Used}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.Balance}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.VisitsLimit}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.VisitsUsed}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        // If scheme is selected but no benefits exist, show "No Record Found"
+                                        <tr>
+                                            <td
+                                                colSpan="6"
+                                                className="h-64 text-center"
+                                            >
+                                                <div className="flex justify-center items-center w-full h-full">
+                                                    <h1 className="py-5 px-20">
+                                                        No Record Found
+                                                    </h1>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
-                                {activeTab === "Benefits" &&
-                                    benefit.map((item, index) => (
-                                        <tr
-                                            key={index}
-                                            className="hover:bg-gray-100"
-                                        >
-                                            <td className="border px-4 py-2">
-                                                {item.Benefit}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.ServiceLimit}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.Used}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.Balance}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.VisitsLimit}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.VisitsUsed}
-                                            </td>
-                                        </tr>
-                                    ))}
+
                                 {activeTab === "Concessions" &&
-                                    concessionsArray.map((item, index) => (
+                                    concession.map((item, index) => (
                                         <tr
                                             key={index}
                                             className="hover:bg-gray-100"
                                         >
                                             <td className="border px-4 py-2">
-                                                {item.concessiondate}
+                                                {
+                                                    new Date(item.FlaggedOn)
+                                                        .toISOString()
+                                                        .split("T")[0]
+                                                }
                                             </td>
                                             <td className="border px-4 py-2">
-                                                {item.concession}
+                                                {item.FlagDescription}
                                             </td>
                                         </tr>
                                     ))}
