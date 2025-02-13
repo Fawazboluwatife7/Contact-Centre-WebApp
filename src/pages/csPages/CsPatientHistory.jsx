@@ -54,294 +54,6 @@ function DateDropdown({ options, sendNumber, className }) {
     );
 }
 
-const managementArray = [
-    {
-        code: "R59.9",
-        diagnosis: "Resistant headaches",
-        date: "29/10/2024",
-        provider: "Rexxon Healthcare",
-        drugs: "Paracetamol",
-        investigation: "X-Ray and scan",
-        treatment: "Headache and stitches",
-        status: "Approved",
-    },
-    {
-        code: "R59.9",
-        diagnosis: "Resistant headaches",
-        date: "29/10/2024",
-        provider: "Rexxon Healthcare",
-        drugs: "Paracetamol",
-        investigation: "X-Ray and scan",
-        treatment: "Headache and stitches",
-        status: "Approved",
-    },
-    {
-        code: "R59.9",
-        diagnosis: "Resistant headaches",
-        date: "29/10/2024",
-        provider: "Rexxon Healthcare",
-        drugs: "Paracetamol",
-        investigation: "X-Ray and scan",
-        treatment: "Headache and stitches",
-        status: "Rejected",
-    },
-];
-
-const PAHistoryArray = [
-    {
-        date: "29/10/2024",
-        provider: "Rexxon Healthcare",
-        diagnosis: "Resistant headaches",
-
-        description: "Cardiologist consultation",
-        chargeAmount: "#10,000",
-        quantity: "30",
-        preauthCode: "LH/RAD/248225",
-        visitType: "Outpatient",
-        status: "Approved",
-    },
-    {
-        date: "29/10/2024",
-        provider: "R Jolad",
-        diagnosis: "Resistant headaches",
-        description: "Cardiologist consultation",
-        chargeAmount: "#10,000",
-        quantity: "30",
-        preauthCode: "LH/RAD/248225",
-        visitType: "Outpatient",
-        status: "Rejected",
-    },
-    {
-        date: "29/10/2024",
-        provider: "Mount Sinai",
-        diagnosis: "Resistant headaches",
-        description: "Cardiologist consultation",
-        chargeAmount: "#10,000",
-        quantity: "30",
-        preauthCode: "LH/RAD/248225",
-        visitType: "Outpatient",
-        status: "Rejected",
-    },
-    {
-        date: "29/10/2024",
-        provider: "Mount Sinai",
-        diagnosis: "Resistant headaches",
-        description: "Cardiologist consultation",
-        chargeAmount: "#10,000",
-        quantity: "30",
-        preauthCode: "LH/RAD/248225",
-        visitType: "Outpatient",
-        status: "Approved",
-    },
-];
-
-const AdmissionHistory = [
-    {
-        id: "947766",
-        name: "Tunde Bakare",
-        startDate: "22/10/2024",
-        endDate: "29/10/2024",
-
-        plan: "Magnum",
-        diagnosis: "Madness",
-        provider: "Rexxon Healthcare",
-        issuer: "Ode P.",
-        state: "Lagos",
-    },
-
-    {
-        id: "947726",
-
-        startDate: "22/10/2024",
-        endDate: "29/10/2024",
-        name: "Tunde Bakare",
-        plan: "Magnum",
-        diagnosis: "Madness",
-        provider: "Rexxon Healthcare",
-        issuer: "Ode P.",
-        state: "Lagos",
-    },
-
-    {
-        id: "947716",
-
-        startDate: "22/10/2024",
-        endDate: "29/10/2024",
-        name: "Tunde Bakare",
-        plan: "Magnum",
-        diagnosis: "Madness",
-        provider: "Rexxon Healthcare",
-        issuer: "Ode P.",
-        state: "Lagos",
-    },
-
-    {
-        id: "947736",
-
-        startDate: "22/10/2024",
-        endDate: "29/10/2024",
-        name: "Tunde Bakare",
-        plan: "Magnum",
-        diagnosis: "Madness",
-        provider: "Rexxon Healthcare",
-        issuer: "Ode P.",
-        state: "Lagos",
-    },
-    {
-        name: "Tunde Bakare",
-        id: "947736",
-        startDate: "2/10/2024",
-        endDate: "9/10/2024",
-        plan: "Magnum",
-        diagnosis: "Madness",
-        provider: "Rexxon Healthcare",
-        issuer: "Ode P.",
-        state: "Lagos",
-    },
-];
-
-const Benefits = [
-    {
-        startDate: "02/02/2022",
-        memberName: "Tunde Bape",
-        planName: "PRO2025",
-        serviceName: "Outpatient",
-        benefits: "Outpatient",
-        aggregateLimit: "0",
-        serviceTypeLimit: "IndividualLimit",
-        serviceLimit: "Unlimited",
-        serviceLimitUnit: "0",
-        benefit: "Individual",
-    },
-    {
-        startDate: "02/02/2022",
-        memberName: "John Bape",
-        planName: "PRO2025",
-        serviceName: "Outpatient",
-        benefits: "Outpatient",
-        aggregateLimit: "0",
-        serviceTypeLimit: "IndividualLimit",
-        serviceLimit: "Unlimited",
-        serviceLimitUnit: "0",
-        benefit: "Individual",
-    },
-    {
-        startDate: "02/02/2022",
-        memberName: "Merlin Gapko",
-        planName: "PRO2025",
-        serviceName: "Outpatient",
-        benefits: "Outpatient",
-        aggregateLimit: "0",
-        serviceTypeLimit: "IndividualLimit",
-        serviceLimit: "Unlimited",
-        serviceLimitUnit: "0",
-        benefit: "Individual",
-    },
-    {
-        startDate: "02/02/2022",
-        memberName: "Jude Belligham",
-        planName: "PRO2025",
-        serviceName: "Outpatient",
-        benefits: "Outpatient",
-        aggregateLimit: "0",
-        serviceTypeLimit: "IndividualLimit",
-        serviceLimit: "Unlimited",
-        serviceLimitUnit: "0",
-        benefit: "Individual",
-    },
-];
-
-const EnrolleeInfo = {
-    name: "Tunde Bakare",
-    enrolleeId: "LH09980/0",
-    group: "Sterling",
-    scheme: "NGPRO",
-    age: 62,
-    sex: "Male",
-    policyDate: "02/10/2021 - 02/10/2024",
-    dob: "01 October 1960",
-    phoneNumber: "+2348035911412",
-    address: "122/123 Funsho Williams Avenue, Surulere, Lagos",
-    email: "tundebakare@gmail.com",
-    status: "Active",
-    nextOfKin: "Shade Bakare",
-    nokPhoneNumber: "+2349030302321",
-    profileImage: "profile-image-url-here",
-    id: "977735",
-};
-
-const concession = [
-    {
-        date: "02/10/2021  11:20AM",
-        concession: "Permitted to use selected grade A hospitals",
-    },
-    {
-        date: "02/10/2021  11:20AM",
-        concession: "Can use gym sunscription more than  twice a week",
-    },
-    {
-        date: "02/10/2021  11:20AM",
-        concession: "Permitted to use selected grade A hospitals",
-    },
-];
-const exclusions = [
-    {
-        approver: "02/10/2021  11:20AM",
-        preauthcode: "Permitted to use selected grade A hospitals",
-        reason: "Approved to use selected grade A hospital by Dr Alli Tokunbo.",
-    },
-    {
-        approver: "02/10/2021  11:20AM",
-        preauthcode: "Permitted to use selected grade A hospitals",
-        reason: "Approved to use selected grade A hospital by Dr Alli Tokunbo.",
-    },
-    {
-        approver: "02/10/2021  11:20AM",
-        preauthcode: "Permitted to use selected grade A hospitals",
-        reason: "Approved to use selected grade A hospital by Dr Alli Tokunbo.",
-    },
-    {
-        approver: "02/10/2021  11:20AM",
-        preauthcode: "Permitted to use selected grade A hospitals",
-        reason: "Approved to use selected grade A hospital by Dr Alli Tokunbo.",
-    },
-    {
-        approver: "02/10/2021  11:20AM",
-        preauthcode: "Permitted to use selected grade A hospitals",
-        reason: "Approved to use selected grade A hospital by Dr Alli Tokunbo.",
-    },
-];
-const flagArray = [
-    {
-        date: "02/10/2021",
-        status: "accepted",
-        agent: "Adebiyi John",
-        reason: "Patient can access all care plus exclusive",
-    },
-    {
-        date: "02/10/2021",
-        status: "rejected",
-        agent: "Adebiyi John",
-        reason: "Patient can access all care plus exclusive",
-    },
-];
-
-const noteArray = [
-    {
-        time: "5 hours ago",
-        picture: "/avatar.svg",
-        messageTitle: " Created Ticket #376512- Request for HMO",
-        messageDescription: " Assigned to pharmacy benefits",
-    },
-    {
-        time: "5 hours ago",
-        picture: "/avatar.svg",
-        messageTitle: "",
-        messageDescription:
-            " I’m having troubles locating the customer on our search engine, did he/she happen to provide an email address? Thanks.",
-    },
-];
-
 const attachmentsArray = [
     {
         type: "pdf",
@@ -461,6 +173,8 @@ const CsPatientHistory = () => {
     const [concession, setConcession] = useState([]);
     const [exclusions, setExclusion] = useState([]);
     const [annualChecks, setAnnualChecks] = useState([]);
+    const [spa, GetSpar] = useState([]);
+    const [gym, SetGym] = useState([]);
 
     const location = useLocation();
     const enrollee = location.state?.enrollee;
@@ -771,6 +485,8 @@ const CsPatientHistory = () => {
         GetOptical();
         GetFertility();
         GetPhysiotherapy();
+        GetSpa();
+        GetGym();
 
         GetWard();
         GetVaccine();
@@ -876,6 +592,46 @@ const CsPatientHistory = () => {
             console.error("Error getiing service:", error);
         }
     }
+
+    async function GetGym() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_Gym?cifno=${enrollee.Member_MemberUniqueID}        
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+
+            console.log("Gym:", data);
+
+            SetGym(data.result);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        }
+    }
+    async function GetSpa() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_Spa?cifno=${enrollee.Member_MemberUniqueID} 
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+
+            console.log("Get spa:", data);
+
+            GetSpar(data.result);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        }
+    }
+
     async function GetConcession() {
         try {
             const response = await fetch(
@@ -1268,56 +1024,108 @@ const CsPatientHistory = () => {
                                                     </td>
                                                 </tr>
                                             )}
-                                            {telemedicine &&
-                                            telemedicine.length > 0 ? (
-                                                telemedicine
-                                                    .filter(
-                                                        (item) =>
-                                                            item.Benefit ===
-                                                            "Wellness Gym",
-                                                    ) // Filter for Telemedicine
-                                                    .map((item, index) => (
-                                                        <tr
-                                                            key={index}
-                                                            className="hover:bg-gray-100"
-                                                        >
-                                                            <td className="border px-4 py-2">
-                                                                {item.Benefit}
-                                                            </td>
-                                                            <td className="border px-4 py-2">
-                                                                {item.Limit}
-                                                            </td>
-                                                            <td className="border px-4 py-2">
-                                                                {item.Used}
-                                                            </td>
-                                                            <td className="border px-4 py-2">
-                                                                {
-                                                                    item.AmtClaimed
-                                                                }
-                                                            </td>
-                                                            <td className="border px-4 py-2">
-                                                                {item.Balance}
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                            ) : (
-                                                <tr>
-                                                    <td
-                                                        colSpan="5"
-                                                        className="h-64 text-center"
+
+                                            {gym && gym.length > 0 ? (
+                                                gym.map((item, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className="hover:bg-gray-100"
                                                     >
-                                                        <h1 className="py-5 px-20">
-                                                            No Record Found
-                                                        </h1>
-                                                    </td>
-                                                </tr>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Benefit}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Limit}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Used}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.AmtClaimed}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Balance}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <>
+                                                    <tr className="bg-gray-200">
+                                                        <th
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center font-bold"
+                                                        >
+                                                            GYM Session
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center"
+                                                        >
+                                                            <h1 className="text-gray-700 font-medium">
+                                                                This enrollee is
+                                                                not eligible for
+                                                                gym services
+                                                            </h1>
+                                                        </td>
+                                                    </tr>
+                                                </>
+                                            )}
+
+                                            {spa && spa.length > 0 ? (
+                                                spa.map((item, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className="hover:bg-gray-100"
+                                                    >
+                                                        <td className="border px-4 py-2">
+                                                            {item.Benefit}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Limit}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Used}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.AmtClaimed}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Balance}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <>
+                                                    <tr className="bg-gray-200">
+                                                        <th
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center font-bold"
+                                                        >
+                                                            SPA Session
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center"
+                                                        >
+                                                            <h1 className="text-gray-700 font-medium">
+                                                                This enrollee is
+                                                                not eligible for
+                                                                Spa services
+                                                            </h1>
+                                                        </td>
+                                                    </tr>
+                                                </>
                                             )}
 
                                             {/* Vaccine Section (Spanning Entire Table) */}
                                             <tr className="bg-gray-200">
                                                 <th
                                                     colSpan="5"
-                                                    className="border px-4 py-2 text-left font-bold pl-[35rem]"
+                                                    className="border px-4 py-2 text-left font-bold pl-[34rem]"
                                                 >
                                                     Ward Type
                                                 </th>
@@ -1354,7 +1162,7 @@ const CsPatientHistory = () => {
                                             <tr className="bg-gray-200">
                                                 <th
                                                     colSpan="5"
-                                                    className="border px-4 py-2 text-left font-bold pl-[35rem]"
+                                                    className="border px-4 py-2 text-left font-bold pl-[34rem]"
                                                 >
                                                     Vaccine
                                                 </th>

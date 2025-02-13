@@ -207,11 +207,11 @@ const EnrolleesPage = () => {
                                             colSpan="6"
                                             className="h-64 text-center"
                                         >
-                                            <div className="flex justify-center items-center h-full">
+                                            <div className="flex justify-center items-center h-full w-full">
                                                 <img
                                                     src="/noRecordFound.svg"
                                                     alt="No records found"
-                                                    className=" py-5 px-20" // Adjust size as needed
+                                                    className="py-5 px-20" // Adjust size as needed
                                                 />
                                             </div>
                                         </td>
