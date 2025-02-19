@@ -1,6 +1,6 @@
 import CsSidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
-import History from "../../components/cs/PA-History";
+import History from "../../components/cs/PAHistory";
 
 function paHistory() {
     return (

@@ -10,7 +10,6 @@ const Sidebar = () => {
 
     const handleNavigate = (path) => {
         navigate(path);
-        console.log(location);
     };
     return (
         <div className=" w-[18%]  bg-black overflow-x-hidden top-0 left-0 fixed flex">

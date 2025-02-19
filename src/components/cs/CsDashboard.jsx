@@ -8,149 +8,168 @@ import orangechart from "../../assets/CSIMAGES/orangechat.svg";
 import search from "../../assets/CSIMAGES/Search.svg";
 import eachuser from "../../assets/CSIMAGES/eachuser.svg";
 import angleupdown from "../../assets/CSIMAGES/angleupdown.svg";
+import { CgPlayTrackNext } from "react-icons/cg";
+import { MdSkipPrevious } from "react-icons/md";
 
 import { useNavigate } from "react-router-dom";
 import { CiCalendar } from "react-icons/ci";
 
 function CsDashboard() {
+    const navigate = useNavigate();
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
+
     const [data, setData] = useState([]);
+    const [declined, setDeclinedPA] = useState([]);
+    const [
+        authorizationApprovedClaimPending,
+        setAuthorizationApprovedClaimPending,
+    ] = useState([]);
+    const [AuthorizationPending, setAuthorizationPending] = useState([]);
+    const [AuthorisationPending, setAuthorisationPending] = useState([]);
+    const [openPAOne, setOpenPAOne] = useState([]);
+    const [openPATwo, setOpenPATwo] = useState([]);
+    const combinedOpenPA = [...openPAOne, ...openPATwo];
+    const [totalPA, TotalPA] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [todayDate, setTodayDate] = useState("");
+    const [dailyPA, setDailyPA] = useState("");
+    const [date, setTodaysDate] = useState("");
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
+    const [currentDate, setCurrentDate] = useState("");
 
+    const [pendingPA, setPendingPA] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    const totalPages = Math.ceil(pendingPA.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const paginatedResults = pendingPA.slice(startIndex, endIndex);
+
+    function formatISOToCustom(dateString) {
+        if (!dateString) return ""; // Handle cases where DateIssued might be undefined/null
+
+        const date = new Date(dateString);
+
+        // Extract components
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+        const year = date.getFullYear();
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+        // Convert to 12-hour format with AM/PM
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12; // Convert 0 to 12 for midnight
+
+        return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
+    }
+
+    console.log(
+        "paaa",
+        fetch(
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
+            {
+                method: "GET",
+            },
+        ),
+    );
+
+    useEffect(() => {
+        const today = new Date().toISOString().split("T")[0]; // Gets YYYY-MM-DD
+        setCurrentDate(today);
+    }, []); // This runs only once to set the date
+
+    // Run getDailyPA only when currentDate updates
+    useEffect(() => {
+        if (currentDate) {
+            getDailyPA();
+        }
+    }, [currentDate]); // Dependency on currentDate
+
+    async function getDailyPA() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+            console.log("xp", data.result);
+
+            TotalPA(data.result.length);
+
+            if (data.status === 200) {
+                const validStatuses = [
+                    "Authorization Pending",
+                    "Authorisation pending",
+                    "Authorisation approved claim pending",
+                    "Declined",
+                ];
+
+                const filteredData = data.result.filter((item) =>
+                    validStatuses.includes(item.PAStatus),
+                );
+
+                const PendingPA = filteredData.filter(
+                    (item) =>
+                        item.PAStatus.toLowerCase() === "authorization pending",
+                );
+                const PendingPATwo = filteredData.filter(
+                    (item) =>
+                        item.PAStatus.toLowerCase() === "authorisation pending",
+                );
+
+                const ClaimPending = filteredData.filter(
+                    (item) =>
+                        item.PAStatus.toLowerCase() ===
+                        "authorisation approved claim pending",
+                );
+                const DeclinedPA = filteredData.filter(
+                    (item) => item.PAStatus.toLowerCase() === "declined",
+                );
+
+                const allPendingPa = [...PendingPA, ...PendingPATwo];
+                setPendingPA(allPendingPa);
+                setOpenPAOne(PendingPA);
+                setOpenPATwo(PendingPATwo);
+
+                setAuthorizationPending(PendingPA.length);
+                setAuthorisationPending(PendingPATwo.length);
+                setAuthorizationApprovedClaimPending(ClaimPending.length);
+                setDeclinedPA(DeclinedPA.length);
+
+                setAdjudicated(filteredData.length); // Fix: adjudicatedItems wasn't defined
+            } else {
+                console.error(
+                    "Failed to fetch data or unexpected response format.",
+                );
+            }
+        } catch (error) {
+            console.error("get pa:", error);
+            setDailyPA([]);
+        }
+    }
+
+    useEffect(() => {
+        const today = new Date().toISOString().split("T")[0]; // Gets YYYY-MM-DD
+        setCurrentDate(today);
+    }, []);
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    const navigate = useNavigate(); // Initialize the navigate function
-
     const handleSeeAll = () => {
         navigate("/ticket", { state: { filter: "Escalation" } });
     };
-
-    // Function to handle navigation
-    const handleNavigate = (path) => {
-        navigate(path);
-    };
-
-    // Simulate loading data (useEffect not needed for static data)
-    useEffect(() => {
-        setTimeout(() => {
-            setData([
-                {
-                    name: "John Doe",
-                    enrolleeId: "ENR123456",
-                    date: "2024-10-12",
-                    hospital: "General Hospital",
-                    diagnosis: "Flu",
-                    status: "Open",
-                    image: eachuser,
-                },
-                {
-                    name: "Jane Smith",
-                    enrolleeId: "ENR789101",
-                    date: "2024-10-10",
-                    hospital: "City Clinic",
-                    diagnosis: "Headache",
-                    status: "Closed",
-                    image: eachuser,
-                },
-                {
-                    name: "Mary Johnson",
-                    enrolleeId: "ENR112233",
-                    date: "2024-10-11",
-                    hospital: "Greenwood Medical",
-                    diagnosis: "Back Pain",
-                    status: "Open",
-                    image: eachuser,
-                },
-                {
-                    name: "James Brown",
-                    enrolleeId: "ENR445566",
-                    date: "2024-10-09",
-                    hospital: "City Hospital",
-                    diagnosis: "Cold",
-                    status: "Closed",
-                    image: eachuser,
-                },
-                {
-                    name: "Robert White",
-                    enrolleeId: "ENR778899",
-                    date: "2024-10-08",
-                    hospital: "Downtown Hospital",
-                    diagnosis: "Cough",
-                    status: "Open",
-                    image: eachuser,
-                },
-                {
-                    name: "Linda Green",
-                    enrolleeId: "ENR223344",
-                    date: "2024-10-07",
-                    hospital: "St. Mary's Hospital",
-                    diagnosis: "Fatigue",
-                    status: "Open",
-                    image: eachuser,
-                },
-                {
-                    name: "Michael Black",
-                    enrolleeId: "ENR556677",
-                    date: "2024-10-06",
-                    hospital: "Sunset Clinic",
-                    diagnosis: "Stomach Ache",
-                    status: "Closed",
-                    image: eachuser,
-                },
-                {
-                    name: "Elizabeth Blue",
-                    enrolleeId: "ENR998877",
-                    date: "2024-10-05",
-                    hospital: "River Hospital",
-                    diagnosis: "Skin Rash",
-                    status: "Open",
-                    image: eachuser,
-                },
-                {
-                    name: "William Grey",
-                    enrolleeId: "ENR334455",
-                    date: "2024-10-04",
-                    hospital: "Northern Clinic",
-                    diagnosis: "High Blood Pressure",
-                    status: "Closed",
-                    image: eachuser,
-                },
-                {
-                    name: "Susan Purple",
-                    enrolleeId: "ENR667788",
-                    date: "2024-10-03",
-                    hospital: "Eastside Medical",
-                    diagnosis: "Diabetes",
-                    status: "Open",
-                    image: eachuser,
-                },
-                {
-                    name: "David Yellow",
-                    enrolleeId: "ENR223366",
-                    date: "2024-10-02",
-                    hospital: "Sunnyvale Hospital",
-                    diagnosis: "Asthma",
-                    status: "Closed",
-                    image: eachuser,
-                },
-                {
-                    name: "Helen Pink",
-                    enrolleeId: "ENR445566",
-                    date: "2024-10-01",
-                    hospital: "Westview Medical",
-                    diagnosis: "Anxiety",
-                    status: "Open",
-                    image: eachuser,
-                },
-            ]);
-            setLoading(false);
-        }, 1000); // Simulate a 1-second delay
-    }, []);
 
     // Dummy data for Escalations
     const escalations = [
@@ -167,16 +186,6 @@ function CsDashboard() {
         },
     ];
 
-    // if (loading) {
-    //     return (
-    //         <div className="w-full p-5 bg-lightblue mt-10">
-    //             <div className="animate-pulse bg-gray-200 w-full h-10 mb-4 rounded"></div>
-    //             <div className="animate-pulse bg-gray-200 w-full h-10 mb-4 rounded"></div>
-    //             <div className="animate-pulse bg-gray-200 w-full h-10 mb-4 rounded"></div>
-    //         </div>
-    //     );
-    // }
-
     if (error) {
         return (
             <div className="w-full p-5 bg-lightblue mt-10">
@@ -192,6 +201,8 @@ function CsDashboard() {
         const day = today.getDate().toString().padStart(2, "0"); // Ensure two-digit format
         const month = today.toLocaleString("en-US", { month: "short" }); // Get three-letter month
         const year = today.getFullYear();
+
+        setTodaysDate(today);
 
         return `${day}-${month}-${year}`;
     }
@@ -220,23 +231,31 @@ function CsDashboard() {
                 <div className="grid grid-cols-2 gap-2 mr-4 w-1/2 ">
                     <div className="bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
                         <img src={barchart} />
-                        <p className="text-[#7E7E7E]">PA Request</p>
-                        <span className="text-[1.6rem] font-bold">275</span>
+                        <p className="text-[#7E7E7E]"> Total PA Request</p>
+                        <span className="text-[1.6rem] font-bold">
+                            {totalPA}
+                        </span>
                     </div>
                     <div className="bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
                         <img src={bluebarchat} />
-                        <p className="text-[#7E7E7E]">Approved PA Requests</p>
-                        <span className="text-[1.6rem] font-bold">182</span>
+                        <p className="text-[#7E7E7E]">Open Tickets</p>
+                        <h1 className="text-[1.6rem] font-bold">
+                            {AuthorisationPending + AuthorizationPending}
+                        </h1>
                     </div>
                     <div className="bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
                         <img src={skybluechart} />
-                        <p className="text-[#7E7E7E]">Open Tickets</p>
-                        <span className="text-[1.6rem] font-bold">2300</span>
+                        <p className="text-[#7E7E7E]">Approved PA Requests</p>
+                        <span className="text-[1.6rem] font-bold">
+                            {authorizationApprovedClaimPending}
+                        </span>
                     </div>
                     <div className="bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
                         <img src={orangechart} />
-                        <p className="text-[#7E7E7E]">Closed Tickets</p>
-                        <span className="text-[1.6rem] font-bold">42</span>
+                        <p className="text-[#7E7E7E]">Declined PA</p>
+                        <span className="text-[1.6rem] font-bold">
+                            {declined}
+                        </span>
                     </div>
                 </div>
 
@@ -294,149 +313,178 @@ function CsDashboard() {
             </div>
 
             {/* Buttons Section */}
-            <div className="mt-3 flex justify-start space-x-4">
-                {/* Search Enrollee Button */}
-                <button
-                    onClick={() => handleNavigate("/enrollees")}
-                    className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300"
-                >
-                    Search Enrollee
-                </button>
 
-                {/* Manage PA Button */}
-                <button
-                    onClick={() => handleNavigate("/managePa")}
-                    className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300"
-                >
-                    Manage PA
-                </button>
+            <div className=" flex justify-between">
+                <div className="mt-3 flex justify-start space-x-4">
+                    {/* Search Enrollee Button */}
+                    <button
+                        onClick={() => handleNavigate("/enrollees")}
+                        className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md "
+                    >
+                        Search Enrollee
+                    </button>
 
-                {/* Create Ticket Button with Image */}
-                <button
-                    onClick={() => handleNavigate("/create-ticket")}
-                    className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-300"
-                >
-                    <img
-                        src={plusbutton}
-                        alt="Create Ticket"
-                        className="w-5 h-5 mr-2"
-                    />
-                    Create Ticket
-                </button>
+                    {/* Manage PA Button */}
+                    <button
+                        onClick={() => handleNavigate("/managePa")}
+                        className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md "
+                    >
+                        Manage PA
+                    </button>
+
+                    {/* Create Ticket Button with Image */}
+                    <button
+                        onClick={() => handleNavigate("/create-ticket")}
+                        className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md "
+                    >
+                        <img
+                            src={plusbutton}
+                            alt="Create Ticket"
+                            className="w-5 h-5 mr-2"
+                        />
+                        Create Ticket
+                    </button>
+                </div>
+                <div className=" cursor-pointer ">
+                    <h2
+                        className=" text-white px-4 rounded-md  mt-6 py-2 border bg-red-500 border-white"
+                        onClick={() => handleNavigate("/pendingpa")}
+                    >
+                        See all pending PA
+                    </h2>
+                </div>
             </div>
 
             {/* Data Table Section */}
-            <div className="overflow-x-auto mt-8 bg-white">
-                <table className="min-w-full">
-                    <thead>
-                        <tr className="border-b-2">
-                            <th className="py-3 px-4 text-transparent text-left">
-                                Image
-                            </th>
-                            <th className="py-3 px-4 text-left">
-                                Name
-                                <img
-                                    src={angleupdown}
-                                    alt="Image"
-                                    className="inline w-3 h-3 ml-2"
-                                />
-                            </th>
-                            <th className="py-3 px-4 text-left">
-                                Enrollee ID
-                                <img
-                                    src={angleupdown}
-                                    alt="Image"
-                                    className="inline w-3 h-3 ml-2"
-                                />
-                            </th>
-                            <th className="py-3 px-4 text-left">
-                                Date
-                                <img
-                                    src={angleupdown}
-                                    alt="Image"
-                                    className="inline w-3 h-3 ml-2"
-                                />
-                            </th>
-                            <th className="py-3 px-4 text-left">
-                                Hospital
-                                <img
-                                    src={angleupdown}
-                                    alt="Image"
-                                    className="inline w-3 h-3 ml-2"
-                                />
-                            </th>
-                            <th className="py-3 px-4 text-left">
-                                Diagnosis
-                                <img
-                                    src={angleupdown}
-                                    alt="Image"
-                                    className="inline w-3 h-3 ml-2"
-                                />
-                            </th>
-                            <th className="py-3 px-4 text-left">
-                                Status
-                                <img
-                                    src={angleupdown}
-                                    alt="Image"
-                                    className="inline w-3 h-3 ml-2"
-                                />
-                            </th>
-                            <th className="py-3 px-4 text-left">
-                                <button
-                                    className="py-2 px-4 flex items-center text-red-500 rounded-md"
-                                    onClick={() => setShowAll(!showAll)}
-                                >
-                                    {showAll ? "Show Less" : "Show All"}
-                                    <img src={rightangle} alt="Arrow" />
-                                </button>
-                            </th>
-                        </tr>
-                    </thead>
+            <div className="relative overflow-x-auto shadow-md mt-3 rounded-md">
+                <div className="max-h-[400px] overflow-y-auto">
+                    <table className="w-full text-sm text-left rtl:text-right text-black rounded-md border-collapse">
+                        {/* Table Header */}
+                        <thead className="text-base uppercase bg-white border-b border-gray-200 sticky top-0 z-10 rounded-t-md">
+                            <tr className="border-b border-gray-200 bg-white">
+                                <th className="py-3 px-4 text-left">S/N</th>
+                                <th className="py-3 px-4 text-left">Name</th>
+                                <th className="py-3 px-4  text-left whitespace-nowrap">
+                                    Enrollee ID
+                                </th>
+                                <th className="py-3 px-4 text-left">Date</th>
+                                <th className="py-3 px-4 text-left">
+                                    Hospital
+                                </th>
+                                <th className="py-3 px-4 text-left">
+                                    Diagnosis
+                                </th>
+                                <th className="py-3 px-4 text-left">Status</th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
-                        {paginateData
-                            .filter((item) => {
-                                return (
-                                    item.name
-                                        .toLowerCase()
-                                        .includes(searchTerm.toLowerCase()) ||
-                                    item.enrolleeId
-                                        .toLowerCase()
-                                        .includes(searchTerm.toLowerCase()) ||
-                                    item.date
-                                        .toLowerCase()
-                                        .includes(searchTerm.toLowerCase())
-                                );
-                            })
-                            .map((item, index) => (
-                                <tr key={index} className="border-b">
-                                    <td className="py-2 px-4">
-                                        <img
-                                            src={item.image}
-                                            alt="User"
-                                            className="w-10 h-10 rounded-full"
-                                        />
+                        <tbody>
+                            {combinedOpenPA && combinedOpenPA.length > 0 ? (
+                                paginatedResults.map((enrollee, index) => (
+                                    <tr
+                                        key={index}
+                                        className="bg-white border border-gray-200 hover:bg-gray-200 cursor-pointer"
+                                    >
+                                        <td className="px-6 py-3">
+                                            {startIndex + index + 1}
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            {enrollee.surname} {""}
+                                            {enrollee.firstname}
+                                        </td>
+                                        <td className="px-6 py-3 whitespace-nowrap">
+                                            {enrollee.enrolleeID}
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            {formatISOToCustom(
+                                                enrollee.Visitdate,
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            {enrollee.provider}
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            {enrollee.diagcode
+                                                .split(" ")
+                                                .slice(1)
+                                                .join(" ")}
+                                        </td>
+
+                                        <td className="px-1 py-3">
+                                            {enrollee.PAStatus}
+                                        </td>
+
+                                        {/* <td className="px-3 py-3">
+                                        <span
+                                            className={`px-4 py-1 rounded-md font-medium ${
+                                                enrollee.PAStatus?.toLowerCase() ===
+                                                "active"
+                                                    ? "text-white bg-amber-500"
+                                                    : (
+                                                            enrollee.Status ||
+                                                            enrollee.description
+                                                        )?.toLowerCase() ===
+                                                        "pending"
+                                                      ? "text-white bg-amber-600"
+                                                      : "text-red-600 bg-red-100"
+                                            }`}
+                                        >
+                                            {enrollee.Status ||
+                                                enrollee.status_id ||
+                                                "N/A"}
+                                        </span>
+                                    </td> */}
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td
+                                        colSpan="8"
+                                        className="h-64 text-center"
+                                    >
+                                        <div className="flex justify-center items-center h-full">
+                                            <img
+                                                src="/noRecordFound.svg"
+                                                alt="No records found"
+                                                className="py-5 px-20"
+                                            />
+                                        </div>
                                     </td>
-                                    <td className="py-2 px-4">{item.name}</td>
-                                    <td className="py-2 px-4">
-                                        {item.enrolleeId}
-                                    </td>
-                                    <td className="py-2 px-4">{item.date}</td>
-                                    <td className="py-2 px-4">
-                                        {item.hospital}
-                                    </td>
-                                    <td className="py-2 px-4">
-                                        {item.diagnosis}
-                                    </td>
-                                    <td className="py-2 px-4">{item.status}</td>
-                                    <td className="py-2 px-10">...</td>
                                 </tr>
-                            ))}
-                    </tbody>
-                </table>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
                 {/* Pagination */}
-                <div className="flex justify-center mt-4"></div>
+                {pendingPA.length > itemsPerPage && (
+                    <div className="flex justify-center mt-2 items-center gap-4 pb-2">
+                        <button
+                            className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                            disabled={currentPage === 1}
+                            onClick={() =>
+                                setCurrentPage((prev) => Math.max(prev - 1, 1))
+                            }
+                        >
+                            <MdSkipPrevious className="w-7 h-7 mr-2" />
+                            Previous
+                        </button>
+
+                        {/* Show "Pages Left: X" */}
+                        <span className="text-gray-700 text-lg font-semibold">
+                            Page {currentPage} of {totalPages} Pages
+                        </span>
+
+                        <button
+                            className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                            disabled={currentPage >= totalPages}
+                            onClick={() => setCurrentPage((prev) => prev + 1)}
+                        >
+                            <CgPlayTrackNext className="w-7 h-7 mr-2" />
+                            Next
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -9,6 +9,8 @@ import { BiSolidPrinter } from "react-icons/bi";
 import { CgPlayTrackNext } from "react-icons/cg";
 import { MdSkipPrevious } from "react-icons/md";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const ProvidersPage = () => {
     const navigate = useNavigate();
@@ -19,16 +21,16 @@ const ProvidersPage = () => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const [enrollees, setEnrollees] = useState([]);
     const [searchInputs, setSearchInputs] = useState({
-        providerName: "",
+        ProviderName: "",
         providerCode: "",
         Speciality: "",
-        Location: "",
-        Scheme: "",
+        StateID: "",
+        LGA: "",
         EnrolleeId: "",
     });
     const [isLoading, setIsLoading] = useState(false);
-    const [schemes, setSchemes] = useState([]);
-    const [speciality, setSpeciality] = useState([]);
+    const [lga, setLGA] = useState([]);
+    const [specialization, setSpeciality] = useState([]);
     const [state, setState] = useState([]);
 
     const [results, setResults] = useState([]); // Stores the fetched results
@@ -41,19 +43,40 @@ const ProvidersPage = () => {
     const endIndex = startIndex + itemsPerPage;
 
     const paginatedResults = providers.slice(startIndex, endIndex);
-    // Dynamic fields array
-    const fields = [
-        { name: "ProviderName ", label: "Provider Name" },
-        { name: "enrolleeid&provider_id", label: "Provider Code" },
-        { name: "TypeID", label: "Speciality" },
-        { name: "StateID", label: "Location" },
-        { name: "scheme", label: "Scheme" },
-        { name: "enrolleeid&provider_id", label: "Enrolle Id" },
-    ];
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setSearchInputs({ ...searchInputs, [name]: value });
+    const exportToExcel = (data, fileName = "Providers.xlsx") => {
+        if (!data || data.length === 0) {
+            alert("No data to export!");
+            return;
+        }
+
+        // Select only the fields you want
+        const selectedFields = data.map(
+            ({ provider, phone1, phone2, Discipline, ProviderAddress }) => ({
+                provider: provider?.trim() || "N/A", // Ensure provider exists & remove extra spaces
+                phone1: phone1?.trim() || "N/A",
+                phone2: phone2?.trim() || "N/A",
+                Discipline: Discipline || "N/A",
+                ProviderAddress: ProviderAddress || "N/A",
+            }),
+        );
+
+        // Convert to Excel sheet
+        const worksheet = XLSX.utils.json_to_sheet(selectedFields);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "FilteredData");
+
+        // Convert to downloadable format
+        const excelBuffer = XLSX.write(workbook, {
+            bookType: "xlsx",
+            type: "array",
+        });
+        const dataBlob = new Blob([excelBuffer], {
+            type: "application/octet-stream",
+        });
+
+        // Download the file
+        saveAs(dataBlob, fileName);
     };
 
     async function GetFilteredProviders() {
@@ -61,16 +84,24 @@ const ProvidersPage = () => {
         try {
             const params = {
                 ProviderName: searchInputs.ProviderName || null,
-                "enrolleeid&provider_id":
-                    searchInputs["enrolleeid&provider_id"] || null,
-                TypeID: searchInputs.TypeID || null,
+                TypeID: searchInputs.Speciality || null,
                 StateID: searchInputs.StateID || null,
-                scheme: searchInputs.scheme || null,
+                LGAID: searchInputs.LGA || null,
+                enrolleeid: searchInputs.EnrolleeId || null,
+                provider_id: searchInputs.providerCode || null,
             };
 
-            // Construct the query string, excluding empty or null values
+            // Construct the query string, excluding empty values
             const queryParams = Object.entries(params)
-                .filter(([_, value]) => value) // Keep only non-empty values
+                .map(([key, value]) => [
+                    key,
+                    key === "ProviderName" && (value === null || value === "")
+                        ? ""
+                        : key === "enrolleeid" &&
+                            (value === null || value === "")
+                          ? ""
+                          : value || "0", // Keep enrolleeid empty, others default to "0"
+                ])
                 .map(
                     ([key, value]) =>
                         `${encodeURIComponent(key)}=${encodeURIComponent(
@@ -80,9 +111,9 @@ const ProvidersPage = () => {
                 .join("&");
 
             console.log(
-                "enrollee",
+                "xxs",
                 await fetch(
-                    `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?cifno=0&MinimumID=0&NoOfRecords=20&pageSize=10&${queryParams}`,
+                    `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=20&pageSize=10&${queryParams}`,
                     {
                         method: "GET",
                     },
@@ -90,14 +121,14 @@ const ProvidersPage = () => {
             );
 
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?cifno=0&MinimumID=0&NoOfRecords=20&pageSize=10&${queryParams}`,
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&${queryParams}`,
                 {
                     method: "GET",
                 },
             );
             const data = await response.json();
-            setEnrollees(data.resultS);
-            console.log("Data:", data.result);
+            SetProvider(data.result);
+            console.log("Dataxxx:", data.result);
 
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
@@ -131,25 +162,25 @@ const ProvidersPage = () => {
         }
     }
     async function SearchStates() {
-        setIsLoading(true);
+        // setIsLoading(true);
         try {
             const response = await fetch(`${apiUrl}api/ListValues/GetStates`, {
                 method: "GET",
             });
             const data = await response.json();
-            setState(data.result);
+            setState(data);
         } catch (error) {
             console.error("Error fetching enrollees:", error);
             setState([]);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     }
     async function SearchSpeciality() {
-        setIsLoading(true);
+        // setIsLoading(true);
         try {
             const response = await fetch(
-                `${apiUrl}api/ListValues/Getalldepartmentss`,
+                `${apiUrl}api/ListValues/Getalldepartments`,
                 {
                     method: "GET",
                 },
@@ -160,26 +191,21 @@ const ProvidersPage = () => {
             console.error("Error fetching enrollees:", error);
             setSpeciality([]);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     }
-    async function SearchScheme() {
-        setIsLoading(true);
+    async function SearchLGA() {
         try {
-            SearchScheme();
-            const response = await fetch(
-                `${apiUrl}api/ListValues/GetSchemeMemberType?schemeid=0 `,
-                {
-                    method: "GET",
-                },
-            );
+            const response = await fetch(`${apiUrl}api/ListValues/GetLGA`, {
+                method: "GET",
+            });
             const data = await response.json();
-            setSchemes(data.result);
+            setLGA(data);
         } catch (error) {
             console.error("Error fetching enrollees:", error);
-            setSchemes([]);
+            setLGA([]);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     }
 
@@ -187,6 +213,7 @@ const ProvidersPage = () => {
         SearchProviders();
         SearchStates();
         SearchSpeciality();
+        SearchLGA();
     }, []);
 
     return (
@@ -209,26 +236,143 @@ const ProvidersPage = () => {
                     </div>
                     {/* Search Inputs */}
                     <div className="bg-white grid md:grid-cols-3 gap-4 p-4 w-full rounded-md">
-                        {fields.map((field) => (
-                            <div key={field.name}>
-                                <label
-                                    htmlFor={field.name}
-                                    className="text-[#353535] block capitalize"
-                                >
-                                    {field.label}
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name={field.name}
-                                        placeholder={`Search ${field.label}...`}
-                                        className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
-                                        value={searchInputs[field.name]}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-                            </div>
-                        ))}
+                        <div>
+                            <label htmlFor="">Provider Name</label>
+                            <input
+                                type="text"
+                                name="ProviderName"
+                                value={searchInputs.ProviderName}
+                                onChange={(e) =>
+                                    setSearchInputs({
+                                        ...searchInputs,
+                                        ProviderName: e.target.value,
+                                    })
+                                }
+                                placeholder="Search Provider Name..."
+                                className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="">Provider Code</label>
+                            <input
+                                type="text"
+                                name="enrolleeid"
+                                value={searchInputs.providerCode}
+                                onChange={(e) =>
+                                    setSearchInputs({
+                                        ...searchInputs,
+                                        providerCode: e.target.value,
+                                    })
+                                }
+                                placeholder="Search Provider Code..."
+                                className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="">Enrollee Id</label>
+                            <input
+                                type="text"
+                                name="enrolleeid"
+                                value={searchInputs.EnrolleeId}
+                                onChange={(e) =>
+                                    setSearchInputs({
+                                        ...searchInputs,
+                                        EnrolleeId: e.target.value,
+                                    })
+                                }
+                                placeholder="Search Enrollee ID..."
+                                className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="state">State</label>
+                            <select
+                                name="StateID"
+                                value={searchInputs?.StateID || ""} // Ensure safe access
+                                className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
+                                onChange={(e) =>
+                                    setSearchInputs((prev) => ({
+                                        ...prev,
+                                        StateID: e.target.value,
+                                    }))
+                                }
+                            >
+                                <option value="">Filter by State</option>
+                                {state && state.length > 0 ? (
+                                    state.map((stateItem) => (
+                                        <option
+                                            key={stateItem.id}
+                                            value={stateItem.Value}
+                                        >
+                                            {stateItem.Text}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>Loading states...</option>
+                                )}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label htmlFor="">LGA</label>
+                            <select
+                                name="LGA"
+                                value={searchInputs?.LGA || ""}
+                                className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
+                                onChange={(e) =>
+                                    setSearchInputs({
+                                        ...searchInputs,
+                                        LGA: e.target.value,
+                                    })
+                                }
+                            >
+                                <option value="">Select LGA</option>
+                                {lga && lga.length > 0 ? (
+                                    lga.map((specialty) => (
+                                        <option
+                                            key={specialty.id}
+                                            value={specialty.Value}
+                                        >
+                                            {specialty.Text}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>Loading LGA...</option>
+                                )}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="">Specialization</label>
+                            <select
+                                name="Speciality"
+                                value={searchInputs?.Speciality || ""}
+                                className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
+                                onChange={(e) =>
+                                    setSearchInputs({
+                                        ...searchInputs,
+                                        Speciality: e.target.value,
+                                    })
+                                }
+                            >
+                                <option value="">Select Speciality</option>
+                                {specialization && specialization.length > 0 ? (
+                                    specialization.map((specialty) => (
+                                        <option
+                                            key={specialty.id}
+                                            value={specialty.Department_id}
+                                        >
+                                            {specialty.Department}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>
+                                        Loading Speciality...
+                                    </option>
+                                )}
+                            </select>
+                        </div>
                     </div>
 
                     <div className=" flex justify-between  pt-2">
@@ -236,7 +380,10 @@ const ProvidersPage = () => {
                             Provider List
                         </h1>
                         <div className=" flex gap-3">
-                            <button className="bg-white text-red-600 border border-red-600 px-4 py-2 rounded-md flex hover:bg-red-600 hover:text-white">
+                            <button
+                                className="bg-white text-red-600 border border-red-600 px-4 py-2 rounded-md flex hover:bg-red-600 hover:text-white"
+                                onClick={() => exportToExcel(providers)}
+                            >
                                 <CiExport className=" w-5 h-5  mr-2" />
                                 Export
                             </button>
@@ -265,6 +412,7 @@ const ProvidersPage = () => {
                                         </th>
                                         <th className="px-6 py-3">Phone</th>
                                         <th className="px-6 py-3">Email</th>
+                                        <th className="px-6 py-3">Address</th>
                                         <th className="px-6 py-3">Status</th>
                                     </tr>
                                 </thead>
@@ -279,7 +427,7 @@ const ProvidersPage = () => {
                                             >
                                                 <div className="flex flex-col items-center justify-center h-full space-y-2">
                                                     <img
-                                                        src="/public/loaderx.gif"
+                                                        src="public/loaderx.gif"
                                                         alt="Loading animation"
                                                         className="w-40 h-40" /* Adjust size as needed */
                                                     />
@@ -301,44 +449,64 @@ const ProvidersPage = () => {
                                                         {startIndex + index + 1}
                                                     </td>
                                                     <td className="px-6 py-3">
-                                                        {enrollee.ProviderCode}
+                                                        {enrollee.ProviderID ||
+                                                            enrollee.provider_id ||
+                                                            "N/A"}
                                                     </td>
                                                     <td className="px-6 py-3">
                                                         {enrollee.FullName ||
+                                                            enrollee.provider ||
                                                             "N/A"}
                                                     </td>
                                                     <td className="px-6 py-3">
                                                         {enrollee.Specialty ||
+                                                            enrollee.Discipline ||
                                                             "N/A"}
                                                     </td>
                                                     <td className="px-6 py-3">
                                                         {enrollee.Schemes ||
+                                                            enrollee.Specialty ||
                                                             "N/A"}
                                                     </td>
                                                     <td className="px-6 py-3">
                                                         {enrollee.Contact1 ||
+                                                            enrollee.phone1 ||
                                                             "N/A"}
                                                         ,{" "}
                                                         {enrollee.Contact2 ||
+                                                            enrollee.phone2 ||
                                                             "N/A"}
                                                     </td>
-                                                    <td className="px-6 py-3">
+                                                    <td className="px-1 py-3">
                                                         {enrollee.Email ||
+                                                            enrollee.email ||
                                                             "N/A"}
                                                     </td>
-                                                    <td className="px-6 py-3">
+                                                    <td className="px-1 py-3">
+                                                        {enrollee.add1 ||
+                                                            enrollee.ProviderAddress ||
+                                                            "N/A"}
+                                                    </td>
+                                                    <td className="px-3 py-3">
                                                         <span
                                                             className={`px-4 py-1 rounded-md font-medium ${
-                                                                enrollee.Status?.toLowerCase() ===
+                                                                (
+                                                                    enrollee.Status ||
+                                                                    enrollee.status_id
+                                                                )?.toLowerCase() ===
                                                                 "active"
                                                                     ? "text-white bg-green-500"
-                                                                    : enrollee.Status?.toLowerCase() ===
+                                                                    : (
+                                                                            enrollee.Status ||
+                                                                            enrollee.description
+                                                                        )?.toLowerCase() ===
                                                                         "pending"
                                                                       ? "text-white bg-amber-600"
                                                                       : "text-red-600 bg-red-100"
                                                             }`}
                                                         >
                                                             {enrollee.Status ||
+                                                                enrollee.status_id ||
                                                                 "N/A"}
                                                         </span>
                                                     </td>

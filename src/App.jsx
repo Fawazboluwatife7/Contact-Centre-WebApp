@@ -55,6 +55,8 @@ import GeneratePaCodePage from "./pages/csPages/GeneratePaCodePage";
 import CsPatientHistory from "./pages/csPages/CsPatientHistory";
 import ProviderPage from "./pages/csPages/ProviderPage";
 import ProvidersPage from "./pages/csPages/ProvidersPage";
+import AllPendingPARequests from "./pages/csPages/AllPendingPARequests";
+import CSEnrolleCustomerPage from "./pages/csPages/CSEnrolleCustomerPage";
 
 function App() {
     return (
@@ -101,9 +103,15 @@ function App() {
                     element={<PatientAdmissionHistory />}
                 />
                 <Route
+                    path="/csenrolleepage"
+                    element={<CSEnrolleCustomerPage />}
+                />
+
+                <Route
                     path="/cspatienthistory"
                     element={<CsPatientHistory />}
                 />
+                <Route path="/pendingpa" element={<AllPendingPARequests />} />
                 <Route path="/providers" element={<ProviderPage />} />
                 <Route path="/phistorymodal" element={<PatientInformation />} />
                 <Route path="/updateprofile" element={<UpdateProfile />} />

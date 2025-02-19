@@ -160,10 +160,20 @@ const EnrolleesPage = () => {
                                 {isLoading ? (
                                     <tr>
                                         <td
-                                            colSpan="6"
-                                            className="text-center py-4 "
+                                            colSpan="8"
+                                            className="h-[255px] text-center"
                                         >
-                                            <p>Loading...</p>
+                                            <div className="flex flex-col items-center justify-center h-full space-y-2">
+                                                <img
+                                                    src="public/loaderx.gif"
+                                                    alt="Loading animation"
+                                                    className="w-40 h-40" /* Adjust size as needed */
+                                                />
+                                                <h3 className="text-gray-600 text-lg font-semibold">
+                                                    Please Wait, Fetching
+                                                    Enrollees...
+                                                </h3>
+                                            </div>
                                         </td>
                                     </tr>
                                 ) : paginatedResults &&
