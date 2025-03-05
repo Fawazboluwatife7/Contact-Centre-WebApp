@@ -8,7 +8,11 @@ import { MdSkipPrevious } from "react-icons/md";
 const AllPendingPARequests = () => {
     const navigate = useNavigate();
     const handleNavigate = (enrollee) => {
-        navigate("/cspatienthistory", { state: { enrollee } });
+        const enrolleeRequests = pendingPA.filter(
+            (req) => req.enrolleeID === enrollee.enrolleeID,
+        );
+
+        navigate("/csenrolleepage", { state: { enrollee, enrolleeRequests } });
     };
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -177,6 +181,9 @@ const AllPendingPARequests = () => {
                                         <tr
                                             key={index}
                                             className="bg-white border border-gray-200 hover:bg-gray-200 cursor-pointer"
+                                            onClick={() =>
+                                                handleNavigate(enrollee)
+                                            }
                                         >
                                             <td className="px-6 py-3">
                                                 {startIndex + index + 1}
@@ -203,7 +210,7 @@ const AllPendingPARequests = () => {
                                                     .join(" ")}
                                             </td>
 
-                                            <td className="px-1 py-3">
+                                            <td className="px-1 py-3 text-orange-500">
                                                 {enrollee.PAStatus}
                                             </td>
                                         </tr>

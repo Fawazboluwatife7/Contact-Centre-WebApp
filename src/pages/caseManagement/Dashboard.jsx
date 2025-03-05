@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("user"));
+
     console.log(user);
 
     const handleNavigate = (path) => {

@@ -17,12 +17,6 @@ const CsUpdateProfile = () => {
         id: "",
     });
 
-    // Sample data for demonstration
-    const person = {
-        id: "0123456789",
-        name: "Tunde Bakare",
-    };
-
     // Function to handle "Update" button click
     const handleUpdateClick = () => {
         // Set the selected person's details
@@ -43,12 +37,12 @@ const CsUpdateProfile = () => {
                 <div className="mx-7 mt-2">
                     <div className=" flex justify-between">
                         <span className=" text-[2.1rem]"> Update profile</span>
-                        <h1
+                        {/* <h1
                             className=" text-[1.9rem] text-red-600 flex"
-                            onClick={() => handleNavigate("/patienthistory")}
+                            onClick={() => window.history.back()}
                         >
                             <IoArrowBack className=" text-red-600 mt-2" /> Back
-                        </h1>
+                        </h1> */}
                     </div>
                     <div className=" bg-white h-full  mt-2">
                         <form className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-4 py-4 overflow-hidden">

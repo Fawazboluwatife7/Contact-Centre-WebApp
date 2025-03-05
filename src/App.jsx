@@ -57,6 +57,10 @@ import ProviderPage from "./pages/csPages/ProviderPage";
 import ProvidersPage from "./pages/csPages/ProvidersPage";
 import AllPendingPARequests from "./pages/csPages/AllPendingPARequests";
 import CSEnrolleCustomerPage from "./pages/csPages/CSEnrolleCustomerPage";
+import CSUpdateEnrolleProfile from "./pages/csPages/CSUpdateEnrolleProfile";
+import GeneratePAEnrolleeSearch from "./pages/csPages/GeneratePAEnrolleeSearch";
+import PAApprovalPAge from "./pages/csPages/PAApprovalPAge";
+import CreateEnroleePACode from "./pages/csPages/CreateEnroleePACode";
 
 function App() {
     return (
@@ -106,7 +110,7 @@ function App() {
                     path="/csenrolleepage"
                     element={<CSEnrolleCustomerPage />}
                 />
-
+                {/* don't use this one directly below */}
                 <Route
                     path="/cspatienthistory"
                     element={<CsPatientHistory />}
@@ -141,6 +145,16 @@ function App() {
                 <Route path="/login-caseManagement" element={<Login />} />
                 <Route path="/sidedash" element={<ClaimSideDashboard />} />
                 <Route path="/csdashboard" element={<CsDashboard />} />
+                <Route
+                    path="/csenrolleeprofileupdate"
+                    element={<CSUpdateEnrolleProfile />}
+                />
+                <Route
+                    path="/createpaenrolleesearch"
+                    element={<GeneratePAEnrolleeSearch />}
+                />
+                <Route path="/paapprovalpage" element={<PAApprovalPAge />} />
+                <Route path="/createpacode" element={<CreateEnroleePACode />} />
             </Routes>
         </BrowserRouter>
     );

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { FaFilter } from "react-icons/fa";
 
-import Sidebar from "../../pages/caseManagement/CMSidebar";
-import Navbar from "../../components/Navbar";
+import Sidebar from "../../components/cs/csSideBar";
+import Navbar from "../../components/cs/Header";
 
 import { useNavigate } from "react-router-dom";
 import CustomerModal from "../csPages/CSPatientModal";
@@ -76,9 +76,20 @@ const concessionsArray = [
     },
 ];
 // Tabs for table filters
-const tabs = ["PA History", "Hospital Visits", "Benefits", "Concessions"];
+const tabs = ["Requests", "PA History", "Hospital Visits", "Benefits"];
 
 const headers = {
+    Requests: [
+        "",
+        "Date",
+        "Diagnosis",
+        "Benefits",
+        "Description",
+        "CHarge Amount",
+
+        "Visit Type",
+        "Status",
+    ],
     "PA History": [
         "ID",
         "Name",
@@ -123,6 +134,10 @@ const CSEnrolleCustomerPage = () => {
         navigate(path);
     };
 
+    const handleNavigateWithEnrollee = (enrollee) => {
+        navigate("/csenrolleepage", { state: { enrollee } });
+    };
+
     const servTypes = [
         { value: 1, label: "Inpatient" },
         { value: 2, label: "Outpatient" },
@@ -140,9 +155,10 @@ const CSEnrolleCustomerPage = () => {
     const [benefit, setBenefit] = useState(null);
     const [service, setService] = useState([]);
     const [concession, setConcession] = useState([]);
-    const [activeTab, setActiveTab] = useState("PA History");
+    const [activeTab, setActiveTab] = useState("Requests");
     const [pa, setPA] = useState([]);
     const [hospitalHistory, setHospitalHistory] = useState([]);
+    const [enronlleBioData, setEnronlleBioData] = useState([]);
 
     const [visitTypes, setVisitTypes] = useState([]);
     const [selectedServiceId, setSelectedServiceId] = useState(null); // To store the selected servtype_id
@@ -174,12 +190,42 @@ const CSEnrolleCustomerPage = () => {
         setIsHospitalModalOpen(true); // Show the modal
     };
 
+    // const location = useLocation();
+    // const enrollee = location.state?.enrollee;
+
     const location = useLocation();
-    const enrollee = location.state?.enrollee;
+    const { enrollee, enrolleeRequests } = location.state || {};
 
     const closeHospitalModal = () => {
         setSelectedHospitalItem(null); // Clear the selected item
         setIsHospitalModalOpen(false); // Hide the modal
+    };
+
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    const handleCheckboxChange = (item) => {
+        setSelectedItems((prev) => {
+            const isSelected = prev.some(
+                (i) => i.VisitDetailsID === item.VisitDetailsID,
+            );
+
+            if (isSelected) {
+                return prev.filter(
+                    (i) => i.VisitDetailsID !== item.VisitDetailsID,
+                );
+            } else {
+                return [...prev, item];
+            }
+        });
+    };
+
+    const handleTransferClick = (enrollee, selectedItems) => {
+        navigate("/paapprovalpage", { state: { enrollee, selectedItems } });
+    };
+
+    const handleRejectTransferClick = () => {
+        // Navigate and pass the selected items
+        navigate("/selected-pa", { state: { selectedItems } });
     };
 
     const currentHeaders = headers[activeTab];
@@ -203,14 +249,15 @@ const CSEnrolleCustomerPage = () => {
             },
         ),
     );
-    // useEffect(() => {
-    //     GetPAHistory();
-    // }, []);
+    useEffect(() => {
+        GetPAHistory();
+        GetEnrolleeBiodata();
+    }, []);
 
     async function GetPAHistory() {
         try {
             const response = await fetch(
-                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${3}&PAStatus&visitid
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.CIF_NUMBER}&PAStatus&visitid
 `,
                 {
                     method: "GET",
@@ -234,16 +281,54 @@ const CSEnrolleCustomerPage = () => {
         }
     }
 
-    // useEffect(() => {
-    //     GetHospitalHistory();
-    //     GetService();
-    //     GetConcession();
-    // }, []);
+    async function GetEnrolleeBiodata() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrollee.MembernUmber}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("All:", data);
+
+            setEnronlleBioData(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+
+    useEffect(() => {
+        GetHospitalHistory();
+        GetService();
+        GetConcession();
+    }, []);
+
+    console.log(
+        "hospitalP PA",
+        fetch(
+            `${apiUrl}api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.enrolleeID}&fromdate=2010-12-31&todate=2025-12-31&network_type=
+`,
+            {
+                method: "GET",
+            },
+        ),
+    );
 
     async function GetHospitalHistory() {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${3}&fromdate=2010-12-31&todate=2025-12-31&network_type=
+                `${apiUrl}api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.MembernUmber}&fromdate=2010-12-31&todate=2025-12-31&network_type=
 `,
                 {
                     method: "GET",
@@ -270,7 +355,7 @@ const CSEnrolleCustomerPage = () => {
     console.log(
         "getting benefits",
         fetch(
-            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${3}&schemeid=${3}&serviceid=${selectedValue}
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.CIF_NUMBER}&schemeid=${enrollee.SCHEME_ID}&serviceid=${selectedValue}
             `,
             {
                 method: "GET",
@@ -280,7 +365,7 @@ const CSEnrolleCustomerPage = () => {
     async function GetBenefit(serviceId) {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${3}&schemeid=${3}&serviceid=${serviceId}
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.CIF_NUMBER}&schemeid=${enrollee.SCHEME_ID}&serviceid=${serviceId}
 `,
                 {
                     method: "GET",
@@ -304,21 +389,21 @@ const CSEnrolleCustomerPage = () => {
         }
     }
 
-    // console.log(
-    //     "service",
-    //     fetch(
-    //         `$${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.Member_MemberUniqueID}&Schemeid=${enrollee.Member_PlanID}
-    //         `,
-    //         {
-    //             method: "GET",
-    //         },
-    //     ),
-    // );
+    console.log(
+        "service",
+        fetch(
+            `$${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.CIF_NUMBER}&Schemeid=${enrollee.SCHEME_ID}
+            `,
+            {
+                method: "GET",
+            },
+        ),
+    );
 
     async function GetService() {
         try {
             const response = await fetch(
-                `${apiUrl}api/ListValues/GetSeviceType?cif=${3}&Schemeid=${3}             
+                `${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.CIF_NUMBER}&Schemeid=${enrollee.SCHEME_ID}             
 `,
                 {
                     method: "GET",
@@ -331,7 +416,7 @@ const CSEnrolleCustomerPage = () => {
 
             const data = await response.json();
 
-            console.log("service:", data);
+            console.log("service:", data.result);
 
             setService(data.result);
         } catch (error) {
@@ -341,7 +426,7 @@ const CSEnrolleCustomerPage = () => {
     async function GetConcession() {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeClaims/GetEnrolleeFlags?cif=${3}            
+                `${apiUrl}api/EnrolleeClaims/GetEnrolleeFlags?cif=$${enrollee.CIF_NUMBER}           
 `,
                 {
                     method: "GET",
@@ -363,15 +448,15 @@ const CSEnrolleCustomerPage = () => {
     }
 
     return (
-        <div>
+        <div className="flex">
             <Sidebar />
             <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh] overflow-auto">
                 <Navbar />
                 <div className="mx-7 mt-3">
                     <div className=" flex justify-between">
-                        <span className="text-xl  text-[2.2rem] font-medium">
-                            {/* {enrollee?.Member_CustomerName} - Enrollee #
-                            {enrollee?.Member_EnrolleeID} */}
+                        <span className="text-xl  font-medium ">
+                            {enrollee?.provider} is requesting approval for
+                            Enrollee #{enrollee?.MembernUmber}
                         </span>
                         <div className=" flex gap-3">
                             <button
@@ -406,20 +491,20 @@ const CSEnrolleCustomerPage = () => {
                         <div className="">
                             <DateDropdown
                                 options={service.map((type) => ({
-                                    label: type.visittype, // Display text in the dropdown
-                                    value: type.servtype_id, // Value to be sent
+                                    label: type.visittype,
+                                    value: type.servtype_id,
                                 }))}
                                 sendNumber={(value) => {
                                     setSelectedValue(value); // Update selected value
                                     GetBenefit(value); // Fetch benefit based on selection
                                 }}
-                                className="outline-none bg-red-500 rounded-md ml-[26rem] text-white"
+                                className="outline-none bg-red-500 rounded-md  ml-[22rem] text-white"
                             />
                         </div>
                     </div>
 
-                    <div className="overflow-x-auto bg-white p-4 rounded-md">
-                        <table className="table-auto w-full">
+                    <div className="overflow-x-auto bg-white p-4 rounded-md ">
+                        <table className="table-auto w-full ">
                             <thead className="bg-white text-[#1F4173]">
                                 <tr className="bg-gray-50 overflow-x-scroll ">
                                     {currentHeaders.map((header, index) => (
@@ -433,6 +518,72 @@ const CSEnrolleCustomerPage = () => {
                                 </tr>
                             </thead>
                             <tbody>
+                                {activeTab === "Requests" && (
+                                    <>
+                                        {enrolleeRequests.map((item, index) => {
+                                            const isSelected =
+                                                selectedItems.some(
+                                                    (selected) =>
+                                                        selected.VisitDetailsID ===
+                                                        item.VisitDetailsID,
+                                                );
+
+                                            return (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td className="border p-2 text-center">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isSelected}
+                                                            onChange={() =>
+                                                                handleCheckboxChange(
+                                                                    item,
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {
+                                                            new Date(
+                                                                item.DateIssued,
+                                                            )
+                                                                .toISOString()
+                                                                .split("T")[0]
+                                                        }
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.diagcode
+                                                            ?.split(",")[0]
+                                                            ?.split(" ")
+                                                            .slice(1)
+                                                            .join(" ") || "N/A"}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Benefit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {
+                                                            item.ProcedureDescription
+                                                        }
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.chargeamount}
+                                                    </td>
+
+                                                    <td className="border px-4 py-2">
+                                                        {item.visitType}
+                                                    </td>
+                                                    <td className="border px-4 py-2 text-orange-500">
+                                                        {item.PAStatus}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </>
+                                )}
+
                                 {activeTab === "PA History" &&
                                     pa.map((item, index) => (
                                         <tr
@@ -595,7 +746,7 @@ const CSEnrolleCustomerPage = () => {
                                         </tr>
                                     ))}
 
-                                {activeTab === "Concessions" &&
+                                {/* {activeTab === "Concessions" &&
                                     concession.map((item, index) => (
                                         <tr
                                             key={index}
@@ -612,7 +763,7 @@ const CSEnrolleCustomerPage = () => {
                                                 {item.FlagDescription}
                                             </td>
                                         </tr>
-                                    ))}
+                                    ))} */}
                             </tbody>
                         </table>
                     </div>
@@ -628,6 +779,27 @@ const CSEnrolleCustomerPage = () => {
                             item={selectedHospitalItem}
                             onClose={closeHospitalModal}
                         />
+                    )}
+
+                    {selectedItems.length > 0 && (
+                        <div className="mt-4 flex justify-center items-center w-full">
+                            <button
+                                onClick={() =>
+                                    handleTransferClick(enrollee, selectedItems)
+                                }
+                                className="bg-red-500 text-white px-9 py-3 mb-2 rounded-md hover:bg-red-700 whitespace-nowrap mx-2"
+                            >
+                                Reject PA
+                            </button>
+                            <button
+                                onClick={() =>
+                                    handleTransferClick(enrollee, selectedItems)
+                                }
+                                className="bg-white text-red-500 px-9 py-3 mb-2 border border-red-500 rounded-md whitespace-nowrap mx-2"
+                            >
+                                Authorize PA
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

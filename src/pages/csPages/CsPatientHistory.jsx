@@ -103,7 +103,7 @@ const headers = {
         "Diagnosis",
         "Description",
         "Charge Amount",
-        "Quantity",
+
         "Preauth code",
         "Visit Type",
 
@@ -668,17 +668,19 @@ const CsPatientHistory = () => {
                             {enrollee?.Member_EnrolleeID}
                         </span>
                         <div className=" flex gap-3">
-                            <button
+                            {/* <button
                                 className="flex items-center justify-center gap-2 bg-[#C61531] py-2 px-4 rounded-md text-white"
                                 onClick={handleOpenModal}
                             >
                                 <HiOutlinePlus className=" text-white" />
                                 <span>Create New Ticket</span>
-                            </button>
+                            </button> */}
 
                             <button
                                 className="flex items-center justify-center gap-2 bg-[#C61531] py-2 px-4 rounded-md text-white"
-                                onClick={() => handleNavigate("/cmticket")}
+                                onClick={() =>
+                                    handleNavigate("/createpaenrolleesearch")
+                                }
                             >
                                 <HiOutlinePlus className=" text-white" />
                                 Generate new PA
@@ -690,7 +692,7 @@ const CsPatientHistory = () => {
                         enrollee={enrollee}
                     />
 
-                    <div className=" flex justify-between mt-3">
+                    {/* <div className=" flex justify-between mt-3">
                         <div></div>
                         <div className="">
                             <DateDropdown
@@ -705,9 +707,9 @@ const CsPatientHistory = () => {
                                 className="outline-none bg-[#C61531] rounded-md ml-[26rem] text-white"
                             />
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="mt-3 bg-white h-[20rem] py-1 rounded-md">
+                    <div className="mt-5 bg-white h-[20rem] py-1 rounded-md">
                         <div className="grid grid-cols-7 gap-2 mb-4 border-b px-4 pt-2">
                             {tabs?.map((tab, index) => (
                                 <button
@@ -792,7 +794,6 @@ const CsPatientHistory = () => {
                                                         "en-US",
                                                     )}
                                                 </td>
-                                                <td className="border px-4 py-2"></td>
 
                                                 <td className="border px-4 py-2">
                                                     {item.PACode}

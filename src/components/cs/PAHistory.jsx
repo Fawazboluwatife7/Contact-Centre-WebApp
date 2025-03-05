@@ -10,6 +10,15 @@ import { MdSkipPrevious } from "react-icons/md";
 
 const PaHistory = () => {
     const navigate = useNavigate();
+
+    const handleNavigate = (enrollee) => {
+        const enrolleeRequests = allPA.filter(
+            (req) => req.enrolleeID === enrollee.enrolleeID,
+        );
+
+        navigate("/csenrolleepage", { state: { enrollee, enrolleeRequests } });
+    };
+
     const [selectedTab, setSelectedTab] = useState("All");
     const [allPA, setAllPA] = useState([]);
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -23,7 +32,7 @@ const PaHistory = () => {
         { name: "All", status: "All" },
         {
             name: "Pending",
-            status: ["Authorization Pending", "Authorisation Pending"],
+            status: ["Authorization Pending", "Authorisation pending"],
         },
         { name: "Approved", status: "Authorisation approved claim pending" },
         { name: "Declined", status: "Declined" },
@@ -53,9 +62,7 @@ const PaHistory = () => {
         if (Array.isArray(selectedTab)) {
             return selectedTab.includes(item.PAStatus); // Check if PAStatus is in the array
         }
-        return item.PAStatus === selectedTab; // Direct match for single status
     });
-
     const handleGenerateClick = () => {
         navigate("/generatePaCode");
     };
@@ -126,11 +133,6 @@ const PaHistory = () => {
     const handleTabClick = (status) => {
         setSelectedTab(status);
         setCurrentPage(1); // Reset to first page when switching tabs
-    };
-
-    const handleRowClick = () => {
-        //its not getting the userID yet
-        navigate("/enrolleeInformations");
     };
 
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -236,10 +238,8 @@ const PaHistory = () => {
                                 paginatedResults.map((request, index) => (
                                     <tr
                                         key={index}
-                                        className=" cursor-pointer text-sm"
-                                        onClick={() =>
-                                            handleRowClick(request.enrolleeID)
-                                        }
+                                        className=" cursor-pointer text-sm hover:bg-gray-100"
+                                        onClick={() => handleNavigate(request)}
                                     >
                                         <td className="px-4 border">
                                             {startIndex + index + 1}
@@ -257,7 +257,7 @@ const PaHistory = () => {
                                             {request.provider}
                                         </td>
                                         <td className="px-4 border whitespace-nowrap">
-                                            {request.enrolleeID}
+                                            {request.MembernUmber}
                                         </td>
                                         <td className="px-4 border">
                                             {request.diagcode

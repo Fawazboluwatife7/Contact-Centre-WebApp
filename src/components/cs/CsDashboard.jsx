@@ -19,7 +19,7 @@ function CsDashboard() {
     const handleNavigate = (path) => {
         navigate(path);
     };
-
+    const user = JSON.parse(localStorage.getItem("user"));
     const [data, setData] = useState([]);
     const [declined, setDeclinedPA] = useState([]);
     const [
@@ -32,7 +32,7 @@ function CsDashboard() {
     const [openPATwo, setOpenPATwo] = useState([]);
     const combinedOpenPA = [...openPAOne, ...openPATwo];
     const [totalPA, TotalPA] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -43,6 +43,7 @@ function CsDashboard() {
     const [currentDate, setCurrentDate] = useState("");
 
     const [pendingPA, setPendingPA] = useState([]);
+    const [peopleWaiting, setPeopleWaiting] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
@@ -94,6 +95,7 @@ function CsDashboard() {
     }, [currentDate]); // Dependency on currentDate
 
     async function getDailyPA() {
+        setLoading(true);
         try {
             const response = await fetch(
                 `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
@@ -123,10 +125,29 @@ function CsDashboard() {
                     (item) =>
                         item.PAStatus.toLowerCase() === "authorization pending",
                 );
+
+                const uniqueMemberNumbers = new Set(
+                    PendingPA.map((item) => item.MembernUmber),
+                );
+
+                const uniqueMemberCount = uniqueMemberNumbers.size;
+
+                console.log("count", uniqueMemberCount);
+
                 const PendingPATwo = filteredData.filter(
                     (item) =>
                         item.PAStatus.toLowerCase() === "authorisation pending",
                 );
+
+                const uniqueMember = new Set(
+                    PendingPATwo.map((item) => item.MembernUmber),
+                );
+
+                const uniqueMembercc = uniqueMember.size;
+
+                console.log("counttwo", uniqueMembercc);
+
+                setPeopleWaiting(uniqueMembercc + uniqueMemberCount);
 
                 const ClaimPending = filteredData.filter(
                     (item) =>
@@ -156,6 +177,8 @@ function CsDashboard() {
         } catch (error) {
             console.error("get pa:", error);
             setDailyPA([]);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -216,7 +239,7 @@ function CsDashboard() {
             {/* Stats Section */}
             <div className="  ">
                 <div className="flex justify-between w-full mt-3">
-                    <span>Hi, Favour</span>
+                    <span>Hi, {user?.result[0]?.UserName}</span>
 
                     <div className="bg-white rounded-md w-[8rem] py-2 flex gap-2">
                         <CiCalendar className=" text-[20px] mt-0.5 ml-1" />
@@ -225,7 +248,6 @@ function CsDashboard() {
                 </div>
                 <h4 className=" mb-2">Your Dashboard</h4>
             </div>
-
             {/* First Div (Grid) */}
             <div className="flex w-full bg-lightblue">
                 <div className="grid grid-cols-2 gap-2 mr-4 w-1/2 ">
@@ -238,9 +260,12 @@ function CsDashboard() {
                     </div>
                     <div className="bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
                         <img src={bluebarchat} />
-                        <p className="text-[#7E7E7E]">Open Tickets</p>
+                        <p className="text-[#7E7E7E]">
+                            Open Tickets/ number of enrolles
+                        </p>
                         <h1 className="text-[1.6rem] font-bold">
-                            {AuthorisationPending + AuthorizationPending}
+                            {AuthorisationPending + AuthorizationPending} {""}{" "}
+                            {"/"} {peopleWaiting}
                         </h1>
                     </div>
                     <div className="bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
@@ -303,7 +328,7 @@ function CsDashboard() {
                                             )
                                         }
                                     >
-                                        Take Action
+                                        Take Actions
                                     </button>
                                 </div>
                             </div>
@@ -311,15 +336,13 @@ function CsDashboard() {
                     </div>
                 </div>
             </div>
-
             {/* Buttons Section */}
-
             <div className=" flex justify-between">
                 <div className="mt-3 flex justify-start space-x-4">
                     {/* Search Enrollee Button */}
                     <button
                         onClick={() => handleNavigate("/enrollees")}
-                        className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md "
+                        className="flex items-center justify-center bg-red-500 px-4 text-white py-2  mt-3 rounded-md "
                     >
                         Search Enrollee
                     </button>
@@ -327,23 +350,12 @@ function CsDashboard() {
                     {/* Manage PA Button */}
                     <button
                         onClick={() => handleNavigate("/managePa")}
-                        className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md "
+                        className="flex items-center justify-center bg-red-500 text-white py-2 px-4 mt-3 rounded-md "
                     >
                         Manage PA
                     </button>
 
                     {/* Create Ticket Button with Image */}
-                    <button
-                        onClick={() => handleNavigate("/create-ticket")}
-                        className="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md "
-                    >
-                        <img
-                            src={plusbutton}
-                            alt="Create Ticket"
-                            className="w-5 h-5 mr-2"
-                        />
-                        Create Ticket
-                    </button>
                 </div>
                 <div className=" cursor-pointer ">
                     <h2
@@ -354,7 +366,6 @@ function CsDashboard() {
                     </h2>
                 </div>
             </div>
-
             {/* Data Table Section */}
             <div className="relative overflow-x-auto shadow-md mt-3 rounded-md">
                 <div className="max-h-[400px] overflow-y-auto">
@@ -379,7 +390,26 @@ function CsDashboard() {
                         </thead>
 
                         <tbody>
-                            {combinedOpenPA && combinedOpenPA.length > 0 ? (
+                            {loading ? (
+                                <tr>
+                                    <td
+                                        colSpan="8"
+                                        className="h-64 text-center"
+                                    >
+                                        <div className="flex flex-col items-center justify-center h-full space-y-2">
+                                            <img
+                                                src="public/loaderx.gif"
+                                                alt="Loading animation"
+                                                className="w-40 h-40" /* Adjust size as needed */
+                                            />
+                                            <h3 className="text-gray-600 text-lg font-semibold">
+                                                Please Wait, Fetching Pending PA
+                                                Request...
+                                            </h3>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : combinedOpenPA && combinedOpenPA.length > 0 ? (
                                 paginatedResults.map((enrollee, index) => (
                                     <tr
                                         key={index}

@@ -6,15 +6,56 @@ import dropdown from "../../assets/csImages/Group 2398.svg";
 import { useState, useEffect } from "react";
 import search from "../../assets/csImages/Search.svg";
 import plusiconred from "../../assets/csImages/Group 2356.svg";
+import { useLocation } from "react-router-dom";
 
 const EnrollePaCode = () => {
     const [enrolleeData, setEnrolleeData] = useState(null);
+    const [service, setService] = useState([]);
+    const [provider, setProvider] = useState([]);
+    const [benefit, setBenefit] = useState([]);
+    const [selectedProvider, setSelectedProvider] = useState("");
+    const [selectedVisitType, setSelectedVisitType] = useState(null);
+    const [SelectedBenefit, setSelectedBeenefitType] = useState("");
+
+    const handleSubmit = async () => {
+        const postData = {
+            CifNumber: enrollee.Member_MemberUniqueID,
+            EnrolleeID: enrollee.Member_EnrolleeID,
+            RequestingProviderCode: selectedProvider, // Selected provider code
+            UserID: user.result[0].UserName,
+            UserName: user.result[0].UserName,
+            Source: "Leadway Contact Centre",
+            mobilephone: enrollee.Member_Phone_One,
+            VisitType: selectedVisitType, // Selected visit type
+        };
+
+        console.log("getvisitID", postData);
+        try {
+            const response = await axios.post(
+                "YOUR_API_ENDPOINT_HERE",
+                postData,
+            );
+            console.log("Success:", response.data);
+        } catch (error) {
+            console.error("Error submitting data:", error);
+        }
+    };
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
     const navigate = useNavigate();
+
+    const handleNavigate = (enrollee) => {
+        navigate("/csenrolleeprofileupdate", { state: { enrollee } });
+    };
     const [isChecked, setIsChecked] = useState(false);
     const handleCheckboxChange = () => {
         setIsChecked(!isChecked);
     };
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
+    const location = useLocation();
+    const enrollee = location.state?.enrollee;
     const [dropdownStates, setDropdownStates] = useState({
         visitType: false,
         benefits: false,
@@ -28,67 +69,184 @@ const EnrollePaCode = () => {
         "Visit Type 2",
         "Visit Type 3",
     ];
-    const dropdownItemsBenefits = ["Benefit 1", "Benefit 2", "Benefit 3"];
+
+    const [claimsPaid, setClaimsPaid] = useState("");
+
+    function DateDropdown({ options, sendNumber, className, placeholder }) {
+        const [selectedValue, setSelectedValue] = useState("");
+
+        const handleChange = (event) => {
+            const value = event.target.value;
+            setSelectedValue(value);
+            sendNumber(value);
+        };
+
+        return (
+            <select
+                value={selectedValue}
+                onChange={handleChange}
+                className={`border border-gray-300 rounded p-2 ${className}`}
+            >
+                {/* Dynamic placeholder text */}
+                <option value="" disabled>
+                    {placeholder}
+                </option>
+                {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
+        );
+    }
+
+    console.log(
+        "getBenefits",
+        fetch(
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType}`,
+            {
+                method: "GET",
+            },
+        ),
+    );
+
+    async function GetBenefit() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType}`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+            console.log("getBebefit", data.result);
+            setBenefit(data.result);
+        } catch (error) {
+            console.error("Error getting benefits", error);
+        }
+    }
+    async function CalculateAllAmountSpentOnEnrollee() {
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.Member_EnrolleeID}&fromdate=2010-12-31&todate=2025-12-31&network_type=`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.result && Array.isArray(data.result)) {
+                // Filter claims with `ClaimLine_AmtPaid` greater than 0
+                const allClaimsPaid = data.result.filter(
+                    (item) => item.ClaimLine_AmtPaid,
+                );
+
+                // Sum up all the amounts paid
+                const getAllClaimsPaid = allClaimsPaid.reduce(
+                    (sum, item) => sum + (item.ClaimLine_AmtPaid || 0),
+                    0, // Initial value for `reduce`
+                );
+
+                const nuber = allClaimsPaid.length;
+
+                console.log("All Claims Paid:", getAllClaimsPaid);
+
+                setClaimsPaid(getAllClaimsPaid.toLocaleString("en-US"));
+            } else {
+                console.warn("No claims data found in the response.");
+            }
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+
+    async function GetService() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.Member_MemberUniqueID}&Schemeid=${enrollee.Member_PlanID}             
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("service:", data.result);
+
+            setService(data.result);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        }
+    }
+    async function GetProvider() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/ListValues/GetProviders             
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("providers:", data.result);
+
+            setProvider(data.result);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        }
+    }
 
     useEffect(() => {
-        setEnrolleeData({
-            name: "John Doe",
-            dateOfBirth: "01/01/1990",
-            enrolleeId: "LH221121/0",
-            contactNumber: "123-456-7890",
-            group: "A",
-            emailAddress: "johndoe@example.com",
-            scheme: "Basic Plan",
-            primaryProvider: "Provider A",
-            age: 34,
-            memberType: "Individual",
-            policyDate: "2022-01-01",
-            amountSpent: "$200",
-        });
+        CalculateAllAmountSpentOnEnrollee();
+        GetService();
+        GetProvider();
     }, []);
-
-    const toggleDropdown = (dropdownKey) => {
-        setDropdownStates((prev) => ({
-            ...prev,
-            [dropdownKey]: !prev[dropdownKey],
-        }));
-    };
-
-    const selectDropdownItem = (dropdownKey, item) => {
-        setSelectedItems((prev) => ({
-            ...prev,
-            [dropdownKey]: item,
-        }));
-        setDropdownStates((prev) => ({
-            ...prev,
-            [dropdownKey]: false,
-        }));
-    };
-
-    if (!enrolleeData) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <div className="bg-lightblue  w-full p-3">
             <div className="">
-                <h3 className="font-bold text-[23px] font-sans ml-4 mt-1">
-                    Generate PA Code
-                </h3>
-                <div className="flex justify-end items-center space-x-2 mr-3 mb-3">
-                    <Link to="/generatePaCode">
-                        <button className="flex items-center">
-                            <img
-                                src={backIcon}
-                                alt="Back Icon"
-                                className="w-6 h-6"
-                            />
-                        </button>
-                    </Link>
+                <div className=" flex justify-between">
+                    <h3 className="font-bold text-[23px] font-sans ml-1 mt-1">
+                        Generate PA Code
+                    </h3>
+                    <div className=" flex gap-3 ">
+                        <Link to="/generatePaCode">
+                            <button className="flex items-center">
+                                <img
+                                    src={backIcon}
+                                    alt="Back Icon"
+                                    className="w-6 h-6"
+                                />
+                            </button>
+                        </Link>
 
-                    <h4 className="text-[#C61531] font-normal text-[16px] text-left">
-                        Back to enrollee Search
-                    </h4>
+                        <h4
+                            className="text-[#C61531] font-normal text-[16px] text-left cursor-pointer"
+                            onClick={() => navigate(-1)}
+                        >
+                            Back to enrollee Search
+                        </h4>
+                    </div>
                 </div>
 
                 <div className=" rounded-md bg-white">
@@ -116,7 +274,7 @@ const EnrollePaCode = () => {
                                         Name
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.name}
+                                        {enrollee.Member_CustomerName}
                                     </span>
                                 </div>
                                 <div>
@@ -124,7 +282,13 @@ const EnrollePaCode = () => {
                                         Date of Birth
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.dateOfBirth}
+                                        {
+                                            new Date(
+                                                enrollee.Member_DateOfBirth,
+                                            )
+                                                .toISOString()
+                                                .split("T")[0]
+                                        }
                                     </span>
                                 </div>
                                 <div>
@@ -132,7 +296,7 @@ const EnrollePaCode = () => {
                                         Enrollee ID
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.enrolleeId}
+                                        {enrollee.Member_EnrolleeID}
                                     </span>
                                 </div>
                                 <div>
@@ -140,7 +304,8 @@ const EnrollePaCode = () => {
                                         Phone Number
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.contactNumber}
+                                        {enrollee.Member_Phone_One}
+                                        {enrollee.Member_Phone_Two}
                                     </span>
                                 </div>
                                 <div>
@@ -148,15 +313,16 @@ const EnrollePaCode = () => {
                                         Group
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.group}
+                                        {enrollee.Client_ClientName}
                                     </span>
                                 </div>
+
                                 <div>
                                     <span className="block text-gray-500">
                                         Email Address
                                     </span>
-                                    <span className="block font-medium">
-                                        {enrolleeData.emailAddress}
+                                    <span className="block font-medium break-words">
+                                        {enrollee.Client_EmailAddress}
                                     </span>
                                 </div>
                                 <div>
@@ -164,23 +330,16 @@ const EnrollePaCode = () => {
                                         Scheme
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.scheme}
+                                        {enrollee.client_schemename}
                                     </span>
                                 </div>
-                                <div>
-                                    <span className="block text-gray-500">
-                                        Primary Provider
-                                    </span>
-                                    <span className="block font-medium">
-                                        {enrolleeData.primaryProvider}
-                                    </span>
-                                </div>
+
                                 <div>
                                     <span className="block text-gray-500">
                                         Age
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.age}
+                                        {enrollee.Member_Age}
                                     </span>
                                 </div>
                                 <div>
@@ -188,7 +347,7 @@ const EnrollePaCode = () => {
                                         Member Type
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.memberType}
+                                        {enrollee.Member_Membertype}
                                     </span>
                                 </div>
                                 <div>
@@ -196,7 +355,17 @@ const EnrollePaCode = () => {
                                         Policy Date
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.policyDate}
+                                        {
+                                            new Date(
+                                                enrollee.Client_DateAccepted,
+                                            ).toLocaleDateString("en-GB") // Formats the date as day/month/year
+                                        }
+                                        -
+                                        {
+                                            new Date(
+                                                enrollee.Client_Expiry_date,
+                                            ).toLocaleDateString("en-GB") // Formats the date as day/month/year
+                                        }
                                     </span>
                                 </div>
                                 <div>
@@ -204,7 +373,7 @@ const EnrollePaCode = () => {
                                         Amount Spent
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.amountSpent}
+                                        #{claimsPaid}
                                     </span>
                                 </div>
                                 <div>
@@ -212,7 +381,7 @@ const EnrollePaCode = () => {
                                         Next of Kin
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.nextOfKin}
+                                        {enrollee.Client_ContactPerson}
                                     </span>
                                 </div>
                                 <div>
@@ -220,18 +389,18 @@ const EnrollePaCode = () => {
                                         NOK Phone Number
                                     </span>
                                     <span className="block font-medium">
-                                        {enrolleeData.NOKPhoneNumber}
+                                        {enrollee.Client_ContactPhone1}
                                     </span>
                                 </div>
+
+                                <div></div>
                                 <div></div>
                                 <div></div>
                                 <div></div>
 
                                 <button
                                     className=" text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md flex gap-3 px-3 py-2 justify-items-end items-end mb-3 "
-                                    onClick={() =>
-                                        handleNavigate("/updateprofile")
-                                    }
+                                    onClick={() => handleNavigate(enrollee)}
                                 >
                                     <img
                                         src="handpen.svg"
@@ -246,10 +415,19 @@ const EnrollePaCode = () => {
                 </div>
             </div>
 
-            <div className=" bg-white p-6 shadow-md rounded-lg mt-3 w-full">
-                <h2 className="ml-6 text-[22px] text-red-700 font-bold mb-6">
-                    Procedure Information
-                </h2>
+            <div className=" bg-white p-3 shadow-md rounded-lg mt-3 w-full">
+                <div className=" flex justify-between">
+                    <h2 className="ml-6 text-[22px] text-red-700 font-bold mb-6">
+                        Procedure Information
+                    </h2>
+
+                    <button
+                        className=" whitespace-nowrap h-11 px-9 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md"
+                        onClick={handleSubmit}
+                    >
+                        Get Visit Id
+                    </button>
+                </div>
 
                 {/* First Row of Input Divs */}
                 <div className="flex ml-6 space-x-4">
@@ -257,46 +435,18 @@ const EnrollePaCode = () => {
                         <label className="block mb-2 text-gray-700 font-medium">
                             Visit Type
                         </label>
-                        <div className="relative w-full h-[44px] border border-black rounded-lg">
-                            <button
-                                onClick={() => toggleDropdown("visitType")}
-                                className="flex items-center justify-between w-full h-full px-3 text-gray-600 bg-white rounded-lg"
-                            >
-                                <span>
-                                    {selectedItems.visitType || "- Select -"}
-                                </span>
-                                <img
-                                    src={dropdown}
-                                    alt="Dropdown"
-                                    className={`w-4 h-4 ${
-                                        dropdownStates.visitType
-                                            ? "transform rotate-180"
-                                            : ""
-                                    }`}
-                                />
-                            </button>
 
-                            {dropdownStates.visitType && (
-                                <ul className="absolute left-0 w-full bg-white border border-black rounded-lg shadow-md mt-1 z-10">
-                                    {dropdownItemsVisitType.map(
-                                        (item, index) => (
-                                            <li
-                                                key={index}
-                                                className="px-3 py-2 cursor-pointer hover:bg-gray-200"
-                                                onClick={() =>
-                                                    selectDropdownItem(
-                                                        "visitType",
-                                                        item,
-                                                    )
-                                                }
-                                            >
-                                                {item}
-                                            </li>
-                                        ),
-                                    )}
-                                </ul>
-                            )}
-                        </div>
+                        <DateDropdown
+                            options={service.map((type) => ({
+                                label: type.visittype,
+                                value: type.servtype_id,
+                            }))}
+                            sendNumber={(selected) =>
+                                setSelectedVisitType(selected)
+                            }
+                            className="relative w-full h-[44px] rounded-lg outline-none"
+                            placeholder="Please select visit type"
+                        />
                     </div>
 
                     {/* Date Picker */}
@@ -313,50 +463,19 @@ const EnrollePaCode = () => {
                     </div>
 
                     {/* Benefits Dropdown */}
-                    <div className="relative w-[320px]">
+                    <div className="relative w-[320px] " onClick={GetBenefit}>
                         <label className="block mb-2 text-gray-700 font-medium">
                             Benefits
                         </label>
-                        <div className="relative w-full h-[44px] border border-black rounded-lg">
-                            <button
-                                onClick={() => toggleDropdown("benefits")}
-                                className="flex items-center justify-between w-full h-full px-3 text-gray-600 bg-white rounded-lg"
-                            >
-                                <span>
-                                    {selectedItems.benefits || "- Select -"}
-                                </span>
-                                <img
-                                    src={dropdown}
-                                    alt="Dropdown"
-                                    className={`w-4 h-4 ${
-                                        dropdownStates.benefits
-                                            ? "transform rotate-180"
-                                            : ""
-                                    }`}
-                                />
-                            </button>
-
-                            {dropdownStates.benefits && (
-                                <ul className="absolute left-0 w-full bg-white border border-black rounded-lg shadow-md mt-1 z-10">
-                                    {dropdownItemsBenefits.map(
-                                        (item, index) => (
-                                            <li
-                                                key={index}
-                                                className="px-3 py-2 cursor-pointer hover:bg-gray-200"
-                                                onClick={() =>
-                                                    selectDropdownItem(
-                                                        "benefits",
-                                                        item,
-                                                    )
-                                                }
-                                            >
-                                                {item}
-                                            </li>
-                                        ),
-                                    )}
-                                </ul>
-                            )}
-                        </div>
+                        <DateDropdown
+                            options={benefit.map((type) => ({
+                                label: type.Benefit,
+                                value: type.Benefit,
+                            }))}
+                            sendNumber={(value) => setSelectedVisitType(value)}
+                            className="relative w-full h-[44px] rounded-lg outline-none"
+                            placeholder="Please select benefit "
+                        />
                     </div>
                 </div>
                 {/* Second Row of Input Divs */}
@@ -366,47 +485,17 @@ const EnrollePaCode = () => {
                         <label className="block mb-2 text-gray-700 font-medium">
                             Requesting Provider
                         </label>
-                        <div className="relative w-full h-[44px] border border-black rounded-lg">
-                            <button
-                                onClick={() => toggleDropdown("firstDropdown")}
-                                className="flex items-center justify-between w-full h-full px-3 text-gray-600 bg-white rounded-lg"
-                            >
-                                <span>
-                                    {selectedItems.firstDropdown ||
-                                        "- Select Another -"}
-                                </span>
-                                <img
-                                    src={dropdown}
-                                    alt="Dropdown"
-                                    className={`w-4 h-4 ${
-                                        dropdownStates.firstDropdown
-                                            ? "transform rotate-180"
-                                            : ""
-                                    }`}
-                                />
-                            </button>
-
-                            {dropdownStates.firstDropdown && (
-                                <ul className="absolute left-0 w-full bg-white border border-black rounded-lg shadow-md mt-1 z-10">
-                                    {["Option 1", "Option 2", "Option 3"].map(
-                                        (item, index) => (
-                                            <li
-                                                key={index}
-                                                className="px-3 py-2 cursor-pointer hover:bg-gray-200"
-                                                onClick={() =>
-                                                    selectDropdownItem(
-                                                        "firstDropdown",
-                                                        item,
-                                                    )
-                                                }
-                                            >
-                                                {item}
-                                            </li>
-                                        ),
-                                    )}
-                                </ul>
-                            )}
-                        </div>
+                        <DateDropdown
+                            options={provider.map((type) => ({
+                                label: type.FullName, // Display text in the dropdown
+                                value: type.visittype, // Value to be sent
+                            }))}
+                            sendNumber={(value) => {
+                                setSelectedProvider(value); // Update selected value
+                            }}
+                            className="relative w-full h-[44px]  rounded-lg outline-none"
+                            placeholder=" Please select a provider"
+                        />
                     </div>
 
                     {/* Provider Email Input */}
@@ -427,46 +516,17 @@ const EnrollePaCode = () => {
                         <label className="block mb-2 text-gray-700 font-medium">
                             Referral Provider
                         </label>
-                        <div className="relative w-full h-[44px] border border-black rounded-lg">
-                            <button
-                                onClick={() => toggleDropdown("secondDropdown")}
-                                className="flex items-center justify-between w-full h-full px-3 text-gray-600 bg-white rounded-lg"
-                            >
-                                <span>
-                                    {selectedItems.secondDropdown ||
-                                        "- Select Another -"}
-                                </span>
-                                <img
-                                    src={dropdown}
-                                    alt="Dropdown"
-                                    className={`w-4 h-4 ${
-                                        dropdownStates.secondDropdown
-                                            ? "transform rotate-180"
-                                            : ""
-                                    }`}
-                                />
-                            </button>
-                            {dropdownStates.secondDropdown && (
-                                <ul className="absolute left-0 w-full bg-white border border-black rounded-lg shadow-md mt-1 z-10">
-                                    {["Option 1", "Option 2", "Option 3"].map(
-                                        (item, index) => (
-                                            <li
-                                                key={index}
-                                                className="px-3 py-2 cursor-pointer hover:bg-gray-200"
-                                                onClick={() =>
-                                                    selectDropdownItem(
-                                                        "secondDropdown",
-                                                        item,
-                                                    )
-                                                }
-                                            >
-                                                {item}
-                                            </li>
-                                        ),
-                                    )}
-                                </ul>
-                            )}
-                        </div>
+                        <DateDropdown
+                            options={provider.map((type) => ({
+                                label: type.FullName, // Display text in the dropdown
+                                value: type.visittype, // Value to be sent
+                            }))}
+                            sendNumber={(value) => {
+                                setSelectedValue(value); // Update selected value
+                            }}
+                            className="relative w-full h-[44px] outline-none rounded-lg"
+                            placeholder="Please select referral provider "
+                        />
                     </div>
                 </div>
 

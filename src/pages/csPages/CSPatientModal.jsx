@@ -2,14 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { FiEdit } from "react-icons/fi";
 
 // Mock Data - Dynamic State Initialization
 const CSPatientModal = ({ selectedStatus }) => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const navigate = useNavigate();
 
-    const handleNavigate = (path) => {
-        navigate(path);
+    // const handleNavigate = (path) => {
+    //     navigate(path);
+    // };
+
+    const handleNavigate = (enrollee) => {
+        navigate("/csenrolleeprofileupdate", { state: { enrollee } });
     };
 
     const location = useLocation();
@@ -68,7 +73,7 @@ const CSPatientModal = ({ selectedStatus }) => {
     async function CalculateAllAmountSpentOnEnrollee() {
         try {
             const response = await fetch(
-                `${apiUrl}/api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.Member_EnrolleeID}&fromdate=2010-12-31&todate=2025-12-31&network_type=`,
+                `${apiUrl}/api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.MembernUmber}&fromdate=2010-12-31&todate=2025-12-31&network_type=`,
                 {
                     method: "GET",
                 },
@@ -108,6 +113,31 @@ const CSPatientModal = ({ selectedStatus }) => {
         }
     }
 
+    // const handleButtonClick = async () => {
+    //     if (!enrollee) {
+    //         console.error("No enrollee data found!");
+    //         return;
+    //     }
+
+    //     try {
+    //         // Perform some operation (e.g., fetch API using enrollee data)
+    //         const response = await fetch(
+    //             `${apiUrl}api/SomeEndpoint?enrolleeid=${enrollee.MembernUmber}`,
+    //         );
+
+    //         if (!response === 200) throw new Error("Failed to fetch data");
+
+    //         const result = await response.json();
+
+    //         // Navigate to the next page with updated data
+    //         navigate("/csenrolleeprofileupdate", {
+    //             state: { enrollee: result },
+    //         });
+    //     } catch (error) {
+    //         console.error("Error processing data:", error);
+    //     }
+    // };
+
     return (
         <div className="bg-white shadow-md rounded-md p-6 w-full mt-2">
             <div className=" flex gap-8">
@@ -116,7 +146,6 @@ const CSPatientModal = ({ selectedStatus }) => {
             </div>
 
             <div className="flex gap-6  w-full">
-                {/* Profile Image */}
                 <div className="flex flex-col items-center ml-6">
                     <img
                         src="Avataraang.svg"
@@ -128,13 +157,12 @@ const CSPatientModal = ({ selectedStatus }) => {
                         Active
                     </div>
                 </div>
-
                 <div className=" w-full">
                     <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 px-4">
                         <div>
                             <span className="block text-gray-500">Name</span>
                             <span className="block font-medium text-[14px]">
-                                {/* {enrollee.Member_CustomerName || "N/A"} */}
+                                {enrollee.surname} {""} {enrollee.firstname}
                             </span>
                         </div>
 
@@ -143,11 +171,11 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Date of Birth
                             </span>
                             <span className="block font-medium text-[14px]">
-                                {/* {
+                                {
                                     new Date(
-                                        enrollee.Member_DateOfBirth,
+                                        enrollee.dateofbirth,
                                     ).toLocaleDateString("en-GB") // Formats the date as day/month/year
-                                } */}
+                                }
                             </span>
                         </div>
                         <div>
@@ -155,7 +183,7 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Enrollee ID
                             </span>
                             <span className="block font-medium text-[14px]">
-                                {/* {enrollee.Member_EnrolleeID} */}
+                                {enrollee.MembernUmber}
                             </span>
                         </div>
                         <div>
@@ -163,13 +191,13 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Phone Number
                             </span>
                             <span className="block font-medium text-[14px]">
-                                {/* {enrollee.Member_Phone_One || "      N/A"} */}
+                                {enrollee.MobilePhone}
                             </span>
                         </div>
                         <div>
                             <span className="block text-gray-500">Group</span>
                             <span className="block font-medium break-words text-[14px] leading-tight">
-                                {/* {enrollee.Client_ClientName} */}
+                                {enrollee.grouP_name}
                             </span>
                         </div>
 
@@ -178,13 +206,13 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Email Address
                             </span>
                             <span className="block font-medium break-words text-[14px] leading-tight">
-                                {/* {enrollee.Member_EmailAddress_One || "N/A"} */}
+                                {enrollee.email || "N/A"}
                             </span>
                         </div>
                         <div>
                             <span className="block text-gray-500">Scheme</span>
                             <span className="block font-medium text-[14px]">
-                                {/* {enrollee.client_schemename || "N/A"} */}
+                                {enrollee.SCHEME_TYPE || "N/A"}
                             </span>
                         </div>
                         {/* <div>
@@ -201,7 +229,7 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Member Type
                             </span>
                             <span className="block font-medium text-[14px]">
-                                {/* {enrollee.Member_Membertype || "N/A"} */}
+                                {enrollee.MemberType || "N/A"}
                             </span>
                         </div>
 
@@ -219,29 +247,32 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Age
                             </span>
                             <span className="block font-medium">
-                                {/* {enrollee.Member_Age} */}
+                                {enrollee.Age}
                             </span>
                         </div>
 
                         <div>
                             <span className="block text-gray-500 ">
-                                Policy Date
+                                Policy End Date
                             </span>
 
                             <span className=" block font-medium break-words text-[14px] leading-tight">
-                                {/* {
-                                    new Date(
-                                        enrollee.Client_DateAccepted,
-                                    ).toLocaleDateString("en-GB") // Formats the date as day/month/year
-                                }
-                                -
                                 {
                                     new Date(
-                                        enrollee.Client_Expiry_date,
+                                        enrollee.Policyenddate,
                                     ).toLocaleDateString("en-GB") // Formats the date as day/month/year
-                                } */}
+                                }
                             </span>
                         </div>
+                        <button
+                            className=" border border-red-300 flex gap-2 pl-4 pt-2 rounded-md bg-red-100"
+                            onClick={() => handleNavigate(enrollee)}
+                        >
+                            <FiEdit className=" text-red-500 mt-1" />
+                            <h1 className="block text-red-500 ">
+                                Edit Profile
+                            </h1>
+                        </button>
                     </div>
                 </div>
             </div>

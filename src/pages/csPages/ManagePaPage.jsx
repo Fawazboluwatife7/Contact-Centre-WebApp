@@ -7,7 +7,7 @@ function ManagePaPage() {
     <div className="flex  ">
       <CsSidebar />
 
-      <div className="flex flex-col ">
+      <div className=" w-full ">
         <Header />
         <ManagePA />
       </div>

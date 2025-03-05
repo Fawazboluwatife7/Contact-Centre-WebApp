@@ -1,130 +1,99 @@
-// import React, { useState } from "react"; // Import useState from React
-// import search from "../../assets/CSIMAGES/Search.svg";
-// import reddot from "../../assets/CSIMAGES/reddot.svg";
-// import alarm from "../../assets/CSIMAGES/alarmicon.svg";
-// import vangle from "../../assets/CSIMAGES/vangle.svg";
-// import userimage from "../../assets/CSIMAGES/userimage.svg";
-
-// function Header() {
-//   const [searchTerm, setSearchTerm] = useState(""); // useState is now available
-
-//   const handleSearch = (e) => {
-//     setSearchTerm(e.target.value);
-//   };
-
-//   return (
-//     <div className="flex justify-between  items-center w-[1150px] p-4 ">
-//       <div className="relative w-full max-w-md">
-//         <input
-//           type="text"
-//           value={searchTerm}
-//           onChange={handleSearch}
-//           placeholder="Search..."
-//           className="w-full pl-10 pr-4 py-2 rounded-md border bg-lightblue border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-//         />
-//         <img
-//           src={search}
-//           alt="Search"
-//           className="absolute  top-1/2 ml-3 transform -translate-y-1/2 w-5 h-5"
-//         />
-//       </div>
-//       <div className="flex gap-2 ">
-//         <div className="bg-red-50 flex items-center space-x-2 rounded-full p-2">
-//           <img src={reddot} alt="Red Dot" className="w-[7px] h-[7px]" />
-//           <div className="text-red-500 ">Customer Service</div>
-//         </div>
-//         <img src={alarm} />
-
-//         <div className="flex w-[52px] h-[38px] p-1">
-//           <img src={userimage} />
-//           <img className="w-[18px]" src={vangle} />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Header;
-
 import React, { useState } from "react";
-import search from "../../assets/CSIMAGES/Search.svg";
-import reddot from "../../assets/CSIMAGES/reddot.svg";
-import alarm from "../../assets/CSIMAGES/alarmicon.svg";
-import vangle from "../../assets/CSIMAGES/vangle.svg";
-import userimage from "../../assets/CSIMAGES/userimage.svg";
+import { MdClose } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
-function Header() {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [dropdownVisible, setDropdownVisible] = useState(false);
+const Header = () => {
+    const navigate = useNavigate();
+    const [modal, setModal] = useState("");
 
-    const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
+    const handleNavigate = (path) => {
+        navigate(path);
     };
 
-    const toggleDropdown = () => {
-        setDropdownVisible(!dropdownVisible);
-    };
-
+    function logout() {
+        navigate("/");
+        localStorage.clear();
+    }
     return (
         <div className="flex items-center justify-between bg-white p-4 relative ">
-            <div className="relative w-full max-w-md">
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    placeholder="Search..."
-                    className="w-full pl-10 pr-4 py-2 rounded-md border bg-lightblue border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <img
-                    src={search}
-                    alt="Search"
-                    className="absolute top-1/2 ml-3 transform -translate-y-1/2 w-5 h-5"
-                />
-            </div>
-            <div className="flex gap-2">
-                <div className="bg-red-50 flex items-center space-x-2 rounded-full p-2">
+            {/* Search Bar */}
+            <div className="flex items-center w-1/3">
+                <div className="relative w-full">
                     <img
-                        src={reddot}
-                        alt="Red Dot"
-                        className="w-[7px] h-[7px]"
+                        src="searchBar.svg"
+                        alt="Search Icon"
+                        className="absolute top-1/2 left-3 transform -translate-y-1/2 h-5 w-5"
                     />
-                    <div className="text-red-500">Customer Service</div>
+                    <input
+                        type="text"
+                        placeholder="Search here..."
+                        className="w-full py-2 pl-10 pr-4 border rounded-md bg-[#F0F2FA] placeholder-gray-400 focus:outline-none"
+                    />
                 </div>
-                <img src={alarm} />
-                <div
-                    className="relative flex w-[52px] h-[38px] p-1 cursor-pointer"
-                    onClick={toggleDropdown}
-                >
-                    <img src={userimage} />
-                    <img className="w-[18px]" src={vangle} />
-                    {dropdownVisible && (
-                        <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                            <div className="flex items-center p-2 border-b border-gray-200">
-                                <img
-                                    src={userimage}
-                                    alt="User"
-                                    className="w-10 h-10 rounded-full"
-                                />
-                                <div className="ml-2">
-                                    <p className="text-sm font-semibold">
-                                        Username
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                        Role: UserRole
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="p-2">
-                                <p className="text-sm text-gray-700">
-                                    Additional details here...
-                                </p>
-                            </div>
+            </div>
+
+            {/* Right Section */}
+            <div className="flex items-center space-x-6">
+                {/* Case Management */}
+                <button className="flex items-center bg-[#FDEEEE] text-[#C61531] py-1 px-4 rounded-full text-sm font-medium">
+                    <span className="mr-2 h-2 w-2 bg-red-500 rounded-full"></span>
+                    Contact centre
+                </button>
+
+                {/* Notifications */}
+                <div className="relative">
+                    <img
+                        src="BelIcon.svg"
+                        alt=""
+                        className="h-6 w-6 text-gray-600 cursor-pointer"
+                        onClick={() => handleNavigate("/notification")}
+                    />
+                    <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                        4
+                    </span>
+                </div>
+
+                {/* Profile Section */}
+                <div className="flex items-center space-x-2 cursor-pointer">
+                    <img
+                        src="Avatars@3x.svg"
+                        alt="Profile"
+                        className="h-8 w-8 rounded-full border border-gray-200"
+                    />
+                    <img
+                        src="downArrow.svg"
+                        alt="Dropdown Icon"
+                        className="h-4 w-4 text-gray-600"
+                        onClick={() =>
+                            setModal(modal === "logout" ? "" : "logout")
+                        }
+                    />
+                </div>
+                {modal === "logout" && (
+                    <div className="h-[100px] overflow-y-scroll absolute z-[9999]  top-[80px] right-0 bg-white shadow-md border w-[360px] p-5 rounded-[8px]">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[#282828] font-[500] text-[20px]">
+                                {/* Notifications */}
+                            </p>
+                            <MdClose
+                                className="text-[#101828] cursor-pointer text-[20px]"
+                                onClick={() => setModal(" ")}
+                            />
                         </div>
-                    )}
-                </div>
+
+                        <div className="border-b mt-5 pb-1">
+                            <p
+                                className="text-[#767676] font-[300] text-[16px] cursor-pointer "
+                                onClick={logout}
+                            >
+                                Logout
+                            </p>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
-}
+};
 
 export default Header;

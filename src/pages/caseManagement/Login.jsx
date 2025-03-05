@@ -23,19 +23,14 @@ const Login = () => {
             title: "case Management",
             description: "Follow up on enrolles care",
         },
-        {
-            img: "../../assets/SalesModuleImages/SalesIcon.svg",
-            title: "sales",
-            description: "Manage all your clients and prospects.",
-        },
     ];
 
-    // const user = JSON.parse(localStorage.getItem("user"));
-    // useEffect(() => {
-    //     if (user) {
-    //         navigate("/dashboard");
-    //     }
-    // }, []);
+    const user = JSON.parse(localStorage.getItem("user"));
+    useEffect(() => {
+        if (user) {
+            navigate("/csdashboard");
+        }
+    }, []);
     const handleLogin = async () => {
         if (!email || !password) {
             setMsg("Email and password are required.");
@@ -72,8 +67,8 @@ const Login = () => {
             }
 
             // Login successful
-            // localStorage.setItem("user", JSON.stringify(data));
-            // navigate("/dashboard");
+            localStorage.setItem("user", JSON.stringify(data));
+            navigate("/csdashboard");
         } catch (err) {
             setLoading(false);
             setError("An error occurred. Please try again later.");

@@ -8,8 +8,8 @@ const CsPatientInformation = ({ selectedStatus }) => {
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-    const handleNavigate = (path) => {
-        navigate(path);
+    const handleNavigate = (enrollee) => {
+        navigate("/csenrolleeprofileupdate", { state: { enrollee } });
     };
 
     const [enrolleeData, setEnrolleeData] = useState({
@@ -233,7 +233,7 @@ const CsPatientInformation = ({ selectedStatus }) => {
 
                         <button
                             className=" text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md flex gap-3 px-3 py-2 justify-items-end items-end "
-                            onClick={() => handleNavigate("/updateprofile")}
+                            onClick={() => handleNavigate(enrollee)}
                         >
                             <img src="handpen.svg" alt="" className=" h-7" />
                             Edit Profile
