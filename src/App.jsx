@@ -5,7 +5,7 @@ import CsSideBar from "./components/cs/csSideBar";
 import "./index.css";
 import CsDashboardLayoutPage from "./pages/csPages/DashboardLayoutPage";
 import EnrolleesPage from "./pages/csPages/EnrolleesPage";
-import CreateNewTicketPage from "./pages/csPages/CreateNewTicketPage";
+// import CreateNewTicketPage from "./pages/csPages/CreateNewTicketPage";
 // import TicketPage from "./pages/csPages/TicketPage";
 import EnrolleeInformations from "./pages/csPages/EnrolleInformationsPage";
 // import Reject from "./pages/csPages/RejectPage";
@@ -21,7 +21,7 @@ import TicketInformationPage from "./pages/csPages/TicketInformationPage";
 import CsLoginPage from "./pages/csPages/CsLoginPage";
 import Provider from "./pages/csPages/ProviderPage";
 import Providerdetails from "./pages/csPages/ProviderDetailsPage";
-import Dashboard from "./pages/caseManagement/Dashboard";
+// import Dashboard from "./pages/caseManagement/Dashboard";
 import Enrollee from "./pages/caseManagement/Enrollee";
 import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
 import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
@@ -32,10 +32,10 @@ import UpdateProfile from "./pages/caseManagement/UpdateProfile";
 import Ticket from "./pages/caseManagement/Ticket";
 // import AllTicket from "./pages/caseManagement/AllTicket";
 import CreateTicket from "./pages/caseManagement/CreateTicket";
-import ViewTicket from "./pages/caseManagement/ViewTicket";
+// import ViewTicket from "./pages/caseManagement/ViewTicket";
 // import TicketInfoTab from "./pages/caseManagement/TicketInfoTab";
 // import CommentTab from "./pages/caseManagement/CommentTab";
-import HistoryTab from "./pages/caseManagement/HistoryTab";
+// import HistoryTab from "./pages/caseManagement/HistoryTab";
 import CustomerModal from "./pages/caseManagement/CustomerModal";
 import EnrolleeCustomerPage from "./pages/caseManagement/EnrolleeCustomerPage";
 // import Notification from "./pages/caseManagement/Notification";
@@ -74,10 +74,10 @@ function App() {
                 <Route path="/CsSideBar" element={<CsSideBar />} />
                 <Route path="/CsDashboard" element={<CsDashboard />} />
                 <Route path="/Enrollees" element={<EnrolleesPage />} />
-                <Route
+                {/* <Route
                     path="/create-ticket"
                     element={<CreateNewTicketPage />}
-                />
+                /> */}
                 {/* <Route path="/ticket" element={<TicketPage />} /> */}
                 <Route
                     path="/enrolleeInformations"
@@ -97,7 +97,7 @@ function App() {
 
                 <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
                 <Route path="/approvePaCode" element={<ApprovePaCode />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                {/* <Route path="/dashboard" element={<Dashboard />} /> */}
                 <Route path="/enrollee" element={<Enrollee />} />
                 <Route path="/searchenrollee" element={<SearchEnrollee />} />
                 <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
@@ -122,10 +122,10 @@ function App() {
                 <Route path="/cmticket" element={<Ticket />} />
                 {/* <Route path="/allticket" element={<AllTicket />} /> */}
                 <Route path="/createticket" element={<CreateTicket />} />
-                <Route path="/viewticket" element={<ViewTicket />} />
+                {/* <Route path="/viewticket" element={<ViewTicket />} /> */}
                 {/* <Route path="/ticketinfo" element={<TicketInfoTab />} /> */}
                 {/* <Route path="/commenttab" element={<CommentTab />} /> */}
-                <Route path="/historytab" element={<HistoryTab />} />
+                {/* <Route path="/historytab" element={<HistoryTab />} /> */}
                 <Route path="/enrolleeinfo" element={<CustomerModal />} />
                 <Route
                     path="/enrolleeCustomerinfo"
