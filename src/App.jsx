@@ -25,7 +25,7 @@ import Dashboard from "./pages/caseManagement/Dashboard";
 import Enrollee from "./pages/caseManagement/Enrollee";
 import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
 import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
-import Admission from "./pages/caseManagement/Admission";
+// import Admission from "./pages/caseManagement/Admission";
 import PatientAdmissionHistory from "./pages/caseManagement/PatientAdmissionHistory";
 import PatientInformation from "./pages/caseManagement/PatientInformation";
 import UpdateProfile from "./pages/caseManagement/UpdateProfile";
@@ -101,7 +101,7 @@ function App() {
                 <Route path="/enrollee" element={<Enrollee />} />
                 <Route path="/searchenrollee" element={<SearchEnrollee />} />
                 <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
-                <Route path="/admission" element={<Admission />} />
+                {/* <Route path="/admission" element={<Admission />} /> */}
                 <Route
                     path="/patienthistory"
                     element={<PatientAdmissionHistory />}
