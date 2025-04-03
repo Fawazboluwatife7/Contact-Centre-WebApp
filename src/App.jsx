@@ -30,7 +30,7 @@ import PatientAdmissionHistory from "./pages/caseManagement/PatientAdmissionHist
 import PatientInformation from "./pages/caseManagement/PatientInformation";
 import UpdateProfile from "./pages/caseManagement/UpdateProfile";
 import Ticket from "./pages/caseManagement/Ticket";
-import AllTicket from "./pages/caseManagement/AllTicket";
+// import AllTicket from "./pages/caseManagement/AllTicket";
 import CreateTicket from "./pages/caseManagement/CreateTicket";
 import ViewTicket from "./pages/caseManagement/ViewTicket";
 import TicketInfoTab from "./pages/caseManagement/TicketInfoTab";
@@ -120,7 +120,7 @@ function App() {
                 <Route path="/phistorymodal" element={<PatientInformation />} />
                 <Route path="/updateprofile" element={<UpdateProfile />} />
                 <Route path="/cmticket" element={<Ticket />} />
-                <Route path="/allticket" element={<AllTicket />} />
+                {/* <Route path="/allticket" element={<AllTicket />} /> */}
                 <Route path="/createticket" element={<CreateTicket />} />
                 <Route path="/viewticket" element={<ViewTicket />} />
                 <Route path="/ticketinfo" element={<TicketInfoTab />} />
