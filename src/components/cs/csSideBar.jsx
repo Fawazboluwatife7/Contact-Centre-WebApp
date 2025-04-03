@@ -119,13 +119,6 @@ const CsSidebar = () => {
                     <img src="uil_invoice@3x.svg" alt="" />
                     <p className="ml-2">Providers</p>
                 </div>
-                <div
-                    className="mt-2 flex px-10 cursor-pointer hover:bg-[#C61531] p-2"
-                    onClick={() => handleNavigate("/ticket")}
-                >
-                    <img src="Report.svg" alt="" />
-                    <p className="ml-2">Ticket</p>
-                </div>
             </div>
         </div>
     );

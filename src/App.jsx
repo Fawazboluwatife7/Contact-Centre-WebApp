@@ -6,12 +6,12 @@ import "./index.css";
 import CsDashboardLayoutPage from "./pages/csPages/DashboardLayoutPage";
 import EnrolleesPage from "./pages/csPages/EnrolleesPage";
 import CreateNewTicketPage from "./pages/csPages/CreateNewTicketPage";
-import TicketPage from "./pages/csPages/TicketPage";
+// import TicketPage from "./pages/csPages/TicketPage";
 import EnrolleeInformations from "./pages/csPages/EnrolleInformationsPage";
-import Reject from "./pages/csPages/RejectPage";
-import Approve from "./pages/csPages/ApprovePage";
+// import Reject from "./pages/csPages/RejectPage";
+// import Approve from "./pages/csPages/ApprovePage";
 import History from "./pages/csPages/PA-HistoryPage";
-import Success from "./pages/csPages/SuccessPaCodePage";
+// import Success from "./pages/csPages/SuccessPaCodePage";
 import ManagePA from "./pages/csPages/ManagePaPage";
 
 import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
@@ -33,21 +33,21 @@ import Ticket from "./pages/caseManagement/Ticket";
 // import AllTicket from "./pages/caseManagement/AllTicket";
 import CreateTicket from "./pages/caseManagement/CreateTicket";
 import ViewTicket from "./pages/caseManagement/ViewTicket";
-import TicketInfoTab from "./pages/caseManagement/TicketInfoTab";
-import CommentTab from "./pages/caseManagement/CommentTab";
+// import TicketInfoTab from "./pages/caseManagement/TicketInfoTab";
+// import CommentTab from "./pages/caseManagement/CommentTab";
 import HistoryTab from "./pages/caseManagement/HistoryTab";
 import CustomerModal from "./pages/caseManagement/CustomerModal";
 import EnrolleeCustomerPage from "./pages/caseManagement/EnrolleeCustomerPage";
-import Notification from "./pages/caseManagement/Notification";
-import Workbench from "./pages/caseManagement/Workbench";
+// import Notification from "./pages/caseManagement/Notification";
+// import Workbench from "./pages/caseManagement/Workbench";
 
-import SSDashboard from "./pages/caseManagement/SSDashboard";
-import ClaimsDashboard from "./pages/caseManagement/ClaimsDashboard";
-import ClaimDashboard from "./pages/caseManagement/ClaimDashboard";
+// import SSDashboard from "./pages/caseManagement/SSDashboard";
+// import ClaimsDashboard from "./pages/caseManagement/ClaimsDashboard";
+// import ClaimDashboard from "./pages/caseManagement/ClaimDashboard";
 import Login from "./pages/caseManagement/Login";
-import SalesLogin from "./pages/sales/SalesLogin";
+// import SalesLogin from "./pages/sales/SalesLogin";
 import DashboardCarousels from "./pages/caseManagement/DashboardCarousels";
-import ClaimSideDashboard from "./pages/caseManagement/ClaimSideDashboard";
+// import ClaimSideDashboard from "./pages/caseManagement/ClaimSideDashboard";
 import CsDashboard from "../src/components/cs/CsDashboard";
 import EnrollePaCode from "./components/cs/EnrolleePaCode";
 import EnrolleePaCodePage from "./pages/csPages/EnrolleePaCodePage";
@@ -78,7 +78,7 @@ function App() {
                     path="/create-ticket"
                     element={<CreateNewTicketPage />}
                 />
-                <Route path="/ticket" element={<TicketPage />} />
+                {/* <Route path="/ticket" element={<TicketPage />} /> */}
                 <Route
                     path="/enrolleeInformations"
                     element={<EnrolleeInformations />}
@@ -89,10 +89,10 @@ function App() {
 
                 <Route path="/providers" element={<ProvidersPage />} />
 
-                <Route path="/approve" element={<Approve />} />
-                <Route path="/reject" element={<Reject />} />
+                {/* <Route path="/approve" element={<Approve />} /> */}
+                {/* <Route path="/reject" element={<Reject />} /> */}
                 <Route path="/history" element={<PaHistory />} />
-                <Route path="/success" element={<Success />} />
+                {/* <Route path="/success" element={<Success />} /> */}
                 <Route path="/managePa" element={<ManagePaPage />} />
 
                 <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
@@ -123,27 +123,27 @@ function App() {
                 {/* <Route path="/allticket" element={<AllTicket />} /> */}
                 <Route path="/createticket" element={<CreateTicket />} />
                 <Route path="/viewticket" element={<ViewTicket />} />
-                <Route path="/ticketinfo" element={<TicketInfoTab />} />
-                <Route path="/commenttab" element={<CommentTab />} />
+                {/* <Route path="/ticketinfo" element={<TicketInfoTab />} /> */}
+                {/* <Route path="/commenttab" element={<CommentTab />} /> */}
                 <Route path="/historytab" element={<HistoryTab />} />
                 <Route path="/enrolleeinfo" element={<CustomerModal />} />
                 <Route
                     path="/enrolleeCustomerinfo"
                     element={<EnrolleeCustomerPage />}
                 />
-                <Route path="/notification" element={<Notification />} />
-                <Route path="/workbench" element={<Workbench />} />
-                <Route path="/ssdashboard" element={<SSDashboard />} />
-                <Route path="/claimsdashboard" element={<ClaimsDashboard />} />
-                <Route path="/claimdashboard" element={<ClaimDashboard />} />
+                {/* <Route path="/notification" element={<Notification />} /> */}
+                {/* <Route path="/workbench" element={<Workbench />} /> */}
+                {/* <Route path="/ssdashboard" element={<SSDashboard />} /> */}
+                {/* <Route path="/claimsdashboard" element={<ClaimsDashboard />} />
+                <Route path="/claimdashboard" element={<ClaimDashboard />} /> */}
                 {/* Sales */}
-                <Route path="/salesLogin" element={<SalesLogin />} />
+                {/* <Route path="/salesLogin" element={<SalesLogin />} /> */}
                 {/* <Route
                     path="/salesDashboard/*"
                     element={<SalesDashboardRoutes />}
                 /> */}
                 <Route path="/login-caseManagement" element={<Login />} />
-                <Route path="/sidedash" element={<ClaimSideDashboard />} />
+                {/* <Route path="/sidedash" element={<ClaimSideDashboard />} /> */}
                 <Route path="/csdashboard" element={<CsDashboard />} />
                 <Route
                     path="/csenrolleeprofileupdate"
