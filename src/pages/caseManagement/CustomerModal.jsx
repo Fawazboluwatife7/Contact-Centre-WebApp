@@ -248,7 +248,7 @@ const CustomerModal = ({ selectedStatus }) => {
                             </span>
 
                             <span className=" block font-medium break-words text-[14px] leading-tight">
-                                #
+                                ##
                             </span>
                         </div>
                     </div>
