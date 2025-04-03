@@ -1,5 +1,5 @@
 import CsSidebar from "../../components/cs/csSideBar";
-import CsDashboard from "../../components/cs/csDashboard";
+import CsDashboard from "../../components/cs/CsDashboard";
 import Header from "../../components/cs/Header";
 
 function CsDashboardLayoutPage() {

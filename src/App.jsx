@@ -48,7 +48,7 @@ import Login from "./pages/caseManagement/Login";
 import SalesLogin from "./pages/sales/SalesLogin";
 import DashboardCarousels from "./pages/caseManagement/DashboardCarousels";
 import ClaimSideDashboard from "./pages/caseManagement/ClaimSideDashboard";
-import CsDashboard from "./components/cs/CsDashboard";
+import CsDashboard from "../src/components/cs/CsDashboard";
 import EnrollePaCode from "./components/cs/EnrolleePaCode";
 import EnrolleePaCodePage from "./pages/csPages/EnrolleePaCodePage";
 import GeneratePaCodePage from "./pages/csPages/GeneratePaCodePage";
