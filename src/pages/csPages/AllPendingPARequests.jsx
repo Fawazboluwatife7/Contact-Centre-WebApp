@@ -119,7 +119,8 @@ const AllPendingPARequests = () => {
         <div className="flex bg-white-500">
             <CsSidebar />
             <div className="bg-[#F0F2FA] w-[82%] ml-auto ">
-                <Header />
+                <Header className="sticky top-0 z-50 bg-white shadow-md" />
+
                 <div className="mx-3 ">
                     <div className="mb-2 mt-4 flex justify-between">
                         <h1 className="text-[#353535]  text-[25px] font-bold">

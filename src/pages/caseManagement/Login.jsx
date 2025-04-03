@@ -186,7 +186,7 @@ const Login = () => {
                             </div>
                             <div className="bg-white w-[45%] rounded-r-lg py-2">
                                 <p className="font-500 cursor-pointer ml-2">
-                                    Case Management
+                                    Contact Centre
                                 </p>
                                 <p className="font-500 cursor-pointer mt-2 ml-2">
                                     Follow up on enrollees' care

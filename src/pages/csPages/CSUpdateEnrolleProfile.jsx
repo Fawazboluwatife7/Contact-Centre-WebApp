@@ -423,7 +423,7 @@ const CSUpdateEnrolleProfile = () => {
                                     <div className="flex justify-center mt-6">
                                         <button
                                             onClick={closeModal}
-                                            className="bg-[#C61531] text-white rounded-md  h-[2.4rem] w-[10rem] mt-3"
+                                            className="bg-[#C61531] text-white rounded-md  h-[2.4rem] w-[10rem] mt-3 cursor-pointer"
                                         >
                                             Close
                                         </button>

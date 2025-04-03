@@ -7,7 +7,7 @@ function paHistory() {
         <div className="flex  ">
             <CsSidebar />
 
-            <div className=" w-full">
+            <div className=" w-[77.5rem] ml-auto h-full">
                 <Header />
                 <History />
             </div>

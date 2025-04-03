@@ -7,7 +7,7 @@ function CsDashboardLayoutPage() {
         <div className="flex  ">
             <CsSidebar />
 
-            <div className="bg-[#F0F2FA] w-full ml-auto h-full">
+            <div className="w-full">
                 <Header />
                 <CsDashboard />
             </div>

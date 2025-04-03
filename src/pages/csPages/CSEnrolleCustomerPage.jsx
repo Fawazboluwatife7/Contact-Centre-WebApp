@@ -80,7 +80,7 @@ const tabs = ["Requests", "PA History", "Hospital Visits", "Benefits"];
 
 const headers = {
     Requests: [
-        "",
+        "Select",
         "Date",
         "Diagnosis",
         "Benefits",
@@ -114,14 +114,8 @@ const headers = {
         "Visit Type",
         "Status",
     ],
-    Benefits: [
-        "Benefit Name",
-        "Service Limit",
-        "Service Amount Used",
-        "Service Balance",
-        "Visit Limit",
-        "Visit USed",
-    ],
+
+    Benefits: ["Benefit", "Limit", "Used", "Amount claimed", "Balance"],
 
     Concessions: ["Date", "Concession"],
 };
@@ -135,21 +129,273 @@ const CSEnrolleCustomerPage = () => {
     };
 
     const handleNavigateWithEnrollee = (enrollee) => {
-        navigate("/csenrolleepage", { state: { enrollee } });
+        navigate("/createpacode", { state: { enrollee } });
     };
 
-    const servTypes = [
-        { value: 1, label: "Inpatient" },
-        { value: 2, label: "Outpatient" },
-        { value: 51, label: "Major Disease Benefit" },
-        { value: 53, label: "Maternity" },
-        { value: 65, label: "Dentistry" },
-        { value: 91, label: "Additional Benefits" },
-        { value: 92, label: "Advanced Investigations" },
-        { value: 101, label: "Health Check Basic" },
-        { value: 102, label: "Eye Care" },
-        { value: 137, label: "Chronic Diseases Treatment" },
-    ];
+    const [dentistry, setDentistry] = useState([]);
+    const [optical, setOptical] = useState([]);
+    const [fertility, setFertility] = useState([]);
+    const [physio, setPhysio] = useState([]);
+    const [ward, setWard] = useState([]);
+    const [telemedicine, setTelemedicine] = useState([]);
+    const [vaccine, setVaccine] = useState([]); // Status state
+
+    const [annualChecks, setAnnualChecks] = useState([]);
+    const [spa, GetSpar] = useState([]);
+    const [gym, SetGym] = useState([]);
+
+    useEffect(() => {
+        GetTelemedicine();
+        GetDentistry();
+        GetOptical();
+        GetFertility();
+        GetPhysiotherapy();
+        GetSpa();
+        GetGym();
+
+        GetWard();
+        GetVaccine();
+        GetAnnualHealthCheck();
+    }, []);
+
+    async function GetAnnualHealthCheck() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_AnnualHealthChecks?cifno=${enrollee.cif_number}        
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+
+            console.log("AnnualHealthchecks:", data);
+
+            setAnnualChecks(data.result);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        }
+    }
+
+    async function GetGym() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_Gym?cifno=${enrollee.cif_number}        
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+
+            console.log("Gym:", data);
+
+            SetGym(data.result);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        }
+    }
+    async function GetSpa() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_Spa?cifno=${enrollee.cif_number} 
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+
+            console.log("Get spa:", data);
+
+            GetSpar(data.result);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        }
+    }
+
+    async function GetDentistry() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_Dental?cifno=${enrollee.cif_number}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("benefitszzz:", data);
+
+            setDentistry(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+    async function GetOptical() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_LensFrames?cifno=${enrollee.cif_number}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("benefitszzz:", data);
+
+            setOptical(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+    async function GetFertility() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_Fertility?cifno=${enrollee.cif_number}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("benefitszzz:", data);
+
+            setFertility(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+    async function GetPhysiotherapy() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_Physiotherapy?cifno=${enrollee.cif_number}
+                
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("benefitszzz:", data);
+
+            setPhysio(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+    async function GetWard() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_RoomType?cifno=${enrollee.cif_number}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("benefitszzz:", data);
+
+            setWard(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+    async function GetTelemedicine() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeServiceBenefitsByCif_AdminDriven?cifno=${enrollee.cif_number}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("benefitszzz:", data);
+
+            setTelemedicine(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+
+    async function GetVaccine() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitsByCif_Vaccines?cifno=${enrollee.cif_number}`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const data = await response.json();
+
+            console.log("vaccine:", data);
+
+            setVaccine(data.result);
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
 
     const [selectedValue, setSelectedValue] = useState(null);
     const [benefit, setBenefit] = useState(null);
@@ -159,6 +405,21 @@ const CSEnrolleCustomerPage = () => {
     const [pa, setPA] = useState([]);
     const [hospitalHistory, setHospitalHistory] = useState([]);
     const [enronlleBioData, setEnronlleBioData] = useState([]);
+
+    const [selectAll, setSelectAll] = useState(false);
+
+    // Add this function to handle the "select all" checkbox
+    const handleSelectAll = () => {
+        setSelectAll(!selectAll);
+
+        if (!selectAll) {
+            // If not all selected, select all items
+            setSelectedItems(enrolleeRequests);
+        } else {
+            // If all selected, deselect all items
+            setSelectedItems([]);
+        }
+    };
 
     const [visitTypes, setVisitTypes] = useState([]);
     const [selectedServiceId, setSelectedServiceId] = useState(null); // To store the selected servtype_id
@@ -222,6 +483,9 @@ const CSEnrolleCustomerPage = () => {
     const handleTransferClick = (enrollee, selectedItems) => {
         navigate("/paapprovalpage", { state: { enrollee, selectedItems } });
     };
+    const handleTransferClickrejext = (enrollee, selectedItems) => {
+        navigate("/parejectionpage", { state: { enrollee, selectedItems } });
+    };
 
     const handleRejectTransferClick = () => {
         // Navigate and pass the selected items
@@ -243,7 +507,7 @@ const CSEnrolleCustomerPage = () => {
     console.log(
         "getting PA",
         fetch(
-            `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${3}&PAStatus&visitid`,
+            `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.cif_number}&PAStatus&visitid`,
             {
                 method: "GET",
             },
@@ -257,7 +521,7 @@ const CSEnrolleCustomerPage = () => {
     async function GetPAHistory() {
         try {
             const response = await fetch(
-                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.CIF_NUMBER}&PAStatus&visitid
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.cif_number}&PAStatus&visitid
 `,
                 {
                     method: "GET",
@@ -328,7 +592,7 @@ const CSEnrolleCustomerPage = () => {
     async function GetHospitalHistory() {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.MembernUmber}&fromdate=2010-12-31&todate=2025-12-31&network_type=
+                `${apiUrl}api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.MemberNumber}&fromdate=2010-12-31&todate=2025-12-31&network_type=
 `,
                 {
                     method: "GET",
@@ -355,7 +619,7 @@ const CSEnrolleCustomerPage = () => {
     console.log(
         "getting benefits",
         fetch(
-            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.CIF_NUMBER}&schemeid=${enrollee.SCHEME_ID}&serviceid=${selectedValue}
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.cif_number}&schemeid=${enrollee.SCHEME_ID}&serviceid=${selectedValue}
             `,
             {
                 method: "GET",
@@ -365,7 +629,7 @@ const CSEnrolleCustomerPage = () => {
     async function GetBenefit(serviceId) {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.CIF_NUMBER}&schemeid=${enrollee.SCHEME_ID}&serviceid=${serviceId}
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.CIF_NUMBER1}&schemeid=${enrollee.SCHEME_ID}&serviceid=${serviceId}
 `,
                 {
                     method: "GET",
@@ -392,7 +656,7 @@ const CSEnrolleCustomerPage = () => {
     console.log(
         "service",
         fetch(
-            `$${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.CIF_NUMBER}&Schemeid=${enrollee.SCHEME_ID}
+            `$${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.CIF_NUMBER1}&Schemeid=${enrollee.SCHEME_ID}
             `,
             {
                 method: "GET",
@@ -403,7 +667,7 @@ const CSEnrolleCustomerPage = () => {
     async function GetService() {
         try {
             const response = await fetch(
-                `${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.CIF_NUMBER}&Schemeid=${enrollee.SCHEME_ID}             
+                `${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.cif_number}&Schemeid=${enrollee.SCHEME_ID}             
 `,
                 {
                     method: "GET",
@@ -426,7 +690,7 @@ const CSEnrolleCustomerPage = () => {
     async function GetConcession() {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeClaims/GetEnrolleeFlags?cif=$${enrollee.CIF_NUMBER}           
+                `${apiUrl}api/EnrolleeClaims/GetEnrolleeFlags?cif=$${enrollee.CIF_NUMBER1}           
 `,
                 {
                     method: "GET",
@@ -456,12 +720,12 @@ const CSEnrolleCustomerPage = () => {
                     <div className=" flex justify-between">
                         <span className="text-xl  font-medium ">
                             {enrollee?.provider} is requesting approval for
-                            Enrollee #{enrollee?.MembernUmber}
+                            Enrollee #{enrollee?.MemberNumber}
                         </span>
                         <div className=" flex gap-3">
                             <button
                                 className="flex items-center justify-center gap-2 bg-[#C61531] py-2 px-4 rounded-md text-white"
-                                onClick={() => handleNavigate("/cmticket")}
+                                onClick={() => handleNavigate("/managePa")}
                             >
                                 <TbPlus className="h-6" />
                                 Generate New PA
@@ -488,7 +752,7 @@ const CSEnrolleCustomerPage = () => {
                             </button>
                         ))}
 
-                        <div className="">
+                        {/* <div className="">
                             <DateDropdown
                                 options={service.map((type) => ({
                                     label: type.visittype,
@@ -498,25 +762,33 @@ const CSEnrolleCustomerPage = () => {
                                     setSelectedValue(value); // Update selected value
                                     GetBenefit(value); // Fetch benefit based on selection
                                 }}
-                                className="outline-none bg-red-500 rounded-md  ml-[22rem] text-white"
+                                className="outline-none bg-red-500 rounded-md  ml-[27rem] text-white"
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="overflow-x-auto bg-white p-4 rounded-md ">
                         <table className="table-auto w-full ">
-                            <thead className="bg-white text-[#1F4173]">
-                                <tr className="bg-gray-50 overflow-x-scroll ">
-                                    {currentHeaders.map((header, index) => (
-                                        <th
-                                            key={index}
-                                            className="border px-4 py-2 text-left"
-                                        >
-                                            {header}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
+                            <tr className="bg-gray-50 overflow-x-scroll ">
+                                {currentHeaders.map((header, index) => (
+                                    <th
+                                        key={index}
+                                        className="border px-4 py-2 text-left"
+                                    >
+                                        {activeTab === "Requests" &&
+                                        index === 0 ? (
+                                            <input
+                                                type="checkbox"
+                                                checked={selectAll}
+                                                onChange={handleSelectAll}
+                                                className="h-4 w-4"
+                                            />
+                                        ) : (
+                                            header
+                                        )}
+                                    </th>
+                                ))}
+                            </tr>
                             <tbody>
                                 {activeTab === "Requests" && (
                                     <>
@@ -584,6 +856,457 @@ const CSEnrolleCustomerPage = () => {
                                     </>
                                 )}
 
+                                {activeTab === "Benefits" && (
+                                    <>
+                                        {telemedicine &&
+                                        telemedicine.length > 0 ? (
+                                            telemedicine
+                                                .filter(
+                                                    (item) =>
+                                                        item.Benefit ===
+                                                        "Telemedicine",
+                                                ) // Filter for Telemedicine
+                                                .map((item, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className="hover:bg-gray-100"
+                                                    >
+                                                        <td className="border px-4 py-2">
+                                                            {item.Benefit}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Limit}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Used}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.AmtClaimed}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Balance}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                        ) : (
+                                            <>
+                                                <tr className="bg-gray-200">
+                                                    <th
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center font-bold"
+                                                    >
+                                                        Telemedicine
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center"
+                                                    >
+                                                        <h1 className="text-gray-700 font-medium whitespace-nowrap">
+                                                            No Telemedicine
+                                                            Record Found
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        )}
+                                        {dentistry && dentistry.length > 0 ? (
+                                            dentistry.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td className="border px-4 py-2">
+                                                        {item.Benefit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Limit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Used}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.AmtClaimed}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Balance}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <>
+                                                <tr className="bg-gray-200">
+                                                    <th
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center font-bold"
+                                                    >
+                                                        Dentistry
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center"
+                                                    >
+                                                        <h1 className="text-gray-700 font-medium">
+                                                            No Dentistry Record
+                                                            Found
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        )}
+                                        {optical && optical.length > 0 ? (
+                                            optical.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td className="border px-4 py-2">
+                                                        {item.Benefit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Limit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Used}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.AmtClaimed}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Balance}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <>
+                                                <tr className="bg-gray-200">
+                                                    <th
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center font-bold"
+                                                    >
+                                                        Optical
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center"
+                                                    >
+                                                        <h1 className="text-gray-700 font-medium whitespace-nowrap">
+                                                            No optical Record
+                                                            Found
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        )}
+                                        {fertility && fertility.length > 0 ? (
+                                            fertility.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td className="border px-4 py-2">
+                                                        {item.Benefit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Limit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Used}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.AmtClaimed}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Balance}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <>
+                                                <tr className="bg-gray-200">
+                                                    <th
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center font-bold"
+                                                    >
+                                                        Fertility
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center"
+                                                    >
+                                                        <h1 className="text-gray-700 font-medium whitespace-nowrap">
+                                                            No Fertility visit
+                                                            Found
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        )}
+                                        {physio && physio.length > 0 ? (
+                                            physio.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td className="border px-4 py-2">
+                                                        {item.Benefit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Limit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Used}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.AmtClaimed}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Balance}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <>
+                                                <tr className="bg-gray-200">
+                                                    <th
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center font-bold"
+                                                    >
+                                                        Physio
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center"
+                                                    >
+                                                        <h1 className="text-gray-700 font-medium whitespace-nowrap">
+                                                            No Physio Record
+                                                            Found
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        )}
+
+                                        {gym && gym.length > 0 ? (
+                                            gym.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td className="border px-4 py-2">
+                                                        {item.Benefit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Limit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Used}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.AmtClaimed}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Balance}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <>
+                                                <tr className="bg-gray-200">
+                                                    <th
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center font-bold"
+                                                    >
+                                                        GYM Session
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center"
+                                                    >
+                                                        <h1 className="text-gray-700 font-medium">
+                                                            This enrollee is not
+                                                            eligible for gym
+                                                            services
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        )}
+
+                                        {spa && spa.length > 0 ? (
+                                            spa.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td className="border px-4 py-2">
+                                                        {item.Benefit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Limit}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Used}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.AmtClaimed}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Balance}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <>
+                                                <tr className="bg-gray-200">
+                                                    <th
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center font-bold"
+                                                    >
+                                                        SPA Session
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 text-center"
+                                                    >
+                                                        <h1 className="text-gray-700 font-medium">
+                                                            This enrollee is not
+                                                            eligible for Spa
+                                                            services
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        )}
+
+                                        {/* Vaccine Section (Spanning Entire Table) */}
+                                        <tr className="bg-gray-200">
+                                            <th
+                                                colSpan="5"
+                                                className="border px-4 py-2 text-left font-bold pl-[34rem]"
+                                            >
+                                                Ward Type
+                                            </th>
+                                        </tr>
+
+                                        {ward && ward.length > 0 ? (
+                                            ward.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 pl-[34.5rem]"
+                                                    >
+                                                        {item.RoomTypeCode ||
+                                                            " No Record Found"}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan="5"
+                                                    className="h-64 text-center"
+                                                >
+                                                    <h1 className="py-5 px-20">
+                                                        No Record Found
+                                                    </h1>
+                                                </td>
+                                            </tr>
+                                        )}
+                                        {/* Vaccine Section (Spanning Entire Table) */}
+                                        <tr className="bg-gray-200">
+                                            <th
+                                                colSpan="5"
+                                                className="border px-4 py-2 text-left font-bold pl-[34rem]"
+                                            >
+                                                Vaccine
+                                            </th>
+                                        </tr>
+
+                                        {vaccine && vaccine.length > 0 ? (
+                                            vaccine.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2"
+                                                    >
+                                                        {item.Vaccines ||
+                                                            " No Record Found"}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan="5"
+                                                    className="h-64 text-center pl-[34.5rem]"
+                                                >
+                                                    <h1 className="py-5 px-20 ">
+                                                        No Record Found
+                                                    </h1>
+                                                </td>
+                                            </tr>
+                                        )}
+
+                                        {/* Vaccine Section (Spanning Entire Table) */}
+                                        <tr className="bg-gray-200">
+                                            <th
+                                                colSpan="5"
+                                                className="border px-4 py-2 text-left font-bold pl-[32rem]"
+                                            >
+                                                Annual Health Checks
+                                            </th>
+                                        </tr>
+
+                                        {annualChecks &&
+                                        annualChecks.length > 0 ? (
+                                            annualChecks.map((item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td
+                                                        colSpan="5"
+                                                        className="border px-4 py-2 pl-[34.5rem]"
+                                                    >
+                                                        {item.AnnualHealthChecks ||
+                                                            " No Record Found"}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan="5"
+                                                    className="h-64 text-center"
+                                                >
+                                                    <h1 className="py-5 px-20">
+                                                        No Record Found
+                                                    </h1>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </>
+                                )}
                                 {activeTab === "PA History" &&
                                     pa.map((item, index) => (
                                         <tr
@@ -592,7 +1315,7 @@ const CSEnrolleCustomerPage = () => {
                                             onClick={() => openModal(item)}
                                         >
                                             <td className="border px-4 py-2">
-                                                {item.VisitID}
+                                                {item.visitid}
                                             </td>
                                             <td className="border px-4 py-2">
                                                 {item.surname} {item.firstname}
@@ -639,57 +1362,68 @@ const CSEnrolleCustomerPage = () => {
                                         </tr>
                                     ))}
                                 {activeTab === "Hospital Visits" &&
-                                    hospitalHistory.map((item, index) => (
-                                        <tr
-                                            key={index}
-                                            className="hover:bg-gray-100"
-                                            onClick={() =>
-                                                openHospitalModal(item)
-                                            }
-                                        >
-                                            <td className="border px-4 py-2">
-                                                {
-                                                    new Date(
-                                                        item.ClaimLine_TreatmentDate,
-                                                    )
-                                                        .toISOString()
-                                                        .split("T")[0]
+                                    (hospitalHistory.length > 0 ? (
+                                        hospitalHistory.map((item, index) => (
+                                            <tr
+                                                key={index}
+                                                className="hover:bg-gray-100"
+                                                onClick={() =>
+                                                    openHospitalModal(item)
                                                 }
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.Claim_Provider}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.Claim_Diagnosis}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {
-                                                    item.ClaimLine_BenefitDepartment
-                                                }
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.ClaimLine_TariffAmt ||
-                                                    "No Payment made"}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.ClaimLine_units}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.ClaimLine_AmtPaid}
-                                            </td>
-
-                                            <td className="border px-4 py-2">
-                                                {item.Claim_Authorisation}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.Claim_Service_Type}
-                                            </td>
-                                            <td className="border px-4 py-2">
-                                                {item.Claim_status}
+                                            >
+                                                <td className="border px-4 py-2">
+                                                    {
+                                                        new Date(
+                                                            item.ClaimLine_TreatmentDate,
+                                                        )
+                                                            .toISOString()
+                                                            .split("T")[0]
+                                                    }
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.Claim_Provider}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.Claim_Diagnosis}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {
+                                                        item.ClaimLine_BenefitDepartment
+                                                    }
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.ClaimLine_TariffAmt ||
+                                                        "No Payment made"}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.ClaimLine_units}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.ClaimLine_AmtPaid}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.Claim_Authorisation}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.Claim_Service_Type}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.Claim_status}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td
+                                                colSpan={currentHeaders.length}
+                                                className="border px-4 py-4 text-center text-gray-500"
+                                            >
+                                                No previous hospital visit data
+                                                available
                                             </td>
                                         </tr>
                                     ))}
-                                {activeTab === "Benefits" && // Ensure this only affects Benefits
+                                {/* {activeTab === "Benefits" && // Ensure this only affects Benefits
                                     (!selectedValue ? ( // If no scheme is selected, show "Please select a scheme"
                                         <tr>
                                             <td
@@ -744,7 +1478,7 @@ const CSEnrolleCustomerPage = () => {
                                                 </div>
                                             </td>
                                         </tr>
-                                    ))}
+                                    ))} */}
 
                                 {/* {activeTab === "Concessions" &&
                                     concession.map((item, index) => (
@@ -785,7 +1519,10 @@ const CSEnrolleCustomerPage = () => {
                         <div className="mt-4 flex justify-center items-center w-full">
                             <button
                                 onClick={() =>
-                                    handleTransferClick(enrollee, selectedItems)
+                                    handleTransferClickrejext(
+                                        enrollee,
+                                        selectedItems,
+                                    )
                                 }
                                 className="bg-red-500 text-white px-9 py-3 mb-2 rounded-md hover:bg-red-700 whitespace-nowrap mx-2"
                             >

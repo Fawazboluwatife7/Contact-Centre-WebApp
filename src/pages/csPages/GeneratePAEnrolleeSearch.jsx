@@ -104,7 +104,7 @@ const GeneratePAEnrolleeSearch = () => {
     return (
         <div className="flex bg-white-500">
             <CsSidebar />
-            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-full ">
+            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh] overflow-y-auto">
                 <Header />
                 <div className="mx-7">
                     <div className="mb-2 mt-4 flex justify-between">
@@ -234,7 +234,7 @@ const GeneratePAEnrolleeSearch = () => {
                         {results.length > itemsPerPage && (
                             <div className="flex justify-center mt-4">
                                 <button
-                                    className="px-4 py-2 mx-1 bg-blue-500 text-white rounded"
+                                    className="px-4 py-2 mx-1 bg-red-600 text-white rounded"
                                     disabled={currentPage === 1}
                                     onClick={() =>
                                         setCurrentPage((prev) =>
@@ -245,7 +245,7 @@ const GeneratePAEnrolleeSearch = () => {
                                     Previous
                                 </button>
                                 <button
-                                    className="px-4 py-2 mx-1 bg-blue-500 text-white rounded"
+                                    className="px-4 py-2 mx-1 bg-red-600 text-white rounded"
                                     disabled={endIndex >= results.length}
                                     onClick={() =>
                                         setCurrentPage((prev) => prev + 1)

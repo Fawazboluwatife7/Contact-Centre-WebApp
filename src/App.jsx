@@ -61,6 +61,9 @@ import CSUpdateEnrolleProfile from "./pages/csPages/CSUpdateEnrolleProfile";
 import GeneratePAEnrolleeSearch from "./pages/csPages/GeneratePAEnrolleeSearch";
 import PAApprovalPAge from "./pages/csPages/PAApprovalPAge";
 import CreateEnroleePACode from "./pages/csPages/CreateEnroleePACode";
+import PaHistory from "./components/cs/PAHistory";
+import ManagePaPage from "./pages/csPages/ManagePaPage";
+import PARejectionPage from "./pages/csPages/PARejectionPage";
 
 function App() {
     return (
@@ -69,10 +72,7 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/Sidebar" element={<Sidebar />} />
                 <Route path="/CsSideBar" element={<CsSideBar />} />
-                <Route
-                    path="/CsDashboard"
-                    element={<CsDashboardLayoutPage />}
-                />
+                <Route path="/CsDashboard" element={<CsDashboard />} />
                 <Route path="/Enrollees" element={<EnrolleesPage />} />
                 <Route
                     path="/create-ticket"
@@ -91,9 +91,9 @@ function App() {
 
                 <Route path="/approve" element={<Approve />} />
                 <Route path="/reject" element={<Reject />} />
-                <Route path="/history" element={<History />} />
+                <Route path="/history" element={<PaHistory />} />
                 <Route path="/success" element={<Success />} />
-                <Route path="/managePa" element={<ManagePA />} />
+                <Route path="/managePa" element={<ManagePaPage />} />
                 <Route path="/generatePaCode" element={<GeneratePaCode />} />
                 <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
                 <Route path="/approvePaCode" element={<ApprovePaCode />} />
@@ -154,6 +154,7 @@ function App() {
                     element={<GeneratePAEnrolleeSearch />}
                 />
                 <Route path="/paapprovalpage" element={<PAApprovalPAge />} />
+                <Route path="/parejectionpage" element={<PARejectionPage />} />
                 <Route path="/createpacode" element={<CreateEnroleePACode />} />
             </Routes>
         </BrowserRouter>

@@ -817,26 +817,38 @@ const CsPatientHistory = () => {
                                             </tr>
                                         ))}
                                     {activeTab === "Hospital Visits" &&
-                                        hospital.map((item, index) => (
-                                            <tr
-                                                key={index}
-                                                className="hover:bg-gray-100"
-                                            >
-                                                <td className="border px-4 py-2">
-                                                    {
-                                                        new Date(
+                                        Array.from(
+                                            new Set(
+                                                hospital.map(
+                                                    (item) =>
+                                                        item.Claim_Provider,
+                                                ),
+                                            ),
+                                        ).map((uniqueProvider) => {
+                                            // Find the first item with this provider
+                                            const item = hospital.find(
+                                                (h) =>
+                                                    h.Claim_Provider ===
+                                                    uniqueProvider,
+                                            );
+                                            return (
+                                                <tr
+                                                    key={uniqueProvider}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <td className="border px-4 py-2">
+                                                        {new Date(
                                                             item.ClaimLine_TreatmentDate,
                                                         ).toLocaleDateString(
                                                             "en-GB",
-                                                        ) // Formats the date as day/month/year
-                                                    }
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.Claim_Provider}
-                                                </td>
-                                            </tr>
-                                        ))}
-
+                                                        )}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Claim_Provider}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     {activeTab === "Benefits" && (
                                         <>
                                             {telemedicine &&
@@ -872,16 +884,27 @@ const CsPatientHistory = () => {
                                                         </tr>
                                                     ))
                                             ) : (
-                                                <tr>
-                                                    <td
-                                                        colSpan="5"
-                                                        className="h-64 text-center"
-                                                    >
-                                                        <h1 className="py-5 px-20">
-                                                            No Record Found
-                                                        </h1>
-                                                    </td>
-                                                </tr>
+                                                <>
+                                                    <tr className="bg-gray-200">
+                                                        <th
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center font-bold"
+                                                        >
+                                                            Telemedicine
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center"
+                                                        >
+                                                            <h1 className="text-gray-700 font-medium whitespace-nowrap">
+                                                                No Telemedicine
+                                                                Record Found
+                                                            </h1>
+                                                        </td>
+                                                    </tr>
+                                                </>
                                             )}
                                             {dentistry &&
                                             dentistry.length > 0 ? (
@@ -908,16 +931,27 @@ const CsPatientHistory = () => {
                                                     </tr>
                                                 ))
                                             ) : (
-                                                <tr>
-                                                    <td
-                                                        colSpan="5"
-                                                        className="h-64 text-center"
-                                                    >
-                                                        <h1 className="py-5 px-20">
-                                                            No Record Found
-                                                        </h1>
-                                                    </td>
-                                                </tr>
+                                                <>
+                                                    <tr className="bg-gray-200">
+                                                        <th
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center font-bold"
+                                                        >
+                                                            Dentistry
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center"
+                                                        >
+                                                            <h1 className="text-gray-700 font-medium">
+                                                                No Dentistry
+                                                                Record Found
+                                                            </h1>
+                                                        </td>
+                                                    </tr>
+                                                </>
                                             )}
                                             {optical && optical.length > 0 ? (
                                                 optical.map((item, index) => (
@@ -943,16 +977,27 @@ const CsPatientHistory = () => {
                                                     </tr>
                                                 ))
                                             ) : (
-                                                <tr>
-                                                    <td
-                                                        colSpan="5"
-                                                        className="h-64 text-center"
-                                                    >
-                                                        <h1 className="py-5 px-20">
-                                                            No Record Found
-                                                        </h1>
-                                                    </td>
-                                                </tr>
+                                                <>
+                                                    <tr className="bg-gray-200">
+                                                        <th
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center font-bold"
+                                                        >
+                                                            Optical
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center"
+                                                        >
+                                                            <h1 className="text-gray-700 font-medium whitespace-nowrap">
+                                                                No optical
+                                                                Record Found
+                                                            </h1>
+                                                        </td>
+                                                    </tr>
+                                                </>
                                             )}
                                             {fertility &&
                                             fertility.length > 0 ? (
@@ -979,16 +1024,27 @@ const CsPatientHistory = () => {
                                                     </tr>
                                                 ))
                                             ) : (
-                                                <tr>
-                                                    <td
-                                                        colSpan="5"
-                                                        className="h-64 text-center"
-                                                    >
-                                                        <h1 className="py-5 px-20">
-                                                            No Record Found
-                                                        </h1>
-                                                    </td>
-                                                </tr>
+                                                <>
+                                                    <tr className="bg-gray-200">
+                                                        <th
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center font-bold"
+                                                        >
+                                                            Fertility
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center"
+                                                        >
+                                                            <h1 className="text-gray-700 font-medium whitespace-nowrap">
+                                                                No Fertility
+                                                                visit Found
+                                                            </h1>
+                                                        </td>
+                                                    </tr>
+                                                </>
                                             )}
                                             {physio && physio.length > 0 ? (
                                                 physio.map((item, index) => (
@@ -1014,16 +1070,27 @@ const CsPatientHistory = () => {
                                                     </tr>
                                                 ))
                                             ) : (
-                                                <tr>
-                                                    <td
-                                                        colSpan="5"
-                                                        className="h-64 text-center"
-                                                    >
-                                                        <h1 className="py-5 px-20">
-                                                            No Record Found
-                                                        </h1>
-                                                    </td>
-                                                </tr>
+                                                <>
+                                                    <tr className="bg-gray-200">
+                                                        <th
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center font-bold"
+                                                        >
+                                                            Physio
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td
+                                                            colSpan="5"
+                                                            className="border px-4 py-2 text-center"
+                                                        >
+                                                            <h1 className="text-gray-700 font-medium whitespace-nowrap">
+                                                                No Physio Record
+                                                                Found
+                                                            </h1>
+                                                        </td>
+                                                    </tr>
+                                                </>
                                             )}
 
                                             {gym && gym.length > 0 ? (

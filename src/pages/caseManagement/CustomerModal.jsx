@@ -242,6 +242,15 @@ const CustomerModal = ({ selectedStatus }) => {
                                 }
                             </span>
                         </div>
+                        <div>
+                            <span className="block text-gray-500 ">
+                                Loss Ratio
+                            </span>
+
+                            <span className=" block font-medium break-words text-[14px] leading-tight">
+                                #
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

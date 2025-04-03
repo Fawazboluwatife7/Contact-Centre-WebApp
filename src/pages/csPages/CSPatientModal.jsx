@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
+import { FaFlag } from "react-icons/fa";
 
 // Mock Data - Dynamic State Initialization
 const CSPatientModal = ({ selectedStatus }) => {
@@ -20,6 +21,7 @@ const CSPatientModal = ({ selectedStatus }) => {
     const location = useLocation();
     const enrollee = location.state?.enrollee;
     const [claimsPaid, setClaimsPaid] = useState("");
+    const [enrolleeStatus, setEnrolleeStatus] = useState(null);
 
     const [enrolleeData, setEnrolleeData] = useState({
         name: "",
@@ -68,12 +70,13 @@ const CSPatientModal = ({ selectedStatus }) => {
 
     useEffect(() => {
         CalculateAllAmountSpentOnEnrollee();
+        GetEnrolleeStatus();
     }, []);
 
     async function CalculateAllAmountSpentOnEnrollee() {
         try {
             const response = await fetch(
-                `${apiUrl}/api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.MembernUmber}&fromdate=2010-12-31&todate=2025-12-31&network_type=`,
+                `${apiUrl}/api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.enrolleeID}&fromdate=2010-12-31&todate=2025-12-31&network_type=`,
                 {
                     method: "GET",
                 },
@@ -105,6 +108,33 @@ const CSPatientModal = ({ selectedStatus }) => {
             } else {
                 console.warn("No claims data found in the response.");
             }
+        } catch (error) {
+            console.error(
+                "Error calculating total amount spent on enrollee:",
+                error,
+            );
+        }
+    }
+
+    console.log(
+        "xyz",
+        fetch(
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrollee.MembernUmber}`,
+            {
+                method: "GET",
+            },
+        ),
+    );
+    async function GetEnrolleeStatus() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrollee.MembernUmber}`,
+                {
+                    method: "GET",
+                },
+            );
+            const data = await response.json();
+            setEnrolleeStatus(data.result[0]);
         } catch (error) {
             console.error(
                 "Error calculating total amount spent on enrollee:",
@@ -152,9 +182,12 @@ const CSPatientModal = ({ selectedStatus }) => {
                         alt="Avatar"
                         className="w-20 h-20 rounded-full"
                     />
-                    <div className=" items-center mt-2 rounded-full flex gap-2">
-                        <span className=" h-2 w-2 rounded-full bg-green-600 flex"></span>
-                        Active
+                    <div className=" items-center mt-2 rounded-full flex gap-2 ">
+                        {enrollee?.Status === "Active" ? (
+                            <FaFlag className="text-green-500 w-[3rem] h-[3rem]" />
+                        ) : (
+                            <FaFlag className="text-red-500 w-[3rem] h-[3rem]" />
+                        )}
                     </div>
                 </div>
                 <div className=" w-full">
@@ -183,7 +216,7 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Enrollee ID
                             </span>
                             <span className="block font-medium text-[14px]">
-                                {enrollee.MembernUmber}
+                                {enrollee.MemberNumber}
                             </span>
                         </div>
                         <div>
@@ -197,7 +230,7 @@ const CSPatientModal = ({ selectedStatus }) => {
                         <div>
                             <span className="block text-gray-500">Group</span>
                             <span className="block font-medium break-words text-[14px] leading-tight">
-                                {enrollee.grouP_name}
+                                {enrollee.group_name}
                             </span>
                         </div>
 
@@ -259,13 +292,28 @@ const CSPatientModal = ({ selectedStatus }) => {
                             <span className=" block font-medium break-words text-[14px] leading-tight">
                                 {
                                     new Date(
-                                        enrollee.Policyenddate,
+                                        enrollee.PolicyEndDate,
                                     ).toLocaleDateString("en-GB") // Formats the date as day/month/year
                                 }
                             </span>
                         </div>
+
+                        <div>
+                            <span className="block text-gray-500 ">
+                                Loss Ratio
+                            </span>
+
+                            <span className=" block font-medium break-words text-[14px] leading-tight">
+                                #
+                            </span>
+                        </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                         <button
-                            className=" border border-red-300 flex gap-2 pl-4 pt-2 rounded-md bg-red-100"
+                            className=" border border-red-300 flex gap-2 pl-4 pt-2 rounded-md bg-red-100 py-4"
                             onClick={() => handleNavigate(enrollee)}
                         >
                             <FiEdit className=" text-red-500 mt-1" />

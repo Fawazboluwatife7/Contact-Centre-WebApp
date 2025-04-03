@@ -4,6 +4,8 @@ import Header from "../../components/cs/Header";
 import { useNavigate } from "react-router-dom";
 import { CgSearch } from "react-icons/cg";
 import { useLocation } from "react-router-dom";
+import { CgPlayTrackNext } from "react-icons/cg";
+import { MdSkipPrevious } from "react-icons/md";
 
 const EnrolleesPage = () => {
     const navigate = useNavigate();
@@ -104,7 +106,7 @@ const EnrolleesPage = () => {
     return (
         <div className="flex bg-white-500">
             <CsSidebar />
-            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-full ">
+            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh] overflow-y-auto ">
                 <Header />
                 <div className="mx-7">
                     <div className="mb-2 mt-4 flex justify-between">
@@ -232,9 +234,9 @@ const EnrolleesPage = () => {
                         {/* 
                          This is for navigation */}
                         {results.length > itemsPerPage && (
-                            <div className="flex justify-center mt-4">
+                            <div className="flex justify-center mt-4 mb-3">
                                 <button
-                                    className="px-4 py-2 mx-1 bg-blue-500 text-white rounded"
+                                    className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
                                     disabled={currentPage === 1}
                                     onClick={() =>
                                         setCurrentPage((prev) =>
@@ -242,15 +244,18 @@ const EnrolleesPage = () => {
                                         )
                                     }
                                 >
+                                    <MdSkipPrevious className="w-7 h-7 mr-2" />
                                     Previous
                                 </button>
+
                                 <button
-                                    className="px-4 py-2 mx-1 bg-blue-500 text-white rounded"
+                                    className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
                                     disabled={endIndex >= results.length}
                                     onClick={() =>
                                         setCurrentPage((prev) => prev + 1)
                                     }
                                 >
+                                    <CgPlayTrackNext className="w-7 h-7 mr-2" />
                                     Next
                                 </button>
                             </div>

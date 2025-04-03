@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { FaFlag } from "react-icons/fa";
 
 // Mock Data - Dynamic State Initialization
 const CsPatientInformation = ({ selectedStatus }) => {
@@ -114,9 +115,13 @@ const CsPatientInformation = ({ selectedStatus }) => {
                         alt="Avatar"
                         className="w-20 h-20 rounded-full"
                     />
-                    <div className=" items-center mt-2 rounded-full flex gap-2">
-                        <span className=" h-2 w-2 rounded-full bg-green-600 flex"></span>
-                        Active
+                    <div className=" items-center mt-2 rounded-full flex gap-2 ">
+                        {enrollee?.Member_MemberStatus_Description ===
+                        "Active" ? (
+                            <FaFlag className="text-green-500 w-[3rem] h-[3rem]" />
+                        ) : (
+                            <FaFlag className="text-red-500 w-[3rem] h-[3rem]" />
+                        )}
                     </div>
                 </div>
 

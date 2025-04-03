@@ -123,7 +123,7 @@ const PAApprovalPAge = () => {
 
         for (const item of selectedItems) {
             const requestData = {
-                visitid: enrollee.VisitID,
+                visitid: enrollee.visitid,
                 username: user.result[0].UserName,
                 VisitDetailIDs: [{ visitdetail_id: item.VisitDetailsID }],
             };
@@ -363,10 +363,6 @@ const PAApprovalPAge = () => {
                                         <th className="border p-2 whitespace-nowrap">
                                             Visit Detail Id
                                         </th>
-                                        <th className="border p-2">
-                                            Exclusion
-                                        </th>
-                                        <th className="border p-2">Reason</th>
                                     </tr>
                                 </thead>
 
@@ -396,12 +392,6 @@ const PAApprovalPAge = () => {
                                                 </td>
                                                 <td className="border p-2">
                                                     {item.VisitDetailsID}
-                                                </td>
-                                                <td className="border p-2">
-                                                    {item.xx || "-"}
-                                                </td>
-                                                <td className="border p-2">
-                                                    {item.xx || "-"}
                                                 </td>
                                             </tr>
                                         ))
