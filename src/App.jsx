@@ -26,7 +26,7 @@ import Providerdetails from "./pages/csPages/ProviderDetailsPage";
 import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
 import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
 // import Admission from "./pages/caseManagement/Admission";
-import PatientAdmissionHistory from "./pages/caseManagement/PatientAdmissionHistory";
+// import PatientAdmissionHistory from "./pages/caseManagement/PatientAdmissionHistory";
 import PatientInformation from "./pages/caseManagement/PatientInformation";
 import UpdateProfile from "./pages/caseManagement/UpdateProfile";
 import Ticket from "./pages/caseManagement/Ticket";
@@ -102,10 +102,10 @@ function App() {
                 <Route path="/searchenrollee" element={<SearchEnrollee />} />
                 <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
                 {/* <Route path="/admission" element={<Admission />} /> */}
-                <Route
+                {/* <Route
                     path="/patienthistory"
                     element={<PatientAdmissionHistory />}
-                />
+                /> */}
                 <Route
                     path="/csenrolleepage"
                     element={<CSEnrolleCustomerPage />}
