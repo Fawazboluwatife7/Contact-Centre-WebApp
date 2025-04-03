@@ -13,7 +13,7 @@ import Approve from "./pages/csPages/ApprovePage";
 import History from "./pages/csPages/PA-HistoryPage";
 import Success from "./pages/csPages/SuccessPaCodePage";
 import ManagePA from "./pages/csPages/ManagePaPage";
-import GeneratePaCode from "./pages/csPages/GeneratePaCodePage";
+
 import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
 import SuccessGen from "./pages/csPages/SuccessGeneratePaPage";
@@ -51,7 +51,7 @@ import ClaimSideDashboard from "./pages/caseManagement/ClaimSideDashboard";
 import CsDashboard from "../src/components/cs/CsDashboard";
 import EnrollePaCode from "./components/cs/EnrolleePaCode";
 import EnrolleePaCodePage from "./pages/csPages/EnrolleePaCodePage";
-import GeneratePaCodePage from "./pages/csPages/GeneratePaCodePage";
+
 import CsPatientHistory from "./pages/csPages/CsPatientHistory";
 import ProviderPage from "./pages/csPages/ProviderPage";
 import ProvidersPage from "./pages/csPages/ProvidersPage";
@@ -86,7 +86,7 @@ function App() {
                 <Route path="/enrolleepa" element={<EnrollePaCode />} />
                 <Route path="/enrolleepage" element={<EnrolleesPage />} />
                 <Route path="/enrolleepp" element={<EnrolleePaCodePage />} />
-                <Route path="/generate" element={<GeneratePaCodePage />} />
+
                 <Route path="/providers" element={<ProvidersPage />} />
 
                 <Route path="/approve" element={<Approve />} />
@@ -94,7 +94,7 @@ function App() {
                 <Route path="/history" element={<PaHistory />} />
                 <Route path="/success" element={<Success />} />
                 <Route path="/managePa" element={<ManagePaPage />} />
-                <Route path="/generatePaCode" element={<GeneratePaCode />} />
+
                 <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
                 <Route path="/approvePaCode" element={<ApprovePaCode />} />
                 <Route path="/dashboard" element={<Dashboard />} />
