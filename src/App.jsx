@@ -22,7 +22,7 @@ import CsLoginPage from "./pages/csPages/CsLoginPage";
 import Provider from "./pages/csPages/ProviderPage";
 import Providerdetails from "./pages/csPages/ProviderDetailsPage";
 // import Dashboard from "./pages/caseManagement/Dashboard";
-import Enrollee from "./pages/caseManagement/Enrollee";
+// import Enrollee from "./pages/caseManagement/Enrollee";
 import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
 import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
 // import Admission from "./pages/caseManagement/Admission";
@@ -98,7 +98,7 @@ function App() {
                 <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
                 <Route path="/approvePaCode" element={<ApprovePaCode />} />
                 {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-                <Route path="/enrollee" element={<Enrollee />} />
+                {/* <Route path="/enrollee" element={<Enrollee />} /> */}
                 <Route path="/searchenrollee" element={<SearchEnrollee />} />
                 <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
                 {/* <Route path="/admission" element={<Admission />} /> */}
