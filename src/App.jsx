@@ -16,22 +16,22 @@ import ManagePA from "./pages/csPages/ManagePaPage";
 
 import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
 import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
-import SuccessGen from "./pages/csPages/SuccessGeneratePaPage";
-import TicketInformationPage from "./pages/csPages/TicketInformationPage";
-import CsLoginPage from "./pages/csPages/CsLoginPage";
-import Provider from "./pages/csPages/ProviderPage";
-import Providerdetails from "./pages/csPages/ProviderDetailsPage";
+// import SuccessGen from "./pages/csPages/SuccessGeneratePaPage";
+// import TicketInformationPage from "./pages/csPages/TicketInformationPage";
+// import CsLoginPage from "./pages/csPages/CsLoginPage";
+// import Provider from "./pages/csPages/ProviderPage";
+// import Providerdetails from "./pages/csPages/ProviderDetailsPage";
 // import Dashboard from "./pages/caseManagement/Dashboard";
 // import Enrollee from "./pages/caseManagement/Enrollee";
-import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
-import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
+// import SearchEnrollee from "./pages/caseManagement/SearchEnrollee";
+// import EnrolleeDetails from "./pages/caseManagement/EnrolleeDetails";
 // import Admission from "./pages/caseManagement/Admission";
 // import PatientAdmissionHistory from "./pages/caseManagement/PatientAdmissionHistory";
-import PatientInformation from "./pages/caseManagement/PatientInformation";
-import UpdateProfile from "./pages/caseManagement/UpdateProfile";
-import Ticket from "./pages/caseManagement/Ticket";
+// import PatientInformation from "./pages/caseManagement/PatientInformation";
+// import UpdateProfile from "./pages/caseManagement/UpdateProfile";
+// import Ticket from "./pages/caseManagement/Ticket";
 // import AllTicket from "./pages/caseManagement/AllTicket";
-import CreateTicket from "./pages/caseManagement/CreateTicket";
+// import CreateTicket from "./pages/caseManagement/CreateTicket";
 // import ViewTicket from "./pages/caseManagement/ViewTicket";
 // import TicketInfoTab from "./pages/caseManagement/TicketInfoTab";
 // import CommentTab from "./pages/caseManagement/CommentTab";
@@ -90,6 +90,7 @@ function App() {
                 <Route path="/providers" element={<ProvidersPage />} />
 
                 {/* <Route path="/approve" element={<Approve />} /> */}
+
                 {/* <Route path="/reject" element={<Reject />} /> */}
                 <Route path="/history" element={<PaHistory />} />
                 {/* <Route path="/success" element={<Success />} /> */}
@@ -99,8 +100,8 @@ function App() {
                 <Route path="/approvePaCode" element={<ApprovePaCode />} />
                 {/* <Route path="/dashboard" element={<Dashboard />} /> */}
                 {/* <Route path="/enrollee" element={<Enrollee />} /> */}
-                <Route path="/searchenrollee" element={<SearchEnrollee />} />
-                <Route path="/enrolleedetails" element={<EnrolleeDetails />} />
+                {/* <Route path="/searchenrollee" element={<SearchEnrollee />} /> */}
+                {/* <Route path="/enrolleedetails" element={<EnrolleeDetails />} /> */}
                 {/* <Route path="/admission" element={<Admission />} /> */}
                 {/* <Route
                     path="/patienthistory"
@@ -117,20 +118,20 @@ function App() {
                 />
                 <Route path="/pendingpa" element={<AllPendingPARequests />} />
                 <Route path="/providers" element={<ProviderPage />} />
-                <Route path="/phistorymodal" element={<PatientInformation />} />
-                <Route path="/updateprofile" element={<UpdateProfile />} />
-                <Route path="/cmticket" element={<Ticket />} />
+                {/* <Route path="/phistorymodal" element={<PatientInformation />} /> */}
+                {/* <Route path="/updateprofile" element={<UpdateProfile />} /> */}
+                {/* <Route path="/cmticket" element={<Ticket />} /> */}
                 {/* <Route path="/allticket" element={<AllTicket />} /> */}
-                <Route path="/createticket" element={<CreateTicket />} />
+                {/* <Route path="/createticket" element={<CreateTicket />} /> */}
                 {/* <Route path="/viewticket" element={<ViewTicket />} /> */}
                 {/* <Route path="/ticketinfo" element={<TicketInfoTab />} /> */}
                 {/* <Route path="/commenttab" element={<CommentTab />} /> */}
                 {/* <Route path="/historytab" element={<HistoryTab />} /> */}
-                <Route path="/enrolleeinfo" element={<CustomerModal />} />
-                <Route
+                {/* <Route path="/enrolleeinfo" element={<CustomerModal />} /> */}
+                {/* <Route
                     path="/enrolleeCustomerinfo"
                     element={<EnrolleeCustomerPage />}
-                />
+                /> */}
                 {/* <Route path="/notification" element={<Notification />} /> */}
                 {/* <Route path="/workbench" element={<Workbench />} /> */}
                 {/* <Route path="/ssdashboard" element={<SSDashboard />} /> */}
