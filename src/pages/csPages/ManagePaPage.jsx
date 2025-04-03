@@ -1,6 +1,5 @@
 import React from "react";
-import User1 from "../../assets/csImages/Vector.svg";
-import User2 from "../../assets/csImages/bxs_user.svg";
+
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
@@ -38,7 +37,7 @@ const ManagePaPage = () => {
                                     className="w-[298px] h-[306px] flex flex-col items-center cursor-pointer rounded-lg shadow-md bg-white hover:shadow-lg hover:ring-4 hover:ring-red-700 transition duration-300 "
                                 >
                                     <img
-                                        src={User2}
+                                        src="src/assets/Images/bxs_user.svg"
                                         alt="Generate PA Code"
                                         className="mb-4 mt-14"
                                     />
@@ -53,7 +52,7 @@ const ManagePaPage = () => {
                                 className="w-[298px] h-[306px] flex flex-col items-center cursor-pointer rounded-lg shadow-md bg-white hover:shadow-lg hover:ring-4 hover:ring-red-700 transition duration-300"
                             >
                                 <img
-                                    src={User1}
+                                    src="src/assets/Images/Vector.svg"
                                     alt="Portal Request"
                                     className="mb-4 mt-16"
                                 />
