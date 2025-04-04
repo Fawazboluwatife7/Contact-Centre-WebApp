@@ -1,7 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 
-import avatar from "../../assets/csImages/Rectangle 896.svg";
-import svg from "../../assets/csImages/Ellipse 75.svg";
 import { useState, useEffect } from "react";
 
 function EnrolleeInformations() {
@@ -200,7 +198,7 @@ function EnrolleeInformations() {
                         <div className="flex bg-white item-center justify-center ">
                             <div>
                                 <img
-                                    src={svg}
+                                    src="src/assets/CSIMAGES/Ellipse 75.svg"
                                     alt="Icon"
                                     className="w-3 h-6 mr-2"
                                 />
