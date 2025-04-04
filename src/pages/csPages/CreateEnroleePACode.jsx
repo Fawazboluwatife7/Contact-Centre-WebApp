@@ -1310,7 +1310,7 @@ const CreateEnroleePACode = () => {
                                                 alt="Add"
                                                 className="mr-2"
                                             />
-                                            Add Another Diagnosis
+                                            Add Diagnosis
                                         </div>
                                     </div>
                                 </div>
@@ -1702,7 +1702,7 @@ const CreateEnroleePACode = () => {
                         >
                             <img src={plusiconred} alt="" className="mr-2" />
                             <span className=" font-semibold">
-                                Add Another Procedure
+                                Add Procedure
                             </span>
                         </div>
                         {/* 
