@@ -230,36 +230,6 @@ const CreateEnroleePACode = () => {
             ProcedureCode: "DO-B34-001-041-SYR-040-000",
             ExtensionRemarks: "consultation",
         },
-        {
-            FilterType: "2",
-            ProcedureCode: "DO-B49-007-112-PESS-010-000",
-            ExtensionRemarks: "investigations",
-        },
-        {
-            FilterType: "3",
-            ProcedureCode: "DO-B34-001-042-TAB-023-000",
-            ExtensionRemarks: "pharmacy",
-        },
-        {
-            FilterType: "4",
-            ProcedureCode: "DO-B53-002-067-SYR-042-000",
-            ExtensionRemarks: "Admitted",
-        },
-        {
-            FilterType: "5",
-            ProcedureCode: "DO-B53-002-125-INJ-031-000",
-            ExtensionRemarks: "Immunization",
-        },
-        {
-            FilterType: "6",
-            ProcedureCode: "DO-B53-008-031-TAB-009-000",
-            ExtensionRemarks: "Procedures",
-        },
-        {
-            FilterType: "7",
-            ProcedureCode: "DO-B99-001-144-TAB-042-000",
-            ExtensionRemarks: "Observation",
-        },
     ];
 
     useEffect(() => {

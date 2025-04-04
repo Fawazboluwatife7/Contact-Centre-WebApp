@@ -96,8 +96,7 @@ const CsSidebar = () => {
                 <div
                     className={`mt-2 flex px-10 cursor-pointer p-2 
                         ${
-                            location.pathname.includes("enrollees") ||
-                            location.pathname.includes("cspatienthistory")
+                            location.pathname.includes("enrollees")
                                 ? "bg-[#C61531] text-white"
                                 : "hover:bg-[#C61531] hover:text-white"
                         }`}
