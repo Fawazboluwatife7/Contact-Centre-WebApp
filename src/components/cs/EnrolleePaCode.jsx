@@ -1,11 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import backIcon from "../../assets/csImages/eva_arrow-back-outline.svg";
-import avatar from "../../assets/csImages/Rectangle 896.svg";
-import svg from "../../assets/csImages/Ellipse 75.svg";
-import dropdown from "../../assets/csImages/Group 2398.svg";
+
 import { useState, useEffect } from "react";
-import search from "../../assets/csImages/Search.svg";
-import plusiconred from "../../assets/csImages/Group 2356.svg";
+
 import { useLocation } from "react-router-dom";
 
 const EnrollePaCode = () => {
@@ -233,7 +229,7 @@ const EnrollePaCode = () => {
                         <Link to="/generatePaCode">
                             <button className="flex items-center">
                                 <img
-                                    src={backIcon}
+                                    src="src/assets/CSIMAGES/eva_arrow-back-outline.svg"
                                     alt="Back Icon"
                                     className="w-6 h-6"
                                 />
@@ -550,7 +546,7 @@ const EnrollePaCode = () => {
                             </label>
                             <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
                                 <img
-                                    src={search}
+                                    src="src/assets/CSIMAGES/Search.svg"
                                     alt="Search Icon"
                                     className="h-6 w-6 absolute left-2"
                                 />
@@ -582,8 +578,12 @@ const EnrollePaCode = () => {
                 </div>
                 <div className="flex ml-6 justify-end">
                     {" "}
-                    <img src={plusiconred} alt="" className="mr-2" /> Add
-                    Another Dianosis
+                    <img
+                        src="src/assets/CSIMAGES/Group 2356.svg"
+                        alt=""
+                        className="mr-2"
+                    />{" "}
+                    Add Another Dianosis
                 </div>
 
                 <div className="ml-6 mt-6 mb-6">
@@ -606,7 +606,7 @@ const EnrollePaCode = () => {
                             </label>
                             <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
                                 <img
-                                    src={search}
+                                    src="src/assets/CSIMAGES/Search.svg"
                                     alt="Search Icon"
                                     className="h-6 w-6 absolute left-2"
                                 />
@@ -656,8 +656,12 @@ const EnrollePaCode = () => {
 
                 <div className="flex ml-6 justify-end">
                     {" "}
-                    <img src={plusiconred} alt="" className="mr-2" /> Add
-                    Another Procedure
+                    <img
+                        src="src/assets/CSIMAGES/Group 2356.svg"
+                        alt=""
+                        className="mr-2"
+                    />{" "}
+                    Add Another Procedure
                 </div>
 
                 <div className="ml-6">

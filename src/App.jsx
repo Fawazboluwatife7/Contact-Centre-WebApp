@@ -14,8 +14,8 @@ import History from "./pages/csPages/PA-HistoryPage";
 // import Success from "./pages/csPages/SuccessPaCodePage";
 import ManagePA from "./pages/csPages/ManagePaPage";
 
-import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
-import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
+// import EnrolleePaCode from "./pages/csPages/EnrolleePaCodePage";
+// import ApprovePaCode from "./pages/csPages/ApprovePaCodePage";
 // import SuccessGen from "./pages/csPages/SuccessGeneratePaPage";
 // import TicketInformationPage from "./pages/csPages/TicketInformationPage";
 // import CsLoginPage from "./pages/csPages/CsLoginPage";
@@ -53,7 +53,7 @@ import EnrollePaCode from "./components/cs/EnrolleePaCode";
 import EnrolleePaCodePage from "./pages/csPages/EnrolleePaCodePage";
 
 import CsPatientHistory from "./pages/csPages/CsPatientHistory";
-import ProviderPage from "./pages/csPages/ProviderPage";
+// import ProviderPage from "./pages/csPages/ProviderPage";
 import ProvidersPage from "./pages/csPages/ProvidersPage";
 import AllPendingPARequests from "./pages/csPages/AllPendingPARequests";
 import CSEnrolleCustomerPage from "./pages/csPages/CSEnrolleCustomerPage";
@@ -96,8 +96,8 @@ function App() {
                 {/* <Route path="/success" element={<Success />} /> */}
                 <Route path="/managePa" element={<ManagePaPage />} />
 
-                <Route path="/enrolleePaCode" element={<EnrolleePaCode />} />
-                <Route path="/approvePaCode" element={<ApprovePaCode />} />
+                {/* <Route path="/enrolleePaCode" element={<EnrolleePaCode />} /> */}
+                {/* <Route path="/approvePaCode" element={<ApprovePaCode />} /> */}
                 {/* <Route path="/dashboard" element={<Dashboard />} /> */}
                 {/* <Route path="/enrollee" element={<Enrollee />} /> */}
                 {/* <Route path="/searchenrollee" element={<SearchEnrollee />} /> */}
@@ -117,7 +117,7 @@ function App() {
                     element={<CsPatientHistory />}
                 />
                 <Route path="/pendingpa" element={<AllPendingPARequests />} />
-                <Route path="/providers" element={<ProviderPage />} />
+                {/* <Route path="/providers" element={<ProviderPage />} /> */}
                 {/* <Route path="/phistorymodal" element={<PatientInformation />} /> */}
                 {/* <Route path="/updateprofile" element={<UpdateProfile />} /> */}
                 {/* <Route path="/cmticket" element={<Ticket />} /> */}

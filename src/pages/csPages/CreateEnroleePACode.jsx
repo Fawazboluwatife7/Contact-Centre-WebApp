@@ -1,14 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import backIcon from "../../assets/csImages/eva_arrow-back-outline.svg";
-import avatar from "../../assets/csImages/Rectangle 896.svg";
-import svg from "../../assets/csImages/Ellipse 75.svg";
-import dropdown from "../../assets/csImages/Group 2398.svg";
 
 import Sidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
 import { useState, useEffect } from "react";
-import search from "../../assets/csImages/Search.svg";
-import plusiconred from "../../assets/csImages/Group 2356.svg";
+
 import { useLocation } from "react-router-dom";
 import { FaFlag } from "react-icons/fa";
 import CreatePAModal from "./CreatePAModal";
@@ -791,7 +786,7 @@ const CreateEnroleePACode = () => {
                                 <Link to="/generatePaCode">
                                     <button className="flex items-center">
                                         <img
-                                            src={backIcon}
+                                            src="src/assets/CSIMAGES/eva_arrow-back-outline.svg"
                                             alt="Back Icon"
                                             className="w-6 h-6"
                                         />
@@ -1198,7 +1193,7 @@ const CreateEnroleePACode = () => {
                                                     </label>
                                                     <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
                                                         <img
-                                                            src={search}
+                                                            src="src/assets/CSIMAGES/Search.svg"
                                                             alt="Search Icon"
                                                             className="h-6 w-6 absolute left-2"
                                                         />
@@ -1306,7 +1301,7 @@ const CreateEnroleePACode = () => {
                                             onClick={handleAddDiagnosis}
                                         >
                                             <img
-                                                src={plusiconred}
+                                                src="src/assets/CSIMAGES/Group 2356.svg"
                                                 alt="Add"
                                                 className="mr-2"
                                             />
@@ -1381,7 +1376,7 @@ const CreateEnroleePACode = () => {
                                                         </label>
                                                         <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
                                                             <img
-                                                                src={search}
+                                                                src="src/assets/CSIMAGES/Search.svg"
                                                                 alt="Search Icon"
                                                                 className="h-6 w-6 absolute left-2"
                                                             />
@@ -1700,7 +1695,11 @@ const CreateEnroleePACode = () => {
                             className="flex ml-6 justify-end cursor-pointer mt-4"
                             onClick={handleAddProcedures}
                         >
-                            <img src={plusiconred} alt="" className="mr-2" />
+                            <img
+                                src="src/assets/CSIMAGES/Group 2356.svg"
+                                alt=""
+                                className="mr-2"
+                            />
                             <span className=" font-semibold">
                                 Add Procedure
                             </span>

@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import barchart from "../../assets/CSIMAGES/barchat.svg";
-import bluebarchat from "../../assets/CSIMAGES/bluechat.svg";
-import skybluechart from "../../assets/CSIMAGES/skybluechat.svg";
-import orangechart from "../../assets/CSIMAGES/orangechat.svg";
 import { CgPlayTrackNext } from "react-icons/cg";
 import { MdSkipPrevious } from "react-icons/md";
 
@@ -264,7 +260,7 @@ function CsDashboard() {
                     <div className="flex w-full bg-lightblue overflow-y-visible ">
                         <div className=" w-full  flex gap-2 mr-1 ">
                             <div className=" flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src={barchart} />
+                                <img src="src/assets/CSIMAGES/barchat.svg" />
                                 <p className="text-[#7E7E7E]">
                                     {" "}
                                     Total PA Request
@@ -274,7 +270,7 @@ function CsDashboard() {
                                 </span>
                             </div>
                             <div className=" flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src={bluebarchat} />
+                                <img src="src/assets/CSIMAGES/bluechat.svg" />
                                 <p className="text-[#7E7E7E]">
                                     Open Tickets/ number of enrolles
                                 </p>
@@ -344,7 +340,7 @@ function CsDashboard() {
                                 className="
                    flex-1 bg-bl  bg-white w-full h-[7.5rem] rounded-md py-4 px-4"
                             >
-                                <img src={skybluechart} />
+                                <img src="src/assets/CSIMAGES/skybluechat.svg" />
                                 <p className="text-[#7E7E7E]">
                                     Approved PA Requests
                                 </p>
@@ -353,7 +349,7 @@ function CsDashboard() {
                                 </span>
                             </div>
                             <div className="flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src={orangechart} />
+                                <img src="src/assets/CSIMAGES/orangechat.svg" />
                                 <p className="text-[#7E7E7E]">Declined PA</p>
                                 <span className="text-[2.3rem] font-bold">
                                     {declined}
