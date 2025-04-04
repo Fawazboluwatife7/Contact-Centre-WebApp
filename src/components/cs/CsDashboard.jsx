@@ -260,7 +260,7 @@ function CsDashboard() {
                     <div className="flex w-full bg-lightblue overflow-y-visible ">
                         <div className=" w-full  flex gap-2 mr-1 ">
                             <div className=" flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src="src/assets/CSIMAGES/barchat.svg" />
+                                <img src="./barchat.svg" />
                                 <p className="text-[#7E7E7E]">
                                     {" "}
                                     Total PA Request
@@ -270,7 +270,7 @@ function CsDashboard() {
                                 </span>
                             </div>
                             <div className=" flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src="src/assets/CSIMAGES/bluechat.svg" />
+                                <img src="./bluechat.svg" />
                                 <p className="text-[#7E7E7E]">
                                     Open Tickets/ number of enrolles
                                 </p>
@@ -340,7 +340,7 @@ function CsDashboard() {
                                 className="
                    flex-1 bg-bl  bg-white w-full h-[7.5rem] rounded-md py-4 px-4"
                             >
-                                <img src="src/assets/CSIMAGES/skybluechat.svg" />
+                                <img src="./skybluechat.svg" />
                                 <p className="text-[#7E7E7E]">
                                     Approved PA Requests
                                 </p>
@@ -349,7 +349,7 @@ function CsDashboard() {
                                 </span>
                             </div>
                             <div className="flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src="src/assets/CSIMAGES/orangechat.svg" />
+                                <img src="./orangechat.svg" />
                                 <p className="text-[#7E7E7E]">Declined PA</p>
                                 <span className="text-[2.3rem] font-bold">
                                     {declined}
@@ -427,7 +427,7 @@ function CsDashboard() {
                                             >
                                                 <div className="flex flex-col items-center justify-center h-full space-y-2">
                                                     <img
-                                                        src="public/loaderx.gif"
+                                                        src="./loaderx.gif"
                                                         alt="Loading animation"
                                                         className="w-40 h-40" /* Adjust size as needed */
                                                     />
