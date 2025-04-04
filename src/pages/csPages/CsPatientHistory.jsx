@@ -87,11 +87,11 @@ const attachmentsArray = [
 
 // Tabs for table filters
 const tabs = [
-    "PA History",
     "Hospital Visits",
     "Benefits",
 
     "Concessions",
+    "PA History",
 
     "Exclusions",
     "Flags",
@@ -175,6 +175,7 @@ const CsPatientHistory = () => {
     const [annualChecks, setAnnualChecks] = useState([]);
     const [spa, GetSpar] = useState([]);
     const [gym, SetGym] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const location = useLocation();
     const enrollee = location.state?.enrollee;
@@ -239,6 +240,8 @@ const CsPatientHistory = () => {
             SetPa(data.result);
         } catch (error) {
             console.error("Error getting PA:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -266,6 +269,8 @@ const CsPatientHistory = () => {
                 "Error calculating total amount spent on enrollee:",
                 error,
             );
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -653,6 +658,8 @@ const CsPatientHistory = () => {
             setConcession(data.result);
         } catch (error) {
             console.error("Error fetching concession:", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -764,103 +771,150 @@ const CsPatientHistory = () => {
                                 </thead>
 
                                 <tbody>
-                                    {activeTab === "PA History" &&
-                                        (pa.length > 0 ? (
-                                            [...pa]
-                                                .sort(
-                                                    (a, b) =>
-                                                        new Date(b.DateIssued) -
-                                                        new Date(a.DateIssued),
-                                                )
-                                                .map((item, index) => (
-                                                    <tr
-                                                        key={index}
-                                                        className="hover:bg-gray-100"
+                                    {activeTab === "PA History" && (
+                                        <>
+                                            {loading ? (
+                                                <tr>
+                                                    <td
+                                                        className="h-64 text-center"
+                                                        colSpan="8"
                                                     >
-                                                        <td className="border px-4 py-2">
-                                                            {formatISOToCustom(
-                                                                item.DateIssued,
-                                                            )}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {item.provider}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {item.diagcode
-                                                                ?.split(",")[0]
-                                                                ?.split(" ")
-                                                                .slice(1)
-                                                                .join(" ") ||
-                                                                "N/A"}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {
-                                                                item.ProcedureDescription
-                                                            }
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            #
-                                                            {item.chargeamount.toLocaleString(
-                                                                "en-US",
-                                                            )}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {item.PACode}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {item.visitType}
-                                                        </td>
-                                                        <td className="border px-4 py-2">
-                                                            {item.PAStatus}
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                        ) : (
-                                            <tr>
-                                                <td
-                                                    className="h-64 text-center"
-                                                    colSpan="8"
-                                                >
-                                                    <h1 className="py-5 px-20">
-                                                        No Record Found
-                                                    </h1>
-                                                </td>
-                                            </tr>
-                                        ))}
-
-                                    {activeTab === "Hospital Visits" &&
-                                        Array.from(
-                                            new Set(
-                                                hospital.map(
-                                                    (item) =>
-                                                        item.Claim_Provider,
-                                                ),
-                                            ),
-                                        ).map((uniqueProvider) => {
-                                            // Find the first item with this provider
-                                            const item = hospital.find(
-                                                (h) =>
-                                                    h.Claim_Provider ===
-                                                    uniqueProvider,
-                                            );
-                                            return (
-                                                <tr
-                                                    key={uniqueProvider}
-                                                    className="hover:bg-gray-100"
-                                                >
-                                                    <td className="border px-4 py-2">
-                                                        {new Date(
-                                                            item.ClaimLine_TreatmentDate,
-                                                        ).toLocaleDateString(
-                                                            "en-GB",
-                                                        )}
-                                                    </td>
-                                                    <td className="border px-4 py-2">
-                                                        {item.Claim_Provider}
+                                                        <h1 className="py-5 px-20">
+                                                            Fetching Data...
+                                                        </h1>
                                                     </td>
                                                 </tr>
-                                            );
-                                        })}
+                                            ) : pa.length > 0 ? (
+                                                [...pa]
+                                                    .sort(
+                                                        (a, b) =>
+                                                            new Date(
+                                                                b.DateIssued,
+                                                            ) -
+                                                            new Date(
+                                                                a.DateIssued,
+                                                            ),
+                                                    )
+                                                    .map((item, index) => (
+                                                        <tr
+                                                            key={index}
+                                                            className="hover:bg-gray-100"
+                                                        >
+                                                            <td className="border px-4 py-2">
+                                                                {formatISOToCustom(
+                                                                    item.DateIssued,
+                                                                )}
+                                                            </td>
+                                                            <td className="border px-4 py-2">
+                                                                {item.provider}
+                                                            </td>
+                                                            <td className="border px-4 py-2">
+                                                                {item.diagcode
+                                                                    ?.split(
+                                                                        ",",
+                                                                    )[0]
+                                                                    ?.split(" ")
+                                                                    .slice(1)
+                                                                    .join(
+                                                                        " ",
+                                                                    ) || "N/A"}
+                                                            </td>
+                                                            <td className="border px-4 py-2">
+                                                                {
+                                                                    item.ProcedureDescription
+                                                                }
+                                                            </td>
+                                                            <td className="border px-4 py-2">
+                                                                #
+                                                                {item.chargeamount.toLocaleString(
+                                                                    "en-US",
+                                                                )}
+                                                            </td>
+                                                            <td className="border px-4 py-2">
+                                                                {item.PACode}
+                                                            </td>
+                                                            <td className="border px-4 py-2">
+                                                                {item.visitType}
+                                                            </td>
+                                                            <td className="border px-4 py-2">
+                                                                {item.PAStatus}
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                            ) : (
+                                                <tr>
+                                                    <td
+                                                        className="h-64 text-center"
+                                                        colSpan="8"
+                                                    >
+                                                        <h1 className="py-5 px-20">
+                                                            No Record Found
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </>
+                                    )}
+
+                                    {activeTab === "Hospital Visits" && (
+                                        <>
+                                            {loading ? (
+                                                <tr>
+                                                    <td
+                                                        className="h-64 text-center"
+                                                        colSpan="2"
+                                                    >
+                                                        <h1 className="py-5 px-20">
+                                                            Fetching Data...
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            ) : hospital.length > 0 ? (
+                                                Array.from(
+                                                    new Set(
+                                                        hospital.map(
+                                                            (item) =>
+                                                                item.Claim_Provider,
+                                                        ),
+                                                    ),
+                                                ).map((uniqueProvider) => {
+                                                    const item = hospital.find(
+                                                        (h) =>
+                                                            h.Claim_Provider ===
+                                                            uniqueProvider,
+                                                    );
+                                                    return (
+                                                        <tr
+                                                            key={uniqueProvider}
+                                                            className="hover:bg-gray-100"
+                                                        >
+                                                            <td className="border px-4 py-2">
+                                                                {new Date(
+                                                                    item.ClaimLine_TreatmentDate,
+                                                                ).toLocaleDateString(
+                                                                    "en-GB",
+                                                                )}
+                                                            </td>
+                                                            <td className="border px-4 py-2">
+                                                                {
+                                                                    item.Claim_Provider
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })
+                                            ) : (
+                                                <tr>
+                                                    <td className=" text-center">
+                                                        <h1 className="py-5 px-20">
+                                                            No Record Found
+                                                        </h1>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </>
+                                    )}
+
                                     {activeTab === "Benefits" && (
                                         <>
                                             {telemedicine &&
