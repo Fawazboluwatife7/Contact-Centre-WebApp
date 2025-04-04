@@ -37,7 +37,7 @@ const ManagePaPage = () => {
                                     className="w-[298px] h-[306px] flex flex-col items-center cursor-pointer rounded-lg shadow-md bg-white hover:shadow-lg hover:ring-4 hover:ring-red-700 transition duration-300 "
                                 >
                                     <img
-                                        src="src/assets/Images/bxs_user.svg"
+                                        src="./bxs_user.svg"
                                         alt="Generate PA Code"
                                         className="mb-4 mt-14"
                                     />
@@ -52,7 +52,7 @@ const ManagePaPage = () => {
                                 className="w-[298px] h-[306px] flex flex-col items-center cursor-pointer rounded-lg shadow-md bg-white hover:shadow-lg hover:ring-4 hover:ring-red-700 transition duration-300"
                             >
                                 <img
-                                    src="src/assets/Images/Vector.svg"
+                                    src="./Vector.svg"
                                     alt="Portal Request"
                                     className="mb-4 mt-16"
                                 />

@@ -1193,7 +1193,7 @@ const CreateEnroleePACode = () => {
                                                     </label>
                                                     <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
                                                         <img
-                                                            src="src/assets/CSIMAGES/Search.svg"
+                                                            src="./Search.svg"
                                                             alt="Search Icon"
                                                             className="h-6 w-6 absolute left-2"
                                                         />
@@ -1301,7 +1301,7 @@ const CreateEnroleePACode = () => {
                                             onClick={handleAddDiagnosis}
                                         >
                                             <img
-                                                src="src/assets/CSIMAGES/Group 2356.svg"
+                                                src="./Group 2356.svg"
                                                 alt="Add"
                                                 className="mr-2"
                                             />
@@ -1376,7 +1376,7 @@ const CreateEnroleePACode = () => {
                                                         </label>
                                                         <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
                                                             <img
-                                                                src="src/assets/CSIMAGES/Search.svg"
+                                                                src="./Search.svg"
                                                                 alt="Search Icon"
                                                                 className="h-6 w-6 absolute left-2"
                                                             />
@@ -1696,7 +1696,7 @@ const CreateEnroleePACode = () => {
                             onClick={handleAddProcedures}
                         >
                             <img
-                                src="src/assets/CSIMAGES/Group 2356.svg"
+                                src="./Group 2356.svg"
                                 alt=""
                                 className="mr-2"
                             />
