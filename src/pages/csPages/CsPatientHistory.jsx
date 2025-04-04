@@ -4,28 +4,22 @@ import { useLocation } from "react-router-dom";
 import CsSidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
 import PatientInformation from "../csPages/CsPatientInformation";
-import StatusModal from "../caseManagement/StatusModal";
-import { CiCalendar } from "react-icons/ci";
+
 import { useNavigate } from "react-router-dom";
 import { PiCrossLight } from "react-icons/pi";
 import { HiOutlinePlus } from "react-icons/hi";
-import { BiInjection } from "react-icons/bi";
-import { FaBedPulse } from "react-icons/fa6";
 
 import { BiHome } from "react-icons/bi";
 import { PiFlagBold } from "react-icons/pi";
 import { GrNotes } from "react-icons/gr";
 import { IoDocumentAttachOutline } from "react-icons/io5";
-import { RxUpdate } from "react-icons/rx";
+
 import { FaFilePdf } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 //import { SiMicrosoftexcel } from "react-icons/si";
 import { BiSolidFileImage } from "react-icons/bi";
-import { FaFlag } from "react-icons/fa6";
 
 import { BsThreeDots } from "react-icons/bs";
-import { green } from "@mui/material/colors";
-import { CheckBox } from "@mui/icons-material";
 
 function DateDropdown({ options, sendNumber, className }) {
     const [selectedValue, setSelectedValue] = useState("");

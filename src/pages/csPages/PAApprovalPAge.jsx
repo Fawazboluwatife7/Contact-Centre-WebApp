@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { FaFilter } from "react-icons/fa";
 
 import Sidebar from "../../components/cs/csSideBar";
 import Navbar from "../../components/cs/Header";
 
 import { useNavigate } from "react-router-dom";
 import CustomerModal from "../csPages/CSPatientModal";
-import { TbPlus } from "react-icons/tb";
-import { RiCrossFill } from "react-icons/ri";
-import PAHistoryModal from "../csPages/CSPAHistoryModal";
-import HospitalVisitModal from "../csPages/CSHospitalVisitModal";
+
 import ApiResponseModal from "../csPages/ApiResponseModal";
 
 function DateDropdown({ options, sendNumber, className }) {
