@@ -847,7 +847,7 @@ const CsPatientHistory = () => {
                                                         className="h-64 text-center"
                                                         colSpan="8"
                                                     >
-                                                        <h1 className="py-5 px-20">
+                                                        <h1 className="py-5 px-20 ">
                                                             No Record Found
                                                         </h1>
                                                     </td>
@@ -905,8 +905,8 @@ const CsPatientHistory = () => {
                                                 })
                                             ) : (
                                                 <tr>
-                                                    <td className=" text-center">
-                                                        <h1 className="py-5 px-20">
+                                                    <td className=" ">
+                                                        <h1 className="py-5 px-20 ml-[30rem]">
                                                             No Record Found
                                                         </h1>
                                                     </td>
@@ -1387,10 +1387,10 @@ const CsPatientHistory = () => {
                                         ) : (
                                             <tr>
                                                 <td
-                                                    colSpan="2"
                                                     className="h-64 text-center"
+                                                    colSpan="8"
                                                 >
-                                                    <h1 className="py-5 px-20">
+                                                    <h1 className="py-5 px-20 ml-[30rem]">
                                                         No Record Found
                                                     </h1>
                                                 </td>
