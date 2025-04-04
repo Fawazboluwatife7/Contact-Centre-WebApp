@@ -1,8 +1,3 @@
-import print from "../../assets/csImages/print.svg";
-import search from "../../assets/csImages/Search.svg";
-import plus from "../../assets/csImages/plusSign.svg";
-import filter from "../../assets/csImages/filter.svg";
-import exportIcon from "../../assets/csImages/export.svg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { CgPlayTrackNext } from "react-icons/cg";
