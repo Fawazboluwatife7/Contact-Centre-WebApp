@@ -165,7 +165,7 @@ const GeneratePAEnrolleeSearch = () => {
                                         >
                                             <div className="flex flex-col items-center justify-center h-full space-y-2">
                                                 <img
-                                                    src="public/loaderx.gif"
+                                                    src="./loaderx.gif"
                                                     alt="Loading animation"
                                                     className="w-40 h-40" /* Adjust size as needed */
                                                 />
