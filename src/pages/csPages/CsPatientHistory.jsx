@@ -765,57 +765,69 @@ const CsPatientHistory = () => {
 
                                 <tbody>
                                     {activeTab === "PA History" &&
-                                        pa.map((item, index) => (
-                                            <tr
-                                                key={index}
-                                                className="hover:bg-gray-100"
-                                            >
-                                                <td className="border px-4 py-2">
-                                                    {formatISOToCustom(
-                                                        item.DateIssued,
-                                                    )}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.provider}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.diagcode
-                                                        ?.split(",")[0]
-                                                        ?.split(" ")
-                                                        .slice(1)
-                                                        .join(" ") || "N/A"}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.ProcedureDescription}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    #
-                                                    {item.chargeamount.toLocaleString(
-                                                        "en-US",
-                                                    )}
-                                                </td>
-
-                                                <td className="border px-4 py-2">
-                                                    {item.PACode}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.visitType}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.PAStatus}
-                                                </td>
-                                                {/* <td
-                                                    className={
-                                                        item.status ===
-                                                        "Approved"
-                                                            ? "text-green-500 border px-4 py-2"
-                                                            : "text-red-500 border px-4 py-2"
-                                                    }
+                                        (pa.length > 0 ? (
+                                            [...pa]
+                                                .sort(
+                                                    (a, b) =>
+                                                        new Date(b.DateIssued) -
+                                                        new Date(a.DateIssued),
+                                                )
+                                                .map((item, index) => (
+                                                    <tr
+                                                        key={index}
+                                                        className="hover:bg-gray-100"
+                                                    >
+                                                        <td className="border px-4 py-2">
+                                                            {formatISOToCustom(
+                                                                item.DateIssued,
+                                                            )}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.provider}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.diagcode
+                                                                ?.split(",")[0]
+                                                                ?.split(" ")
+                                                                .slice(1)
+                                                                .join(" ") ||
+                                                                "N/A"}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {
+                                                                item.ProcedureDescription
+                                                            }
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            #
+                                                            {item.chargeamount.toLocaleString(
+                                                                "en-US",
+                                                            )}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.PACode}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.visitType}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.PAStatus}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    className="h-64 text-center"
+                                                    colSpan="8"
                                                 >
-                                                    {item.status}
-                                                </td> */}
+                                                    <h1 className="py-5 px-20">
+                                                        No Record Found
+                                                    </h1>
+                                                </td>
                                             </tr>
                                         ))}
+
                                     {activeTab === "Hospital Visits" &&
                                         Array.from(
                                             new Set(
@@ -1216,10 +1228,7 @@ const CsPatientHistory = () => {
                                                 ))
                                             ) : (
                                                 <tr>
-                                                    <td
-                                                        colSpan="5"
-                                                        className="h-64 text-center"
-                                                    >
+                                                    <td colSpan="5">
                                                         <h1 className="py-5 px-20">
                                                             No Record Found
                                                         </h1>
@@ -1294,10 +1303,7 @@ const CsPatientHistory = () => {
                                                 )
                                             ) : (
                                                 <tr>
-                                                    <td
-                                                        colSpan="5"
-                                                        className="h-64 text-center"
-                                                    >
+                                                    <td colSpan="5">
                                                         <h1 className="py-5 px-20">
                                                             No Record Found
                                                         </h1>

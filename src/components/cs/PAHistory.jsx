@@ -198,7 +198,7 @@ const PaHistory = () => {
                             />
                         </div>
 
-                        <div className="  flex ml-[39rem] mt-4 px-4 w-[7rem] h-[2.5rem] gap-2 font-medium  rounded-md  text-white bg-red-600 hover:bg-white  hover:text-red-600">
+                        <div className="  flex ml-[33rem] mt-4 px-4 w-[7rem] h-[2.5rem] gap-2 font-medium  rounded-md  text-white bg-red-600 hover:bg-white  cursor-pointer hover:text-red-600">
                             <BiSearchAlt2 className=" mt-3 text-[20px]" />
 
                             <button type="submit" className=" font-medium ">
