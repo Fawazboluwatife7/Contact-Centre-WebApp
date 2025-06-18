@@ -35,9 +35,9 @@ const PaHistory = () => {
         { name: "Declined", status: "Declined" },
         {
             name: "Pending",
-            status: ["Authorization Pending", "Authorisation pending"],
+            status: "Authorization Pending",
         },
-        { name: "Approved", status: "Authorisation approved claim pending" },
+        { name: "Approved", status: "Approved" },
     ];
 
     function formatISOToCustom(dateString) {
@@ -111,14 +111,9 @@ const PaHistory = () => {
 
         const lowerStatus = PAStatus.toLowerCase(); // Make it case-insensitive
 
-        if (lowerStatus === "authorisation approved claim pending")
-            return "text-green-500";
+        if (lowerStatus === "approved") return "text-green-500";
 
-        if (
-            lowerStatus === "authorisation pending" ||
-            lowerStatus === "authorization pending"
-        )
-            return "text-orange-500";
+        if (lowerStatus === "authorization pending") return "text-orange-500";
 
         if (lowerStatus === "declined") return "text-red-500";
 
@@ -135,11 +130,54 @@ const PaHistory = () => {
         setCurrentPage(1); // Reset to first page when switching tabs
     };
 
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+    // const uniqueFilteredData = useMemo(() => {
+    //     const seenIDs = new Set();
+    //     return filteredData.filter((item) => {
+    //         if (!seenIDs.has(item.enrolleeID)) {
+    //             seenIDs.add(item.enrolleeID);
+    //             return true;
+    //         }
+    //         return false;
+    //     });
+    // }, [filteredData]);
 
-    const paginatedResults = filteredData.slice(startIndex, endIndex);
+    // const totalPages = Math.ceil(uniqueFilteredData.length / itemsPerPage);
+    // const startIndex = (currentPage - 1) * itemsPerPage;
+    // const paginatedResults = uniqueFilteredData.slice(
+    //     startIndex,
+    //     startIndex + itemsPerPage,
+    // );
+
+    const uniqueFilteredData = useMemo(() => {
+        const seenIDs = new Set();
+        return filteredData.filter((item) => {
+            if (!seenIDs.has(item.enrolleeID)) {
+                seenIDs.add(item.enrolleeID);
+                return true;
+            }
+            return false;
+        });
+    }, [filteredData]);
+
+    // Sort uniqueFilteredData by Visitdate
+    const sortedUniqueData = useMemo(() => {
+        return [...uniqueFilteredData].sort((a, b) => {
+            // Convert dates to timestamps for comparison
+            const dateA = new Date(a.Visitdate).getTime();
+            const dateB = new Date(b.Visitdate).getTime();
+
+            // Sort in ascending order (earliest first)
+            return dateA - dateB;
+        });
+    }, [uniqueFilteredData]);
+
+    const totalPages = Math.ceil(sortedUniqueData.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedResults = sortedUniqueData.slice(
+        startIndex,
+        startIndex + itemsPerPage,
+    );
+
     return (
         <div>
             <Sidebar />
@@ -234,6 +272,9 @@ const PaHistory = () => {
                                             Enrollee
                                         </th>
                                         <th className="px-4 py-2 border">
+                                            VisitId
+                                        </th>
+                                        <th className="px-4 py-2 border">
                                             Provider
                                         </th>
                                         <th className="px-4 py-2 border">
@@ -292,6 +333,9 @@ const PaHistory = () => {
                                                         {request.surname} {""}
                                                         {request.firstname}
                                                     </td>
+                                                    <td className="px-4 border">
+                                                        {request.visitid}
+                                                    </td>
                                                     <td className="px-4 py-2 border">
                                                         {request.provider}
                                                     </td>
@@ -339,8 +383,8 @@ const PaHistory = () => {
                             </table>
                         </div>
                     </div>
-                    {allPA.length > itemsPerPage && (
-                        <div className="flex justify-center mt-3 items-center gap-4 ">
+                    {uniqueFilteredData.length > itemsPerPage && (
+                        <div className="flex justify-center mt-3 items-center gap-4">
                             <button
                                 className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
                                 disabled={currentPage === 1}
@@ -350,11 +394,9 @@ const PaHistory = () => {
                                     )
                                 }
                             >
-                                <MdSkipPrevious className="w-7 h-7 mr-2" />
                                 Previous
                             </button>
 
-                            {/* Show "Pages Left: X" */}
                             <span className="text-gray-700 text-lg font-semibold">
                                 Page {currentPage} of {totalPages} Pages
                             </span>
@@ -366,7 +408,6 @@ const PaHistory = () => {
                                     setCurrentPage((prev) => prev + 1)
                                 }
                             >
-                                <CgPlayTrackNext className="w-7 h-7 mr-2" />
                                 Next
                             </button>
                         </div>

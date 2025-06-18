@@ -31,6 +31,7 @@ const EnrolleesPage = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedResults = results.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(results.length / itemsPerPage);
 
     // Dynamic fields array
     const fields = [
@@ -153,6 +154,7 @@ const EnrolleesPage = () => {
                                     <th className="px-2 py-3"></th>
                                     <th className="px-6 py-3">Name</th>
                                     <th className="px-6 py-3">Enrollee ID</th>
+                                    <th className="px-6 py-3">Scheme</th>
                                     <th className="px-6 py-3">Phone</th>
                                     <th className="px-6 py-3">Email</th>
                                     <th className="px-6 py-3">Group</th>
@@ -160,21 +162,20 @@ const EnrolleesPage = () => {
                             </thead>
                             <tbody>
                                 {isLoading ? (
-                                    <tr>
-                                        <td
-                                            colSpan="8"
-                                            className="h-[255px] text-center"
-                                        >
-                                            <div className="flex flex-col items-center justify-center h-full space-y-2">
-                                                <img
-                                                    src="public/loaderx.gif"
-                                                    alt="Loading animation"
-                                                    className="w-40 h-40" /* Adjust size as needed */
-                                                />
-                                                <h3 className="text-gray-600 text-lg font-semibold">
-                                                    Please Wait, Fetching
-                                                    Enrollees...
-                                                </h3>
+                                    <tr className="h-[300px]">
+                                        <td colSpan="9" className="p-0">
+                                            <div className="flex justify-center items-center h-[300px] w-full">
+                                                <div className="flex flex-col items-center space-y-4">
+                                                    <img
+                                                        src="/loaderx.gif"
+                                                        alt="Loading animation"
+                                                        className="w-24 h-24"
+                                                    />
+                                                    <h3 className="text-gray-600 text-lg font-semibold text-center">
+                                                        Please Wait, Fetching
+                                                        Data...
+                                                    </h3>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -189,7 +190,7 @@ const EnrolleesPage = () => {
                                             }
                                         >
                                             <td className="px-6 py-3 border-r border-black">
-                                                {index + 1}
+                                                {startIndex + index + 1}
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
                                                 {enrollee.Member_CustomerName ||
@@ -197,6 +198,10 @@ const EnrolleesPage = () => {
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
                                                 {enrollee.Member_EnrolleeID ||
+                                                    "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.client_schemename ||
                                                     "N/A"}
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
@@ -247,6 +252,10 @@ const EnrolleesPage = () => {
                                     <MdSkipPrevious className="w-7 h-7 mr-2" />
                                     Previous
                                 </button>
+
+                                <span className="text-gray-700 text-lg font-semibold">
+                                    Page {currentPage} of {totalPages} Pages
+                                </span>
 
                                 <button
                                     className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import { CgPlayTrackNext } from "react-icons/cg";
 import { MdSkipPrevious } from "react-icons/md";
@@ -48,15 +48,54 @@ function CsDashboard() {
 
     const [pendingPA, setPendingPA] = useState([]);
     const [peopleWaiting, setPeopleWaiting] = useState("");
+    // const [currentPage, setCurrentPage] = useState(1);
+    // const itemsPerPage = 10;
+
+    // const totalPages = Math.ceil(pendingPA.length / itemsPerPage);
+    // const startIndex = (currentPage - 1) * itemsPerPage;
+    // const endIndex = startIndex + itemsPerPage;
+
+    // const paginatedResults = pendingPA.slice(startIndex, endIndex);
+
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
 
-    const totalPages = Math.ceil(pendingPA.length / itemsPerPage);
+    const seenIDs = new Set();
+
+    // Use useMemo to create and sort uniqueResults efficiently
+    const uniqueResults = useMemo(() => {
+        if (!combinedOpenPA || combinedOpenPA.length === 0) {
+            return [];
+        }
+
+        // First, sort entire array by Visitdate
+        const sortedData = [...combinedOpenPA].sort((a, b) => {
+            const dateA = new Date(a.Visitdate).getTime();
+            const dateB = new Date(b.Visitdate).getTime();
+            return dateA - dateB; // Earliest first
+        });
+
+        // Then get first (earliest) occurrence of each enrolleeID
+        const seenIDs = new Set();
+        const uniqueArray = [];
+
+        for (const item of sortedData) {
+            if (!seenIDs.has(item.enrolleeID)) {
+                seenIDs.add(item.enrolleeID);
+                uniqueArray.push(item);
+            }
+        }
+
+        return uniqueArray;
+    }, [combinedOpenPA]); // Only recalculate when combinedOpenPA changes
+
+    // Pagination logic
+    const itemsPerPage = 10; // Adjust to your actual value
+    const totalPages = Math.ceil(uniqueResults.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-
-    const paginatedResults = pendingPA.slice(startIndex, endIndex);
-
+    const paginatedUniqueResults = uniqueResults.slice(
+        startIndex,
+        startIndex + itemsPerPage,
+    );
     function formatISOToCustom(dateString) {
         if (!dateString) return ""; // Handle cases where DateIssued might be undefined/null
 
@@ -117,7 +156,7 @@ function CsDashboard() {
                 const validStatuses = [
                     "Authorization Pending",
                     "Authorisation pending",
-                    "Authorisation approved claim pending",
+                    "Approved",
                     "Declined",
                 ];
 
@@ -154,9 +193,7 @@ function CsDashboard() {
                 setPeopleWaiting(uniqueMembercc + uniqueMemberCount);
 
                 const ClaimPending = filteredData.filter(
-                    (item) =>
-                        item.PAStatus.toLowerCase() ===
-                        "authorisation approved claim pending",
+                    (item) => item.PAStatus.toLowerCase() === "approved",
                 );
                 const DeclinedPA = filteredData.filter(
                     (item) => item.PAStatus.toLowerCase() === "declined",
@@ -249,7 +286,7 @@ function CsDashboard() {
                         <div className="flex justify-between w-full mt-3 ">
                             <span>Hi, {user?.result[0]?.UserName}</span>
 
-                            <div className="bg-white rounded-md w-[8rem] py-2 flex gap-2">
+                            <div className="bg-white rounded-md w-[10rem] py-2 flex gap-2">
                                 <CiCalendar className=" text-[20px] mt-0.5 ml-1" />
                                 <h1 className=" font-medium">{todayDate}</h1>
                             </div>
@@ -407,6 +444,9 @@ function CsDashboard() {
                                             Date
                                         </th>
                                         <th className="py-3 px-4 text-left">
+                                            VisitId
+                                        </th>
+                                        <th className="py-3 px-4 text-left">
                                             Hospital
                                         </th>
                                         <th className="py-3 px-4 text-left">
@@ -432,15 +472,15 @@ function CsDashboard() {
                                                         className="w-40 h-40" /* Adjust size as needed */
                                                     />
                                                     <h3 className="text-gray-600 text-lg font-semibold">
-                                                        Please Wait, Fetching
-                                                        Pending PA Request...
+                                                        Please Wait, Fetching PA
+                                                        Request...
                                                     </h3>
                                                 </div>
                                             </td>
                                         </tr>
                                     ) : combinedOpenPA &&
                                       combinedOpenPA.length > 0 ? (
-                                        paginatedResults.map(
+                                        paginatedUniqueResults.map(
                                             (enrollee, index) => (
                                                 <tr
                                                     key={index}
@@ -455,7 +495,7 @@ function CsDashboard() {
                                                         {startIndex + index + 1}
                                                     </td>
                                                     <td className="px-6 py-3">
-                                                        {enrollee.surname} {""}
+                                                        {enrollee.surname}{" "}
                                                         {enrollee.firstname}
                                                     </td>
                                                     <td className="px-6 py-3 whitespace-nowrap">
@@ -467,6 +507,9 @@ function CsDashboard() {
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-3">
+                                                        {enrollee.visitid}
+                                                    </td>
+                                                    <td className="px-6 py-3">
                                                         {enrollee.provider}
                                                     </td>
                                                     <td className="px-6 py-3">
@@ -475,31 +518,9 @@ function CsDashboard() {
                                                             .slice(1)
                                                             .join(" ")}
                                                     </td>
-
                                                     <td className="px-1 py-3 text-orange-300">
                                                         {enrollee.PAStatus}
                                                     </td>
-
-                                                    {/* <td className="px-3 py-3">
-                                        <span
-                                            className={`px-4 py-1 rounded-md font-medium ${
-                                                enrollee.PAStatus?.toLowerCase() ===
-                                                "active"
-                                                    ? "text-white bg-amber-500"
-                                                    : (
-                                                            enrollee.Status ||
-                                                            enrollee.description
-                                                        )?.toLowerCase() ===
-                                                        "pending"
-                                                      ? "text-white bg-amber-600"
-                                                      : "text-red-600 bg-red-100"
-                                            }`}
-                                        >
-                                            {enrollee.Status ||
-                                                enrollee.status_id ||
-                                                "N/A"}
-                                        </span>
-                                    </td> */}
                                                 </tr>
                                             ),
                                         )
@@ -524,7 +545,7 @@ function CsDashboard() {
                         </div>
 
                         {/* Pagination */}
-                        {pendingPA.length > itemsPerPage && (
+                        {uniqueResults.length > itemsPerPage && (
                             <div className="flex justify-center mt-2 items-center gap-4 pb-2">
                                 <button
                                     className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
@@ -539,7 +560,6 @@ function CsDashboard() {
                                     Previous
                                 </button>
 
-                                {/* Show "Pages Left: X" */}
                                 <span className="text-gray-700 text-lg font-semibold">
                                     Page {currentPage} of {totalPages} Pages
                                 </span>

@@ -6,6 +6,7 @@ import Navbar from "../../components/cs/Header";
 
 import { useNavigate } from "react-router-dom";
 import CustomerModal from "../csPages/CSPatientModal";
+import { FaSpinner } from "react-icons/fa";
 
 import ApiRejectModal from "./ApiRejectModal";
 
@@ -43,7 +44,7 @@ const PARejectionPage = ({ selectedItemz }) => {
     const handleNavigate = (path) => {
         navigate(path);
     };
-
+    const [submitLoader, setSubmitLoader] = useState(false);
     const [selectedValue, setSelectedValue] = useState(null);
     const [benefit, setBenefit] = useState(null);
     const [service, setService] = useState([]);
@@ -169,6 +170,7 @@ const PARejectionPage = ({ selectedItemz }) => {
     // };
 
     const handleSubmit = async () => {
+        setSubmitLoader(true);
         if (!Array.isArray(selectedItems) || selectedItems.length === 0) {
             console.error("Error: selectedItems is undefined or not an array.");
             return;
@@ -216,6 +218,7 @@ const PARejectionPage = ({ selectedItemz }) => {
             setVisitdetailId(selectedItem.VisitDetailsID);
             setIsModalOpen(true);
         }
+        setSubmitLoader(false);
     };
 
     const handleCheckboxChange = (item) => {
@@ -501,12 +504,25 @@ const PARejectionPage = ({ selectedItemz }) => {
                             >
                                 Cancel
                             </button>
-                            <button
-                                onClick={handleSubmit}
-                                className="bg-red-500 text-white px-9 py-2 rounded-md hover:bg-red-700 whitespace-nowrap mx-2"
-                            >
-                                Confirm
-                            </button>
+
+                            <div>
+                                {submitLoader ? (
+                                    <button
+                                        disabled
+                                        className="flex items-center gap-2 whitespace-nowrap h-11 px-5 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md"
+                                    >
+                                        Submitting..
+                                        <FaSpinner className="animate-spin text-xl" />
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
+                                        onClick={handleSubmit}
+                                    >
+                                        Submit
+                                    </button>
+                                )}
+                            </div>
                             <ApiRejectModal
                                 isOpen={isModalOpen}
                                 onClose={() => setIsModalOpen(false)}

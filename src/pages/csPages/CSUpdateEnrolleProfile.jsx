@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
 import { dateCalendarClasses } from "@mui/x-date-pickers";
+import { use } from "react";
 
 const CSUpdateEnrolleProfile = () => {
     const navigate = useNavigate();
@@ -13,6 +14,8 @@ const CSUpdateEnrolleProfile = () => {
     };
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [allData, setAllResponse] = useState([]);
+    const [marital, setMarital] = useState([]);
+    const [gender, setGender] = useState([]);
 
     // State to store the selected person's details
     const [selectedPerson, setSelectedPerson] = useState({
@@ -84,7 +87,7 @@ const CSUpdateEnrolleProfile = () => {
                         Surname: member.Member_Surname || "",
                         MemberShipNo: member.Member_EnrolleeID || "",
                         expiryDate: member.Member_ExpiryDate || "",
-                        Sex_ID: member.Member_Gender === "Female" ? "2" : "1",
+                        Sex_ID: member.Member_Gender || "",
                         MaritalStatus: member.Member_MaritalStatusID || "",
                         DateOfBirth: member.Member_DateOfBirth || "",
                         age: member.Member_Age || "",
@@ -112,6 +115,10 @@ const CSUpdateEnrolleProfile = () => {
         GetEnrolleeBioData();
     }, []);
 
+    useEffect(() => {
+        Gender();
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -119,6 +126,114 @@ const CSUpdateEnrolleProfile = () => {
             [name]: value,
         }));
     };
+
+    const handleChanges = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    async function Gender() {
+        try {
+            const response = await fetch(`${apiUrl}api/ListValues/GetGender`, {
+                method: "GET",
+            });
+
+            const data = await response.json();
+            console.log("gender", data.result);
+            setGender(data.result);
+        } catch (error) {
+            console.error("get Gender:", error);
+        }
+    }
+
+    // async function GetMaritalStatus() {
+    //     try {
+    //         const response = await fetch(
+    //             `${apiUrl}api/ListValues/GetMaritalStatus`,
+    //             {
+    //                 method: "GET",
+    //             },
+    //         );
+
+    //         const data = await response.json();
+
+    //         setMarital(data.result);
+    //     } catch (error) {
+    //         console.error("get Marital:", error);
+    //     }
+    // }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const responses = await fetch(
+                    `${apiUrl}api/ListValues/GetMaritalStatus`,
+                    {
+                        method: "GET",
+                    },
+                );
+
+                const APIdata = await responses.json();
+
+                setMarital(APIdata.result);
+
+                const response = await fetch(
+                    `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrolleeId}`,
+                    { method: "GET" },
+                );
+
+                const data = await response.json();
+
+                console.log("bbbb", data);
+
+                setFormData((prev) => ({
+                    ...prev,
+                    Sex_ID: data.Member_Gender,
+                }));
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const genderResponse = await fetch(
+                    `${apiUrl}api/ListValues/GetGender`,
+                    {
+                        method: "GET",
+                    },
+                );
+
+                const GenderData = await genderResponse.json();
+                console.log("gender", GenderData.result);
+                setGender(data.result);
+
+                const response = await fetch(
+                    `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrolleeId}`,
+                    { method: "GET" },
+                );
+
+                const data = await response.json();
+
+                console.log("gender", data.Member_MaritalStatusID);
+
+                setFormData((prev) => ({
+                    ...prev,
+                    Sex_ID: data.se,
+                }));
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     // // Function to handle "Update" button click
     // const handleUpdateClick = () => {
@@ -236,31 +351,49 @@ const CSUpdateEnrolleProfile = () => {
                                     className="mt-1 w-full rounded-md border border-[#CCCCCC] outline-none py-2 px-4"
                                 />
                             </div>
-                            {/* Gender */}
                             <div>
-                                <label className="text-[1rem] font-medium text-black">
-                                    Gender*
+                                <label className="block text-sm font-medium mb-1">
+                                    Gender
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     name="Sex_ID"
+                                    className="w-full border rounded p-2"
                                     value={formData.Sex_ID}
                                     onChange={handleChange}
-                                    className="mt-1 w-full rounded-md border border-[#CCCCCC] outline-none py-2 px-4"
-                                />
+                                    required
+                                >
+                                    <option value="">Select</option>
+                                    {gender.map((items) => (
+                                        <option
+                                            key={items.Sex}
+                                            value={items.Sex_id}
+                                        >
+                                            {items.Sex}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
-                            {/* Marital Status */}
                             <div>
-                                <label className="text-[1rem] font-medium text-black">
-                                    Marital Status*
+                                <label className="block text-sm font-medium mb-1">
+                                    Marital Status
                                 </label>
-                                <input
-                                    type="text"
-                                    name="MaritalStatus"
+                                <select
+                                    name="maritalStatus"
+                                    className="w-full border rounded p-2"
                                     value={formData.MaritalStatus}
                                     onChange={handleChange}
-                                    className="mt-1 w-full rounded-md border border-[#CCCCCC] outline-none py-2 px-4"
-                                />
+                                    required
+                                >
+                                    <option value="">Select</option>
+                                    {marital.map((items) => (
+                                        <option
+                                            key={items.Marital_statusid}
+                                            value={items.Marital_statusid}
+                                        >
+                                            {items.MaritalStatus}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div>
                                 <label className="text-[1rem] font-medium text-black">

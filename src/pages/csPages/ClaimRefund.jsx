@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CsSidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
 import { useNavigate } from "react-router-dom";
 import { CgSearch } from "react-icons/cg";
 import { useLocation } from "react-router-dom";
+import { CgPlayTrackNext } from "react-icons/cg";
+import { MdSkipPrevious } from "react-icons/md";
 
-const GeneratePAEnrolleeSearch = () => {
+const ClaimRefund = () => {
     const navigate = useNavigate();
-    const handleNavigate = (enrollee, providers) => {
-        navigate("/createpacode", { state: { enrollee, providers } });
+    const handleNavigate = (enrollee) => {
+        navigate("/cspatienthistory", { state: { enrollee } });
     };
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const [enrollees, setEnrollees] = useState([]);
-    const [providers, setAllProvider] = useState([]);
     const [searchInputs, setSearchInputs] = useState({
         firstName: "",
         lastName: "",
         enrolleeId: "",
-        phone: "",
         email: "",
-        group: "",
+        FromDate: "",
+        ToDate: "",
     });
     const [isLoading, setIsLoading] = useState(false);
 
@@ -30,15 +31,16 @@ const GeneratePAEnrolleeSearch = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedResults = results.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(results.length / itemsPerPage);
 
     // Dynamic fields array
     const fields = [
         { name: "firstname", label: "First Name" },
         { name: "lastname", label: "Last Name" },
         { name: "enrolleeid", label: "Enrollee ID" },
-        { name: "mobileNo", label: "Phone" },
         { name: "email", label: "Email" },
-        { name: "group_id", label: "Group" },
+        { name: "FromDate", label: "From Date" },
+        { name: "ToDate", label: "To Date" },
     ];
 
     const handleInputChange = (e) => {
@@ -53,9 +55,7 @@ const GeneratePAEnrolleeSearch = () => {
                 firstname: searchInputs.firstname || null,
                 lastname: searchInputs.lastname || null,
                 enrolleeid: searchInputs.enrolleeid || null,
-                mobileNo: searchInputs.mobileNo || null,
                 email: searchInputs.email || null,
-                group_id: searchInputs.group_id || null,
             };
 
             // Construct the query string, excluding empty or null values
@@ -102,45 +102,15 @@ const GeneratePAEnrolleeSearch = () => {
         }
     };
 
-    useEffect(() => {
-        if (searchInputs.enrolleeid) {
-            GetProvider(searchInputs.enrolleeid);
-        }
-    }, [searchInputs.enrolleeid]);
-
-    async function GetProvider(enrolleeid) {
-        console.error("Process starting:");
-        try {
-            const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=0&LGAID=0&enrolleeid=${enrolleeid}&provider_id=0
-`,
-                {
-                    method: "GET",
-                },
-            );
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            console.log("providerxxxx:", data.result);
-
-            setAllProvider(data.result);
-        } catch (error) {
-            console.error("Error getiing service:", error);
-        }
-    }
     return (
         <div className="flex bg-white-500">
             <CsSidebar />
-            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh] overflow-y-auto">
+            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh] overflow-y-auto ">
                 <Header />
                 <div className="mx-7">
                     <div className="mb-2 mt-4 flex justify-between">
-                        <h1 className="text-[#353535]  text-[25px] font-bold">
-                            Enrollees
+                        <h1 className="text-[#e73535]  text-[20px] font-bold">
+                            Kindly fill all appropriate fields
                         </h1>
                         <button
                             onClick={fetchEnrollees}
@@ -151,7 +121,8 @@ const GeneratePAEnrolleeSearch = () => {
                         </button>
                     </div>
                     {/* Search Inputs */}
-                    <div className="bg-white grid md:grid-cols-3 gap-4 p-4 w-full rounded-md">
+
+                    <div className="bg-white grid md:grid-cols-6 gap-4 p-4 w-full rounded-md">
                         {fields.map((field) => (
                             <div key={field.name}>
                                 <label
@@ -162,10 +133,20 @@ const GeneratePAEnrolleeSearch = () => {
                                 </label>
                                 <div className="relative">
                                     <input
-                                        type="text"
+                                        type={
+                                            field.name === "FromDate" ||
+                                            field.name === "ToDate"
+                                                ? "date"
+                                                : "text"
+                                        }
                                         name={field.name}
-                                        placeholder={`Search ${field.label}...`}
-                                        className="w-full py-2 pl-10 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
+                                        placeholder={
+                                            field.name === "FromDate" ||
+                                            field.name === "ToDate"
+                                                ? ""
+                                                : `Search ${field.label}...`
+                                        }
+                                        className="w-full px-2 py-2 border bg-white rounded-md my-3 outline-none placeholder-gray-500"
                                         value={searchInputs[field.name]}
                                         onChange={handleInputChange}
                                     />
@@ -177,21 +158,54 @@ const GeneratePAEnrolleeSearch = () => {
                     {/* Table */}
                     <div className="relative overflow-x-auto shadow-md mt-3 rounded-md">
                         <table className="w-full text-sm text-left rtl:text-right text-black rounded-md">
-                            <thead className="text-base uppercase bg-white text-black   border-b-2 border-black ">
+                            <thead className="text-base uppercase bg-white text-black border-b-2 border-black">
                                 <tr>
-                                    <th className="px-2 py-3"></th>
-                                    <th className="px-6 py-3">Name</th>
-                                    <th className="px-6 py-3">Enrollee ID</th>
-                                    <th className="px-6 py-3">Scheme</th>
-                                    <th className="px-6 py-3">Phone</th>
-                                    <th className="px-6 py-3">Email</th>
-                                    <th className="px-6 py-3">Group</th>
+                                    <th className="px-2 border-r w-32 text-[13px]">
+                                        Batch Number
+                                    </th>
+                                    <th className="px-2  border-r w-40 text-[13px]">
+                                        Provider
+                                    </th>
+                                    <th className="px-2  border-r w-40 text-[13px]">
+                                        Patient Name
+                                    </th>
+                                    <th className="px-2  border-r w-32 text-[13px]">
+                                        Scheme Type
+                                    </th>
+                                    <th className="px-2 border-r w-32 text-[13px]">
+                                        Claim Date
+                                    </th>
+                                    <th className="px-2  border-r w-32 text-[13px]">
+                                        Claim Amount
+                                    </th>
+                                    <th className="px-2  border-r w-32 text-[13px]">
+                                        Gross Paid
+                                    </th>
+                                    <th className="px-2  border-r w-40 text-[13px]">
+                                        Account Ref No
+                                    </th>
+                                    <th className="px-2  border-r w-32 text-[13px]">
+                                        Claim Status
+                                    </th>
+                                    <th className="px-2  border-r w-40 text-[13px]">
+                                        Batch Processing Status
+                                    </th>
+                                    <th className="px-2 border-r w-32 text-[13px]">
+                                        Claim Number
+                                    </th>
+                                    <th className="px-2  border-r w-40 text-[13px]">
+                                        Payment Req Generated
+                                    </th>
+                                    <th className="px-2  w-32 text-[13px]">
+                                        Refunded On
+                                    </th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {isLoading ? (
                                     <tr className="h-[300px]">
-                                        <td colSpan="9" className="p-0">
+                                        <td colSpan="13" className="p-0">
                                             <div className="flex justify-center items-center h-[300px] w-full">
                                                 <div className="flex flex-col items-center space-y-4">
                                                     <img
@@ -218,7 +232,8 @@ const GeneratePAEnrolleeSearch = () => {
                                             }
                                         >
                                             <td className="px-6 py-3 border-r border-black">
-                                                {index + 1}
+                                                {enrollee.Member_CustomerName ||
+                                                    "N/A"}
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
                                                 {enrollee.Member_CustomerName ||
@@ -226,10 +241,6 @@ const GeneratePAEnrolleeSearch = () => {
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
                                                 {enrollee.Member_EnrolleeID ||
-                                                    "N/A"}
-                                            </td>
-                                            <td className="px-6 py-3 border-r border-black">
-                                                {enrollee.client_schemename ||
                                                     "N/A"}
                                             </td>
                                             <td className="px-6 py-3 border-r border-black">
@@ -249,7 +260,7 @@ const GeneratePAEnrolleeSearch = () => {
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan="6"
+                                            colSpan="13"
                                             className="h-64 text-center"
                                         >
                                             <div className="flex justify-center items-center h-full w-full">
@@ -267,9 +278,9 @@ const GeneratePAEnrolleeSearch = () => {
                         {/* 
                          This is for navigation */}
                         {results.length > itemsPerPage && (
-                            <div className="flex justify-center mt-4">
+                            <div className="flex justify-center mt-4 mb-3">
                                 <button
-                                    className="px-4 py-2 mx-1 bg-red-600 text-white rounded"
+                                    className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
                                     disabled={currentPage === 1}
                                     onClick={() =>
                                         setCurrentPage((prev) =>
@@ -277,15 +288,22 @@ const GeneratePAEnrolleeSearch = () => {
                                         )
                                     }
                                 >
+                                    <MdSkipPrevious className="w-7 h-7 mr-2" />
                                     Previous
                                 </button>
+
+                                <span className="text-gray-700 text-lg font-semibold">
+                                    Page {currentPage} of {totalPages} Pages
+                                </span>
+
                                 <button
-                                    className="px-4 py-2 mx-1 bg-red-600 text-white rounded"
+                                    className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
                                     disabled={endIndex >= results.length}
                                     onClick={() =>
                                         setCurrentPage((prev) => prev + 1)
                                     }
                                 >
+                                    <CgPlayTrackNext className="w-7 h-7 mr-2" />
                                     Next
                                 </button>
                             </div>
@@ -297,4 +315,4 @@ const GeneratePAEnrolleeSearch = () => {
     );
 };
 
-export default GeneratePAEnrolleeSearch;
+export default ClaimRefund;

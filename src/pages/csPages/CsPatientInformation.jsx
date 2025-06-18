@@ -31,6 +31,7 @@ const CsPatientInformation = ({ selectedStatus }) => {
     });
 
     const [claimsPaid, setClaimsPaid] = useState("");
+    const [biodata, setBiodata] = useState([]);
 
     const location = useLocation();
     const enrollee = location.state?.enrollee;
@@ -56,6 +57,7 @@ const CsPatientInformation = ({ selectedStatus }) => {
 
     useEffect(() => {
         CalculateAllAmountSpentOnEnrollee();
+        GetBiodata();
     }, []);
 
     async function CalculateAllAmountSpentOnEnrollee() {
@@ -101,6 +103,38 @@ const CsPatientInformation = ({ selectedStatus }) => {
         }
     }
 
+    async function GetBiodata() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrollee.Member_EnrolleeID}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("Allbiodata:", data);
+
+            setBiodata(data);
+        } catch (error) {
+            console.error("Error getting enrollee bio data:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    // const base64Image = `data:image/jpeg;base64,${biodata.profilepic}`;
+
+    const base64Image = biodata?.profilepic
+        ? `data:image/jpeg;base64,${biodata.profilepic}`
+        : "/Avataraang.svg";
+
+    console.log("images", base64Image);
     return (
         <div className="bg-white shadow-md rounded-md p-3 mt-3 w-full">
             <div className=" flex gap-8">
@@ -111,8 +145,8 @@ const CsPatientInformation = ({ selectedStatus }) => {
                 {/* Profile Image */}
                 <div className="flex flex-col items-center ml-6">
                     <img
-                        src="Avataraang.svg"
-                        alt="Avatar"
+                        src={base64Image}
+                        alt="Profile"
                         className="w-20 h-20 rounded-full"
                     />
                     <div className=" items-center mt-2 rounded-full flex gap-2 ">
@@ -203,8 +237,8 @@ const CsPatientInformation = ({ selectedStatus }) => {
                             </span>
                         </div>
                         <div>
-                            <span className="block text-gray-500 ">
-                                Policy Date
+                            <span className="block text-gray-500 whitespace-nowrap">
+                                Original start Date
                             </span>
 
                             <span className=" block font-medium break-words text-[15px] leading-tight">
@@ -213,7 +247,23 @@ const CsPatientInformation = ({ selectedStatus }) => {
                                         enrollee.Client_DateAccepted,
                                     ).toLocaleDateString("en-GB") // Formats the date as day/month/year
                                 }
-                                -
+                            </span>
+                        </div>
+                        <div>
+                            <span className="block text-gray-500 whitespace-nowrap">
+                                Contract Start Date
+                            </span>
+
+                            <span className=" block font-medium break-words text-[15px] leading-tight">
+                                N/A
+                            </span>
+                        </div>
+                        <div>
+                            <span className="block text-gray-500 whitespace-nowrap">
+                                Contract End Date
+                            </span>
+
+                            <span className=" block font-medium break-words text-[15px] leading-tight">
                                 {
                                     new Date(
                                         enrollee.Client_Expiry_date,
@@ -221,6 +271,7 @@ const CsPatientInformation = ({ selectedStatus }) => {
                                 }
                             </span>
                         </div>
+
                         <div>
                             <span className="block text-gray-500">
                                 Amount Spent
@@ -229,9 +280,6 @@ const CsPatientInformation = ({ selectedStatus }) => {
                                 #{claimsPaid || "Nil"}
                             </span>
                         </div>
-
-                        <div></div>
-                        <div></div>
                         <div></div>
                         <div></div>
                         <div></div>
