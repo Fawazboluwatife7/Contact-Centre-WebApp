@@ -9,10 +9,10 @@ import { MdSkipPrevious } from "react-icons/md";
 import { Today } from "@mui/icons-material";
 
 const PaymentAdvise = () => {
-    const navigate = useNavigate();
-    const handleNavigate = (enrollee) => {
-        navigate("/cspatienthistory", { state: { enrollee } });
-    };
+    // const navigate = useNavigate();
+    // const handleNavigate = (enrollee) => {
+    //     navigate("/cspatienthistory", { state: { enrollee } });
+    // };
 
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const [enrollees, setEnrollees] = useState([]);
@@ -20,8 +20,8 @@ const PaymentAdvise = () => {
     const [filteredProvider, setFilteredProvider] = useState([]);
     const [showProviderDropdown, setShowProviderDropdown] = useState([]);
     const [showBatchDropdown, setShowProviderDropdow] = useState([]);
-    const [batchStatusOptions, setShowProviderDropdo] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0);
+    const [PaymentAdvise, SetPaymentAdvise] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
     const [status, SetStatus] = useState("");
     const [showSearchDropDown, setShowSearchDropDown] = useState(false);
     const [searchProvider, setSearchProvider] = useState("");
@@ -32,36 +32,27 @@ const PaymentAdvise = () => {
     const [selectAll, setSelectAll] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
 
-    const handleCheckboxChange = (item) => {
+    const handleCheckboxChange = (enrollee) => {
         setSelectedItems((prev) => {
             const isSelected = prev.some(
-                (i) => i.VisitDetailsID === item.VisitDetailsID,
+                (i) => i.batch_number === enrollee.batch_number,
             );
 
             if (isSelected) {
                 return prev.filter(
-                    (i) => i.VisitDetailsID !== item.VisitDetailsID,
+                    (i) => i.batch_number !== enrollee.batch_number,
                 );
             } else {
-                return [...prev, item];
+                return [...prev, enrollee];
             }
         });
-    };
 
-    const handleSelectAll = () => {
-        setSelectAll(!selectAll);
-
-        if (!selectAll) {
-            // If not all selected, select all items
-            setSelectedItems(pendingPA);
-        } else {
-            // If all selected, deselect all items
-            setSelectedItems([]);
-        }
+        // Update selectAll state based on new selection
+        setSelectAll(selectedItems.length + 1 === paginatedResults.length);
     };
 
     const [selectedProviders, setSelectedProvider] = useState({
-        provider_id: null,
+        ProviderCode: null,
     });
 
     const [selectedStatusId, setSelectedStatusId] = useState("");
@@ -99,12 +90,11 @@ const PaymentAdvise = () => {
 
     const [selectedStatus, setSelectedStatus] = useState("");
 
-    const [results, setResults] = useState([]); // Stores the fetched results
     const itemsPerPage = 10; // Limit items per page
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const paginatedResults = results.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(results.length / itemsPerPage);
+    const paginatedResults = PaymentAdvise?.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(PaymentAdvise?.length / itemsPerPage);
 
     const fields = [
         { name: "Provider", label: "Provider", type: "dropdown" },
@@ -117,11 +107,16 @@ const PaymentAdvise = () => {
 
     useEffect(() => {
         GetProvider();
-        GetPaymentStatus();
     }, []);
 
     const handleBatchChange = (e) => {
         setBatchNumber(e.target.value);
+    };
+
+    const handleSelectAll = () => {
+        const newSelectAll = !selectAll;
+        setSelectAll(newSelectAll);
+        setSelectedItems(newSelectAll ? [...paginatedResults] : []);
     };
 
     async function GetProvider() {
@@ -140,23 +135,9 @@ const PaymentAdvise = () => {
             console.error("Error fetching provider", error);
         }
     }
-    async function GetPaymentStatus() {
-        try {
-            const provider = await fetch(
-                `${apiUrl}api/ProviderNetwork/GetBatchStatus`,
-                {
-                    method: "GET",
-                },
-            );
 
-            const response = await provider.json();
-            console.log("provider", response);
-            SetStatus(response.result);
-        } catch (error) {
-            console.error("Error fetching provider", error);
-        }
-    }
     async function GetPaymentAdvise() {
+        setIsLoading(true);
         const urls = `${apiUrl}api/ProviderNetwork/GetPaymentAdvise?fmdate=${fromDate}&tdate=${toDate}&status=${selectedStatusId}&NamasNumber=${selectedProviders.ProviderCode}&BatchNumber=${batchNumber}`;
         console.log("pays", urls);
 
@@ -171,9 +152,11 @@ const PaymentAdvise = () => {
 
             const response = await provider.json();
             console.log("payment", response);
-            SetStatus(response.result);
+            SetPaymentAdvise(response.result);
         } catch (error) {
             console.error("Error fetching provider", error);
+        } finally {
+            setIsLoading(false);
         }
     }
     return (
@@ -224,7 +207,10 @@ const PaymentAdvise = () => {
                                             )
                                             .map((prov) => (
                                                 <p
-                                                    key={prov.ProviderCode}
+                                                    key={
+                                                        prov.ProviderCode ||
+                                                        index
+                                                    }
                                                     className="my-1 p-1 cursor-pointer hover:bg-slate-100 rounded"
                                                     onClick={(e) => {
                                                         setSearchProvider(
@@ -261,7 +247,7 @@ const PaymentAdvise = () => {
                                             Previous
                                         </button>
                                         <span className="text-sm text-gray-500">
-                                            Page {currentPage + 1} of{" "}
+                                            Page {currentPage} of{" "}
                                             {Math.ceil(
                                                 filteredProviders.length / 10,
                                             )}
@@ -370,44 +356,47 @@ const PaymentAdvise = () => {
                     </div>
                 </div>
 
-                <div className="relative overflow-x-auto shadow-md mt-3 rounded-md">
+                <div className="relative overflow-x-auto shadow-md mt-7   mx-7">
                     <table className="w-full text-sm text-left rtl:text-right text-black rounded-md">
-                        <thead className="text-base uppercase bg-white text-black border-b-2 border-black">
+                        <thead className="text-base uppercase bg-white text-black border-b-2 border-black border-t-2">
                             <tr>
-                                <th className="px-2 border-r w-32 text-[13px]">
-                                    Select
+                                <th className="border border-black px-4 py-2 text-left">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectAll}
+                                        onChange={handleSelectAll}
+                                        className="h-4 w-4"
+                                    />
                                 </th>
-                                <th className="px-2 border-r w-32 text-[13px]">
+                                <th className="px-2 pl-20 border-r border-black w-32 text-[13px]">
                                     Category
                                 </th>
-                                <th className="px-2  border-r w-40 text-[13px] whitespace-nowrap">
+                                <th className="px-2 pl-7  border-r border-black w-40 text-[13px] whitespace-nowrap">
                                     Batch No
                                 </th>
-                                <th className="px-2  border-r w-40 text-[13px]">
+                                <th className="px-2 pl-10 border-r border-black w-40 text-[13px]">
                                     Provider
                                 </th>
-                                <th className="px-2  border-r w-32 text-[13px] whitespace-nowrap">
+                                <th className="px-2 pl-3 border-r border-black w-32 text-[13px] whitespace-nowrap">
                                     Enconter Month
                                 </th>
-                                <th className="px-2 border-r w-32 text-[13px]">
+                                <th className="px-2 border-r border-black w-32 text-[13px]">
                                     Units
                                 </th>
-                                <th className="px-2  border-r w-32 text-[13px] whitespace-nowrap">
+                                <th className="px-2 pl-5 border-r border-black w-32 text-[13px] whitespace-nowrap">
                                     Batch Total
                                 </th>
-                                <th className="px-2  border-r w-32 text-[13px]">
+                                <th className="px-8 border-r border-black w-32 text-[13px]  justify-items-center justify-center">
                                     Paid
                                 </th>
-                                <th className="px-2  border-r w-40 text-[13px]">
+                                <th className="px-2  border-r border-black w-40 text-[13px]">
                                     Status
                                 </th>
-                                <th className="px-2  border-r w-32 text-[13px] whitespace-nowrap">
-                                    Claim Status
-                                </th>
-                                <th className="px-2  border-r w-40 text-[13px]">
+
+                                <th className="px-2 pl-12  border-r border-black w-40 text-[13px]">
                                     Umpire
                                 </th>
-                                <th className="px-2 border-r w-32 text-[13px] whitespace-nowrap">
+                                <th className="px-2 pl-12  border-r border-black w-32 text-[13px] whitespace-nowrap">
                                     Email
                                 </th>
                             </tr>
@@ -432,38 +421,69 @@ const PaymentAdvise = () => {
                                         </div>
                                     </td>
                                 </tr>
-                            ) : paginatedResults &&
-                              paginatedResults.length > 0 ? (
-                                paginatedResults.map((enrollee, index) => (
-                                    <tr
-                                        key={index}
-                                        className="bg-white border-b border-black hover:bg-gray-200 cursor-pointer"
-                                        onClick={() => handleNavigate(enrollee)}
-                                    >
-                                        <td className="px-6 py-3 border-r border-black">
-                                            {enrollee.Member_CustomerName ||
-                                                "N/A"}
-                                        </td>
-                                        <td className="px-6 py-3 border-r border-black">
-                                            {enrollee.Member_CustomerName ||
-                                                "N/A"}
-                                        </td>
-                                        <td className="px-6 py-3 border-r border-black">
-                                            {enrollee.Member_EnrolleeID ||
-                                                "N/A"}
-                                        </td>
-                                        <td className="px-6 py-3 border-r border-black">
-                                            {enrollee.Member_Phone_One || "N/A"}
-                                        </td>
-                                        <td className="px-6 py-3 border-r border-black">
-                                            {enrollee.Member_EmailAddress_One ||
-                                                "N/A"}
-                                        </td>
-                                        <td className="px-6 py-3">
-                                            {enrollee.Client_GroupID || "N/A"}
-                                        </td>
-                                    </tr>
-                                ))
+                            ) : paginatedResults?.length > 0 ? (
+                                paginatedResults.map((enrollee, index) => {
+                                    const isSelected = selectedItems.some(
+                                        (selected) =>
+                                            selected.batch_number ===
+                                            enrollee.batch_number,
+                                    );
+
+                                    return (
+                                        <tr
+                                            key={index}
+                                            className="hover:bg-gray-100  border-b-2 border-black"
+                                        >
+                                            <td className=" p-2 text-center  border-black border">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isSelected}
+                                                    onChange={() =>
+                                                        handleCheckboxChange(
+                                                            enrollee,
+                                                        )
+                                                    }
+                                                    className="border-black border"
+                                                />
+                                            </td>
+
+                                            <td className="px-6 py-3 border-r border-black whitespace-nowrap">
+                                                {enrollee.SCHEME_TYPE_CATEGORY ||
+                                                    "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.batch_number || "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black whitespace-nowrap">
+                                                {enrollee.provider || "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black whitespace-nowrap">
+                                                {enrollee.EncounterMonth ||
+                                                    "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.units || "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.batchtotal || "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.BatchPaidAmount ||
+                                                    "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.xx || "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black whitespace-nowrap">
+                                                {enrollee.FULL_NAME || "N/A"}
+                                            </td>
+                                            <td className="px-6 py-3 border-r border-black">
+                                                {enrollee.ProviderEmail ||
+                                                    "N/A"}
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
                                     <td
@@ -484,7 +504,7 @@ const PaymentAdvise = () => {
                     </table>
                     {/* 
                          This is for navigation */}
-                    {results.length > itemsPerPage && (
+                    {PaymentAdvise?.length > itemsPerPage && (
                         <div className="flex justify-center mt-4 mb-3">
                             <button
                                 className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
@@ -505,7 +525,7 @@ const PaymentAdvise = () => {
 
                             <button
                                 className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
-                                disabled={endIndex >= results.length}
+                                disabled={endIndex >= PaymentAdvise?.length}
                                 onClick={() =>
                                     setCurrentPage((prev) => prev + 1)
                                 }

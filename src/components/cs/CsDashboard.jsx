@@ -281,8 +281,8 @@ function CsDashboard() {
             <div className="bg-[#F0F2FA] w-[82%] ml-auto h-full">
                 <Header />
 
-                <div className=" px-3">
-                    <div className=" px-2 ">
+                <div className=" px-3 ">
+                    <div className=" px-2  ">
                         <div className="flex justify-between w-full mt-3 ">
                             <span>Hi, {user?.result[0]?.UserName}</span>
 

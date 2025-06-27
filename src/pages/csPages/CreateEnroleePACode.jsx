@@ -28,6 +28,28 @@ const CreateEnroleePACode = () => {
     const [enrolleeProvider, setAllEnrolleeProvider] = useState([]);
     const [ShowPATable, setShowPATable] = useState(false);
 
+    const [selectAll, setSelectAll] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    const handleCheckboxChanges = (enrollee) => {
+        setSelectedItems((prev) => {
+            const isSelected = prev.some(
+                (i) => i.batch_number === enrollee.batch_number,
+            );
+
+            if (isSelected) {
+                return prev.filter(
+                    (i) => i.batch_number !== enrollee.batch_number,
+                );
+            } else {
+                return [...prev, enrollee];
+            }
+        });
+
+        // Update selectAll state based on new selection
+        setSelectAll(selectedItems.length + 1 === paginatedResults.length);
+    };
+
     const collectProcedureCodes = () => {
         const codes = procedures.map((proc) => proc.code);
         setProcedureCodes(codes);
@@ -257,6 +279,8 @@ const CreateEnroleePACode = () => {
                 throw new Error("Invalid JSON response");
             }
 
+            setSelectedProcedures(updatedProcedures);
+
             const responseApi = {
                 VisitID: parsedResponse.VisitID || "N/A",
                 status: parsedResponse.status,
@@ -284,7 +308,7 @@ const CreateEnroleePACode = () => {
         }
     };
 
-    console.log("updated2", selectedProcedures);
+    console.log("apiResponse", apiResponse);
     // const handleAddProcedures = () => {
     //     console.log("mmm", selectedData, formValues);
     //     if (!selectedData || !formValues.ExtensionRemarks) {
@@ -1683,6 +1707,7 @@ const CreateEnroleePACode = () => {
                                         setShowSearchDropDown(true);
                                     }}
                                     value={searchProvider}
+                                    placeholder="Search Provider"
                                 />
 
                                 {showSearchDropDown && (
@@ -2218,6 +2243,9 @@ const CreateEnroleePACode = () => {
                                                             Preferred Price (₦)
                                                         </th>
                                                         <th className="p-2 border">
+                                                            PA Code/Status
+                                                        </th>
+                                                        <th className="p-2 border">
                                                             Actions
                                                         </th>
                                                     </tr>
@@ -2266,6 +2294,7 @@ const CreateEnroleePACode = () => {
                                                                         {proc.ProcedureQty ||
                                                                             "—"}
                                                                     </td>
+
                                                                     <td className="p-2 border text-center">
                                                                         ₦
                                                                         {proc.ChargeAmount
@@ -2273,6 +2302,12 @@ const CreateEnroleePACode = () => {
                                                                                   proc.ChargeAmount,
                                                                               ).toLocaleString()
                                                                             : "—"}
+                                                                    </td>
+                                                                    <td className="p-2 border text-center whitespace-nowrap">
+                                                                        {apiResponse.PreAutCode ==
+                                                                        null
+                                                                            ? "Procedure requires PreAuthorization"
+                                                                            : apiResponse.PreAutCode}
                                                                     </td>
                                                                     <td className="p-2 border text-center">
                                                                         <button
@@ -2407,7 +2442,7 @@ const CreateEnroleePACode = () => {
                         </div>
 
                         <div className="flex justify-between mt-8">
-                            <div>
+                            {/* <div>
                                 <button
                                     className="w-[131.78px] h-[37.65px] text-center text-red-700 border border-red-700 rounded-md"
                                     onClick={() =>
@@ -2418,12 +2453,7 @@ const CreateEnroleePACode = () => {
                                 </button>
                             </div>
                             <div>
-                                {/* <button
-                                    className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
-                                    onClick={handleSubmitPA}
-                                >
-                                    Submit
-                                </button> */}
+                                
 
                                 <div>
                                     {submitLoader ? (
@@ -2443,7 +2473,7 @@ const CreateEnroleePACode = () => {
                                         </button>
                                     )}
                                 </div>
-                            </div>
+                            </div> */}
 
                             <CreatePAModal
                                 isOpen={isModalOpen}
@@ -2564,85 +2594,145 @@ const CreateEnroleePACode = () => {
                         </div>
 
                         {ShowPATable && (
-                            <table className="min-w-full table-auto border-collapse text-sm mt-5 ">
-                                <thead className="bg-gray-100 text-left">
-                                    <tr>
-                                        <th className="p-2 border">
-                                            DiagnosisCode
-                                        </th>
-                                        <th className="p-2 border">
-                                            Diagnosis Description
-                                        </th>
-                                        <th className="p-2 border">
-                                            Procedure Code
-                                        </th>
-                                        <th className="p-2 border">
-                                            Procedure Description
-                                        </th>
-                                        <th className="p-2 border">
-                                            CifNumber
-                                        </th>
-                                        <th className="p-2 border">
-                                            ProviderID
-                                        </th>
-                                        <th className="p-2 border">VisitID</th>
-                                        <th className="p-2 border">
-                                            VisitDate
-                                        </th>
-                                        <th className="p-2 border">Username</th>
-                                        <th className="p-2 border">
-                                            DoctorRecommendations
-                                        </th>
-                                        <th className="p-2 border">
-                                            ServiceTypeID
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {selectedProcedures.map((proc, idx) => (
-                                        <tr key={idx} className="border-t">
-                                            <td className="px-4 py-2 border">
-                                                {alldiagnosis[0]?.DiagnosisCode}
-                                            </td>
-                                            <td className="px-4 py-2 border whitespace-nowrap">
-                                                {
-                                                    alldiagnosis[0]
-                                                        ?.DiagnosisDescription
-                                                }
-                                            </td>
-                                            <td className="px-4 py-2 border">
-                                                {proc.ProcedureCode}
-                                            </td>
-                                            <td className="px-4 py-2 border whitespace-nowrap">
-                                                {proc.ExtensionRemarks}
-                                            </td>
-                                            <td className="px-4 py-2 border">
-                                                {
-                                                    enrollee?.Member_MemberUniqueID
-                                                }
-                                            </td>
-                                            <td className="px-4 py-2 border">
-                                                {selectedProviders?.provider_id}
-                                            </td>
-                                            <td className="px-4 py-2 border">
-                                                {data?.VisitID}
-                                            </td>
-                                            <td className="px-4 py-2 border">
-                                                {encounterDate}
-                                            </td>
-                                            <td className="px-4 py-2 border">
-                                                {providerEmail}
-                                            </td>
-                                            <td className="px-4 py-2 border">
-                                                {doctorsprescription}
-                                            </td>
-                                            <td className="px-4 py-2 border">
-                                                {selectedVisitType?.value || ""}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <div className="  flex gap-3 w-full">
+                                <div className="w-[98%] flex relative overflow-x-auto">
+                                    <table className="min-w-full table-auto border-collapse text-sm mt-5 ">
+                                        <thead className="bg-gray-100 text-left text-[10px]">
+                                            <tr>
+                                                <th className="p-2 border">
+                                                    DiagnosisCode
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    Diagnosis Description
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    Procedure Code
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    Procedure Description
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    PA Code
+                                                </th>
+                                                <th className="p-2 border">
+                                                    CifNumber
+                                                </th>
+                                                <th className="p-2 border">
+                                                    ProviderID
+                                                </th>
+                                                <th className="p-2 border">
+                                                    VisitID
+                                                </th>
+                                                <th className="p-2 border">
+                                                    VisitDate
+                                                </th>
+                                                <th className="p-2 border">
+                                                    Username
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    Doctor Recommendations
+                                                </th>
+                                                <th className="p-2 border">
+                                                    ServiceTypeID
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {selectedProcedures.map(
+                                                (proc, idx) => (
+                                                    <tr
+                                                        key={idx}
+                                                        className="border-t text-[10px] "
+                                                    >
+                                                        <td className="px-4 py-2 border">
+                                                            {
+                                                                alldiagnosis[0]
+                                                                    ?.DiagnosisCode
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {
+                                                                alldiagnosis[0]
+                                                                    ?.DiagnosisDescription
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {proc.ProcedureCode}
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {
+                                                                proc.ExtensionRemarks
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {apiResponse.PreAutCode ==
+                                                            null
+                                                                ? "Procedure requires PreAuthorization"
+                                                                : apiResponse.PreAutCode}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {
+                                                                enrollee?.Member_MemberUniqueID
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {
+                                                                selectedProviders?.provider_id
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {data?.VisitID}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {encounterDate}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {providerEmail}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {doctorsprescription ==
+                                                            null
+                                                                ? "No prescription"
+                                                                : doctorsprescription}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {selectedVisitType?.value ||
+                                                                ""}
+                                                        </td>
+                                                    </tr>
+                                                ),
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div className="grid grid-cols-1  h-[90px] mt-3 gap-2 w-[10%] ">
+                                    <button
+                                        className="whitespace-nowrap   text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Approve All
+                                    </button>
+                                    <button
+                                        className="whitespace-nowrap  w-full  text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Reject All
+                                    </button>{" "}
+                                    <button
+                                        className="whitespace-nowrap  w-full   text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Approve
+                                    </button>
+                                    <button
+                                        className="whitespace-nowrap  w-full    text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Reject
+                                    </button>{" "}
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>
