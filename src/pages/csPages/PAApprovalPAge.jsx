@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import CustomerModal from "../csPages/CSPatientModal";
 
 import ApiResponseModal from "../csPages/ApiResponseModal";
+import { FaSpinner } from "react-icons/fa";
 
 function DateDropdown({ options, sendNumber, className }) {
     const [selectedValue, setSelectedValue] = useState("");
@@ -43,7 +44,7 @@ const PAApprovalPAge = () => {
     const handleNavigate = (path) => {
         navigate(path);
     };
-
+    const [submitLoader, setSubmitLoader] = useState(false);
     const [selectedValue, setSelectedValue] = useState(null);
     const [benefit, setBenefit] = useState(null);
     const [service, setService] = useState([]);
@@ -115,11 +116,12 @@ const PAApprovalPAge = () => {
     };
 
     const handleSubmit = async () => {
+        setSubmitLoader(true);
         const responses = [];
 
         for (const item of selectedItems) {
             const requestData = {
-                visitid: enrollee.visitid,
+                visitid: item.VisitID1,
                 username: user.result[0].UserName,
                 VisitDetailIDs: [{ visitdetail_id: item.VisitDetailsID }],
             };
@@ -143,6 +145,7 @@ const PAApprovalPAge = () => {
                     visitdetail_id: item.VisitDetailsID,
                     status: data.status,
                     message: data.message,
+                    pacode: data.pacode,
                 });
             } catch (error) {
                 console.error("Error submitting data:", error);
@@ -153,7 +156,7 @@ const PAApprovalPAge = () => {
                 });
             }
         }
-
+        setSubmitLoader(false);
         setApiResponse([...responses]); // Ensure response is always an array
         setIsModalOpen(true);
     };
@@ -182,7 +185,7 @@ const PAApprovalPAge = () => {
     async function GetPAHistory() {
         try {
             const response = await fetch(
-                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.CIF_NUMBER}&PAStatus&visitid
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid
 `,
                 {
                     method: "GET",
@@ -356,6 +359,7 @@ const PAApprovalPAge = () => {
                                         <th className="border p-2">
                                             Procedure Description
                                         </th>
+                                        <th className="border p-2">Provider</th>
                                         <th className="border p-2 whitespace-nowrap">
                                             Visit Detail Id
                                         </th>
@@ -385,6 +389,9 @@ const PAApprovalPAge = () => {
                                                 </td>
                                                 <td className="border p-2">
                                                     {item.ProcedureDescription}
+                                                </td>
+                                                <td className="border p-2">
+                                                    {item.provider}
                                                 </td>
                                                 <td className="border p-2">
                                                     {item.VisitDetailsID}
@@ -419,12 +426,25 @@ const PAApprovalPAge = () => {
                             >
                                 Cancel
                             </button>
-                            <button
-                                onClick={handleSubmit}
-                                className="bg-red-500 text-white px-9 py-2 rounded-md hover:bg-red-700 whitespace-nowrap mx-2"
-                            >
-                                Confirm
-                            </button>
+
+                            <div>
+                                {submitLoader ? (
+                                    <button
+                                        disabled
+                                        className="flex items-center gap-2 whitespace-nowrap h-11 px-5 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md"
+                                    >
+                                        Submitting..
+                                        <FaSpinner className="animate-spin text-xl" />
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
+                                        onClick={handleSubmit}
+                                    >
+                                        Submit
+                                    </button>
+                                )}
+                            </div>
                             <ApiResponseModal
                                 isOpen={isModalOpen}
                                 onClose={() => setIsModalOpen(false)}

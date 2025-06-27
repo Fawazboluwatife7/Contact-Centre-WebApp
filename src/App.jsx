@@ -64,6 +64,10 @@ import CreateEnroleePACode from "./pages/csPages/CreateEnroleePACode";
 import PaHistory from "./components/cs/PAHistory";
 import ManagePaPage from "./pages/csPages/ManagePaPage";
 import PARejectionPage from "./pages/csPages/PARejectionPage";
+import ClaimRefund from "./pages/csPages/ClaimRefund";
+import BusinessRM from "./pages/csPages/BusinessRM";
+import VerifyPA from "./pages/csPages/VerifyPA";
+import PaymentAdvise from "./pages/csPages/PaymentAdvise";
 
 function App() {
     return (
@@ -157,6 +161,10 @@ function App() {
                 <Route path="/paapprovalpage" element={<PAApprovalPAge />} />
                 <Route path="/parejectionpage" element={<PARejectionPage />} />
                 <Route path="/createpacode" element={<CreateEnroleePACode />} />
+                <Route path="/claimsrefund" element={<ClaimRefund />} />
+                <Route path="/businessrm" element={<BusinessRM />} />
+                <Route path="/verifypa" element={<VerifyPA />} />
+                <Route path="/paymentadvise" element={<PaymentAdvise />} />
             </Routes>
         </BrowserRouter>
     );

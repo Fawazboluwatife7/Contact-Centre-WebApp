@@ -19,7 +19,16 @@ const CreatePAModal = ({ isOpen, onClose, response }) => {
                 </p>
                 <p>
                     <strong>Message:</strong>{" "}
-                    {response.Message || "No message available"}
+                    {response?.Message || "No message available"}
+                </p>
+                <p>
+                    <strong>PreAutCode:</strong>{" "}
+                    {response.Message?.includes("Member is terminated") ||
+                    response.Message?.includes("Execution Timeout Expired")
+                        ? null
+                        : response.PreAutCode == null
+                          ? "Procedure requires preauthorization"
+                          : response.PreAutCode || "No message available"}
                 </p>
 
                 <button

@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { FaFlag } from "react-icons/fa";
 import CreatePAModal from "./CreatePAModal";
+import { FaSpinner } from "react-icons/fa";
 
 const CreateEnroleePACode = () => {
     const [service, setService] = useState([]);
@@ -14,12 +15,51 @@ const CreateEnroleePACode = () => {
     const [benefit, setBenefit] = useState([]);
     const [alldiagnosis, SetAllDiagnosis] = useState([]);
     const [apiResponse, setApiResponse] = useState("");
+    const [price, setPrice] = useState("");
+    const [visitid, setVisitId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [visitIdLoader, setVisitIdLoader] = useState(false);
+    const [submitLoader, setSubmitLoader] = useState(false);
+    const [procedureCodes, setProcedureCodes] = useState([]);
+    const [state, SetStates] = useState([]);
+    const [lga, setLga] = useState([]);
+    const [filteredProvider, setFilteredProvider] = useState([]);
+    const [biodata, setBiodata] = useState([]);
+    const [enrolleeProvider, setAllEnrolleeProvider] = useState([]);
+    const [ShowPATable, setShowPATable] = useState(false);
 
-    const [diagnosisData, setDiagnosisData] = useState([]); // Store API data
-    const [diagnosisDataa, setDiagnosisDataa] = useState([]); // Store API data
-    const [searchTerm, setSearchTerm] = useState(""); // Track user input
-    const [filteredResults, setFilteredResults] = useState([]); // Filtered options
+    const [selectAll, setSelectAll] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    const handleCheckboxChanges = (enrollee) => {
+        setSelectedItems((prev) => {
+            const isSelected = prev.some(
+                (i) => i.batch_number === enrollee.batch_number,
+            );
+
+            if (isSelected) {
+                return prev.filter(
+                    (i) => i.batch_number !== enrollee.batch_number,
+                );
+            } else {
+                return [...prev, enrollee];
+            }
+        });
+
+        // Update selectAll state based on new selection
+        setSelectAll(selectedItems.length + 1 === paginatedResults.length);
+    };
+
+    const collectProcedureCodes = () => {
+        const codes = procedures.map((proc) => proc.code);
+        setProcedureCodes(codes);
+        console.log("Collected Procedure Codes:", codes);
+    };
+
+    const [diagnosisData, setDiagnosisData] = useState([]);
+    const [diagnosisDataa, setDiagnosisDataa] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredResults, setFilteredResults] = useState([]);
 
     const [selectedProviders, setSelectedProvider] = useState({
         provider_id: null,
@@ -31,6 +71,10 @@ const CreateEnroleePACode = () => {
     const [searchProvider, setSearchProvider] = useState("");
     const [encounterDate, SetEncounterDate] = useState("");
     const [showSearchDropDown, setShowSearchDropDown] = useState(false);
+    const [isModalsOpen, setIsModalsOpen] = useState(false);
+    const [tableData, setTableData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [benefits, setAllBenefits] = useState([]);
 
     const [diagnoses, setDiagnoses] = useState([
         { id: 1, code: "", description: "", filteredResults: [] },
@@ -41,8 +85,17 @@ const CreateEnroleePACode = () => {
     const [formValues, setFormValues] = useState({});
 
     const [procedures, setProcedures] = useState([
-        { id: 1, code: "", description: "", filteredResults: [] },
+        {
+            id: 1,
+            code: "",
+            description: "",
+            price: "",
+            ProcedureQty: "",
+            ChargeAmount: "",
+            filteredResults: [],
+        },
     ]);
+    console.log("procedurzz", procedures);
     const [proceduresData, setProceduresData] = useState([]);
 
     const [selectedRemarks, setSelectedRemarks] = useState("");
@@ -51,7 +104,29 @@ const CreateEnroleePACode = () => {
     const [provDetails, SetProvDetails] = useState([]);
     const [selectedProcedures, setSelectedProcedures] = useState([]);
 
-    const handleAddProcedures = () => {
+    // Calculate total sum
+
+    const totalAmount = selectedProcedures.reduce((sum, proc) => {
+        console.log("log", selectedProcedures);
+        const quantity = parseFloat(proc.ProcedureQty) || 0;
+        // Default to 1 if not specified
+        const chargeAmount = parseFloat(proc.ChargeAmount) || 0;
+        const price = parseFloat(proc.price) || 0; // Ensure price is a number
+
+        // If both ChargeAmount and Quantity are valid numbers
+        if (chargeAmount > 0 && quantity > 0) {
+            console.log("sum2", sum, chargeAmount, quantity);
+            return sum + chargeAmount * quantity;
+        } else if (quantity > 0 && price > 0) {
+            return sum + quantity * price;
+        }
+        // Otherwise just add the price
+
+        console.log("sum", sum, price);
+        return sum + price;
+    }, 0);
+
+    const handleAddProceduress = () => {
         console.log("mmm", selectedData, formValues);
         if (!selectedData || !selectedData.ProcedureCode) {
             alert("Please select a procedure code first.");
@@ -61,7 +136,9 @@ const CreateEnroleePACode = () => {
         const newProcedure = {
             FilterType: formValues.FilterType,
             ProcedureCode: formValues.ProcedureCode,
-            ExtensionRemarks: "",
+            ProcedureQty: proc.ProcedureQty,
+            ChargeAmount: proc.ChargeAmount,
+            ExtensionRemarks: formValues.ExtensionRemarks,
             ...(selectedRemark === "pharmacy" && {
                 ProcedureQty: formValues.ProcedureQty,
                 Duration: formValues.Duration,
@@ -83,6 +160,191 @@ const CreateEnroleePACode = () => {
         setSelectedProcedures([...selectedProcedures, newProcedure]);
     };
 
+    const handleAddProcedures = async () => {
+        setShowPATable(true);
+
+        if (!selectedData || !formValues.ExtensionRemarks) {
+            alert("Please select a procedure code first.");
+            return;
+        }
+
+        const updated = procedures.map((proc) => {
+            console.log("console", procedures, price);
+            return {
+                FilterType: formValues.FilterType,
+                ProcedureCode: proc.code,
+                ProcedureQty: proc.ProcedureQty,
+                ChargeAmount: proc.ChargeAmount || 0,
+                price: price,
+                ExtensionRemarks: formValues.ExtensionRemarks,
+                ...(selectedRemark === "pharmacy" && {
+                    ProcedureQty: formValues.ProcedureQty,
+                    Duration: formValues.Duration,
+                    DailyQuantity: formValues.DailyQuantity,
+                    DosageValue: "daily",
+                    DrugForm: formValues.DrugForm,
+                    Period: formValues.Period,
+                }),
+                ...(selectedRemark === "Admitted" && {
+                    AdmissionDate: formValues.AdmissionDate,
+                    DischargeDate: formValues.DischargeDate,
+                }),
+                ...(selectedRemark === "Observation" && {
+                    Start_Time: formValues.Start_Time,
+                    End_Time: formValues.End_Time,
+                }),
+            };
+        });
+
+        console.log("updated", updated);
+
+        // Update procedures first
+        setSelectedProcedures((prev) => [...prev, ...updated]);
+
+        // Reset the input fields
+        setProcedures([
+            {
+                id: "",
+                code: "",
+                description: "",
+                price: "",
+                ProcedureQty: "",
+                ChargeAmount: "",
+                filteredResults: [],
+            },
+        ]);
+
+        // 🔥 Directly call handleSubmitPA after updates
+        await handleSubmitPA();
+    };
+
+    const handleSubmitPA = async () => {
+        setSubmitLoader(true);
+
+        console.log("Button clicked, function running");
+
+        if (!data.VisitID) {
+            alert("VisitID is missing from API response!");
+            setSubmitLoader(false);
+            return;
+        }
+
+        const submitPA = {
+            CifNumber: enrollee.Member_MemberUniqueID,
+            ProviderID: selectedProviders?.provider_id,
+            VisitID: data.VisitID,
+            VisitDate: encounterDate,
+            username: providerEmail,
+            DoctorRecommendations: doctorsprescription,
+            ServiceTypeID: selectedVisitType?.value || "",
+            DiagnosisLines: alldiagnosis,
+            UtilizationLines: selectedProcedures.map(
+                ({ ProcedureDescription, price, ...rest }) => ({
+                    ...rest,
+                    ExtensionRemarks: "",
+                }),
+            ),
+            UtilizationDocuments: [
+                {
+                    ClaimDocument: "fkfkfnff",
+                    claimContentType: "pdf",
+                    DocumentCategory: "Claims",
+                    ClaimDocumentSequenceID: "743",
+                },
+            ],
+        };
+
+        console.log("All procedures", JSON.stringify(submitPA, null, 2));
+
+        let parsedResponse = null;
+
+        try {
+            const response = await fetch(
+                `${apiUrl}api/ProviderNetwork/CreatePreauthorizationRequest_WithPreAuthCode`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(submitPA),
+                },
+            );
+
+            const responseText = await response.text();
+
+            try {
+                parsedResponse = JSON.parse(responseText);
+            } catch (jsonError) {
+                console.error("JSON parse error:", jsonError);
+                throw new Error("Invalid JSON response");
+            }
+
+            setSelectedProcedures(updatedProcedures);
+
+            const responseApi = {
+                VisitID: parsedResponse.VisitID || "N/A",
+                status: parsedResponse.status,
+                Message: parsedResponse.Message,
+                PreAutCode:
+                    parsedResponse?.VisitDetails?.[0]?.PreAutCode || null,
+            };
+
+            setApiResponse(responseApi);
+            setIsModalOpen(true);
+        } catch (error) {
+            console.error("Error submitting data:", error);
+
+            const responseApi = {
+                VisitID: parsedResponse?.VisitID || data?.VisitID || "N/A",
+                status: parsedResponse?.status || "Error",
+                Message: parsedResponse?.Message || error.message,
+                PreAutCode: null,
+            };
+
+            setApiResponse(responseApi);
+            setIsModalOpen(true);
+        } finally {
+            setSubmitLoader(false);
+        }
+    };
+
+    console.log("apiResponse", apiResponse);
+    // const handleAddProcedures = () => {
+    //     console.log("mmm", selectedData, formValues);
+    //     if (!selectedData || !formValues.ExtensionRemarks) {
+    //         alert("Please select a procedure code first.");
+    //         return;
+    //     }
+
+    //     // Include ProcedureDescription only for UI display purposes
+    //     const newProcedure = {
+    //         FilterType: formValues.FilterType,
+    //         ProcedureCode: formValues.ProcedureCode,
+    //         // For display only
+    //         ExtensionRemarks: formValues.ExtensionRemarks,
+    //         ...(selectedRemark === "pharmacy" && {
+    //             ProcedureQty: formValues.ProcedureQty,
+    //             Duration: formValues.Duration,
+    //             DailyQuantity: formValues.DailyQuantity,
+    //             DosageValue: "daily",
+    //             DrugForm: formValues.DrugForm,
+    //             Period: formValues.Period,
+    //         }),
+    //         ...(selectedRemark === "Admitted" && {
+    //             AdmissionDate: formValues.AdmissionDate,
+    //             DischargeDate: formValues.DischargeDate,
+    //         }),
+    //         ...(selectedRemark === "Observation" && {
+    //             Start_Time: formValues.Start_Time,
+    //             End_Time: formValues.End_Time,
+    //         }),
+    //     };
+
+    //     setSelectedProcedures([...selectedProcedures, newProcedure]);
+
+    //     // Optionally: remove ProcedureDescription from final form submission (in the submit function, not here)
+    // };
+
     const handleRemoveProcedure = (index) => {
         setSelectedProcedures(selectedProcedures.filter((_, i) => i !== index));
     };
@@ -101,6 +363,11 @@ const CreateEnroleePACode = () => {
             },
         ]);
     };
+
+    useEffect(() => {
+        const codes = procedures.map((proc) => proc.code);
+        setProcedureCodes(codes);
+    }, [procedures]);
 
     const handleSelectProceduress = (index, procedure) => {
         setProceduress((prev) => {
@@ -129,12 +396,8 @@ const CreateEnroleePACode = () => {
     const handleSearchChangeProcedure = (index, value) => {
         const filtered = proceduresData.filter(
             (proc) =>
-                proc.ProcedureCode.toLowerCase().includes(
-                    value.toLowerCase(),
-                ) ||
-                proc.ProcedureDescription.toLowerCase().includes(
-                    value.toLowerCase(),
-                ),
+                proc.tariff_code.toLowerCase().includes(value.toLowerCase()) ||
+                proc.tariff_desc.toLowerCase().includes(value.toLowerCase()),
         );
 
         setProcedures((prev) => {
@@ -144,6 +407,32 @@ const CreateEnroleePACode = () => {
             return updated;
         });
     };
+
+    useEffect(() => {
+        const defaultRemark = "consultation";
+        setSelectedRemark(defaultRemark);
+
+        const selectedItem = utilizationLines.find(
+            (item) => item.ExtensionRemarks === defaultRemark,
+        );
+        setSelectedData(selectedItem);
+
+        if (selectedItem) {
+            setFormValues({
+                FilterType: selectedItem.FilterType,
+                ProcedureCode: selectedItem.ProcedureCode || "",
+                ExtensionRemarks: selectedItem.ExtensionRemarks || "",
+                ProcedureQty: "",
+                Duration: "",
+                DailyQuantity: "",
+                DosageValue: "",
+                AdmissionDate: "",
+                DischargeDate: "",
+                Start_Time: "",
+                End_Time: "",
+            });
+        }
+    }, []);
 
     useEffect(() => {
         setFormValues((prev) => {
@@ -160,18 +449,93 @@ const CreateEnroleePACode = () => {
         });
     }, [procedures]);
 
-    const handleSelectProcedures = (index, procedure) => {
+    const handleSelectProcedures = async (index, procedure) => {
+        const price = await GetProcedurePrice(procedure.tariff_code);
+
         setProcedures((prev) => {
             const updated = [...prev];
             updated[index] = {
                 ...updated[index],
-                code: procedure.ProcedureCode,
-                description: procedure.ProcedureDescription,
+                code: procedure.tariff_code,
+                description: procedure.tariff_desc,
+                price: price || procedure.RegisteredPrice || 0,
+                ChargeAmount: price || procedure.RegisteredPrice || 0,
                 filteredResults: [],
             };
             return updated;
         });
     };
+
+    useEffect(() => {
+        if (procedureCodes) {
+            GetProcedurePrice();
+        }
+    }, [procedureCodes]);
+
+    async function GetProcedurePrice() {
+        const priceUrl = `${apiUrl}api/ProviderNetwork/GetProviderProcedureTarrifAmount?providerid=${selectedProviders?.provider_id}&procedurecode=${procedureCodes}&cifnumber=0`;
+
+        console.log("priceUrl", priceUrl);
+
+        try {
+            const response = await fetch(priceUrl, {
+                method: "GET",
+            });
+
+            const data = await response.json();
+            console.log("procedure price", data.TarifAmount);
+            setPrice(data.TarifAmount);
+        } catch (error) {
+            console.error("Error fetching procedure price", error);
+        }
+    }
+
+    async function GetStates() {
+        try {
+            const states = await fetch(`${apiUrl}api/ListValues/GetStates`, {
+                method: "GET",
+            });
+
+            const response = await states.json();
+            console.log("states", response);
+            SetStates(response);
+        } catch (error) {
+            console.error("Error fetching states", error);
+        }
+    }
+
+    async function GetLGA() {
+        try {
+            const lga = await fetch(
+                `${apiUrl}api/ListValues/GetCitiesByStates?state=${selectedState.value}`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const response = await lga.json();
+            console.log("Lga", response);
+            setLga(response);
+        } catch (error) {
+            console.error("Error fetching lga", error);
+        }
+    }
+    async function GetProvider() {
+        try {
+            const provider = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=0&LGAID=0&enrolleeid=${enrollee.Member_EnrolleeID}&provider_id=0`,
+                {
+                    method: "GET",
+                },
+            );
+
+            const response = await provider.json();
+            console.log("provider", response);
+            setFilteredProvider(response.result);
+        } catch (error) {
+            console.error("Error fetching provider", error);
+        }
+    }
 
     const handleAddProcedure = () => {
         setProcedures((prev) => [
@@ -210,7 +574,6 @@ const CreateEnroleePACode = () => {
             setFormValues({});
         }
     };
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormValues((prevValues) => ({
@@ -263,15 +626,20 @@ const CreateEnroleePACode = () => {
 
         setDiagnoses(updatedDiagnoses);
     };
-
     const handleSelectd = (index, diagnosis) => {
         const updatedDiagnoses = [...diagnoses];
         updatedDiagnoses[index].code = diagnosis.Value;
         updatedDiagnoses[index].description = diagnosis.Text;
         updatedDiagnoses[index].filteredResults = []; // Hide dropdown
         setDiagnoses(updatedDiagnoses);
-    };
 
+        // Add this to update the all diagnosis list when manually selecting
+        const diag = updatedDiagnoses.map(({ code, description }) => ({
+            DiagnosisCode: code,
+            DiagnosisDescription: description,
+        }));
+        SetAllDiagnosis(diag);
+    };
     // Function to add a new diagnosis input set
     const handleAddDiagnosis = () => {
         setDiagnoses([
@@ -294,6 +662,9 @@ const CreateEnroleePACode = () => {
     };
 
     useEffect(() => {
+        GetProvider();
+    }, []);
+    useEffect(() => {
         if (searchTerm) {
             const results = diagnosisData.filter((item) =>
                 item.Value.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -307,13 +678,17 @@ const CreateEnroleePACode = () => {
         value: "",
         label: "",
     });
-    const [selectedProvider, setProvider] = useState({
-        value: "",
-        label: "",
+    const [selectedState, setState] = useState({
+        Text: "",
+        Value: "",
     });
-    const [selectedBenefit, setSelectedBenefit] = useState({
-        value: "",
-        label: "",
+    const [selectedLga, setSelectedLga] = useState({
+        Text: "",
+        Value: "",
+    });
+    const [selectedFacility, setSelectedFacility] = useState({
+        Provider: "",
+        Provider_Id: "",
     });
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -321,6 +696,7 @@ const CreateEnroleePACode = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async () => {
+        setVisitIdLoader(true);
         const postData = {
             CifNumber: enrollee.Member_MemberUniqueID,
             EnrolleeID: enrollee.Member_EnrolleeID,
@@ -352,7 +728,8 @@ const CreateEnroleePACode = () => {
             const data = await response.json();
 
             if (data.status === 200 && data.VisitID) {
-                alert(`Visit ID ${data.VisitID} generated successfully!`);
+                //alert(`Visit ID ${data.VisitID} generated successfully!`);
+                setVisitId(data.VisitID);
             } else {
                 alert(`Unexpected response: ${JSON.stringify(data)}`);
             }
@@ -361,77 +738,186 @@ const CreateEnroleePACode = () => {
             console.log("Success:", data);
         } catch (error) {
             console.error("Error submitting data:", error);
+        } finally {
+            setVisitIdLoader(false);
         }
     };
 
-    const handleSubmitPA = async () => {
-        console.log("Button clicked, function running");
-        if (!data.VisitID) {
-            ("VisitID is missing from API response!");
-            return;
-        }
+    // const handleSubmitPA = async () => {
+    //     setSubmitLoader(true);
+    //     console.log("Button clicked, function running");
+    //     if (!data.VisitID) {
+    //         alert("VisitID is missing from API response!");
+    //         setSubmitLoader(false);
+    //         return;
+    //     }
 
-        const submitPA = {
-            CifNumber: enrollee.Member_MemberUniqueID,
-            ProviderID: selectedProviders?.provider_id,
+    //     const submitPA = {
+    //         CifNumber: enrollee.Member_MemberUniqueID,
+    //         ProviderID: selectedProviders?.provider_id,
 
-            VisitID: data.VisitID,
-            VisitDate: encounterDate,
-            username: providerEmail,
-            DoctorRecommendations: doctorsprescription,
-            ServiceTypeID: selectedVisitType?.value || "",
-            DiagnosisLines: alldiagnosis,
-            UtilizationLines: selectedProcedures,
-            UtilizationDocuments: [
-                {
-                    ClaimDocument: "fkfkfnff",
-                    claimContentType: "pdf",
-                    DocumentCategory: "Claims",
-                    ClaimDocumentSequenceID: "743",
-                },
-            ],
-        };
+    //         VisitID: data.VisitID,
+    //         VisitDate: encounterDate,
+    //         username: providerEmail,
+    //         DoctorRecommendations: doctorsprescription,
+    //         ServiceTypeID: selectedVisitType?.value || "",
+    //         DiagnosisLines: alldiagnosis,
+    //         // UtilizationLines: selectedProcedures.map(
+    //         //     ({ ProcedureDescription, ...rest }) => ({
+    //         //         ...rest,
+    //         //         ExtensionRemarks: "",
+    //         //     }),
+    //         // ),
+    //         UtilizationLines: selectedProcedures.map(
+    //             ({ ProcedureDescription, price, ...rest }) => ({
+    //                 ...rest,
+    //                 ExtensionRemarks: "",
+    //             }),
+    //         ),
 
-        console.log("All procedures", JSON.stringify(submitPA, null, 2));
-        try {
-            const response = await fetch(
-                `${apiUrl}api/ProviderNetwork/CreatePreauthorizationRequest`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json", // Ensure proper content type
-                    },
-                    body: JSON.stringify(submitPA), // Convert object to JSON
-                },
-            );
+    //         UtilizationDocuments: [
+    //             {
+    //                 ClaimDocument: "fkfkfnff",
+    //                 claimContentType: "pdf",
+    //                 DocumentCategory: "Claims",
+    //                 ClaimDocumentSequenceID: "743",
+    //             },
+    //         ],
+    //     };
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+    //     console.log("All procedures", JSON.stringify(submitPA, null, 2));
+    //     try {
+    //         const response = await fetch(
+    //             `${apiUrl}api/ProviderNetwork/CreatePreauthorizationRequest_WithPreAuthCode`,
+    //             {
+    //                 method: "POST",
+    //                 headers: {
+    //                     "Content-Type": "application/json", // Ensure proper content type
+    //                 },
+    //                 body: JSON.stringify(submitPA), // Convert object to JSON
+    //             },
+    //         );
 
-            const data = await response.json();
-            console.log("Success:", data);
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! Status: ${response.status}`);
+    //         }
 
-            const responseApi = {
-                VisitID: data.VisitID,
-                status: data.status,
-                Message: data.Message,
-            };
-            setApiResponse(responseApi); // Ensure response is always an array
-            setIsModalOpen(true);
-        } catch (error) {
-            console.error("Error submitting data:", error);
-            responses.push({
-                VisitID: data.VisitID,
-                status: data.status,
-                Message: data.Message,
-            });
-            setApiResponse(responseApi); // Ensure response is always an array
-            setIsModalOpen(true);
-        }
-    };
+    //         const data = await response.json();
+    //         console.log("Success:", data);
 
-    console.log("selectedx", JSON.stringify(selectedProviders, null, 2));
+    //         const responseApi = {
+    //             VisitID: data.VisitID,
+    //             status: data.status,
+    //             Message: data.Message,
+    //             PreAutCode: data.VisitDetails[0].PreAutCode,
+    //         };
+    //         setApiResponse(responseApi); // Ensure response is always an array
+    //         setIsModalOpen(true);
+    //     } catch (error) {
+    //         console.error("Error submitting data:", error);
+
+    //         const responseApi = {
+    //             VisitID: data?.VisitID || "N/A", // Handle missing VisitID
+    //             status: data?.status,
+    //             Message: data?.Message,
+    //         };
+
+    //         // responses.push(responseApi);
+    //         setApiResponse(responseApi);
+    //         setIsModalOpen(true);
+    //     } finally {
+    //         setSubmitLoader(false);
+    //     }
+    // };
+
+    // const handleSubmitPA = async () => {
+    //     setSubmitLoader(true);
+
+    //     console.log("Button clicked, function running");
+
+    //     if (!data.VisitID) {
+    //         alert("VisitID is missing from API response!");
+    //         setSubmitLoader(false);
+    //         return;
+    //     }
+
+    //     const submitPA = {
+    //         CifNumber: enrollee.Member_MemberUniqueID,
+    //         ProviderID: selectedProviders?.provider_id,
+    //         VisitID: data.VisitID,
+    //         VisitDate: encounterDate,
+    //         username: providerEmail,
+    //         DoctorRecommendations: doctorsprescription,
+    //         ServiceTypeID: selectedVisitType?.value || "",
+    //         DiagnosisLines: alldiagnosis,
+    //         UtilizationLines: selectedProcedures.map(
+    //             ({ ProcedureDescription, price, ...rest }) => ({
+    //                 ...rest,
+    //                 ExtensionRemarks: "",
+    //             }),
+    //         ),
+    //         UtilizationDocuments: [
+    //             {
+    //                 ClaimDocument: "fkfkfnff",
+    //                 claimContentType: "pdf",
+    //                 DocumentCategory: "Claims",
+    //                 ClaimDocumentSequenceID: "743",
+    //             },
+    //         ],
+    //     };
+
+    //     console.log("All procedures", JSON.stringify(submitPA, null, 2));
+
+    //     let parsedResponse = null; // Track the parsed API response
+
+    //     try {
+    //         const response = await fetch(
+    //             `${apiUrl}api/ProviderNetwork/CreatePreauthorizationRequest_WithPreAuthCode`,
+    //             {
+    //                 method: "POST",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                 },
+    //                 body: JSON.stringify(submitPA),
+    //             },
+    //         );
+
+    //         const responseText = await response.text();
+
+    //         try {
+    //             parsedResponse = JSON.parse(responseText); // Try parsing response
+    //         } catch (jsonError) {
+    //             console.error("JSON parse error:", jsonError);
+    //             throw new Error("Invalid JSON response");
+    //         }
+
+    //         const responseApi = {
+    //             VisitID: parsedResponse.VisitID || "N/A",
+    //             status: parsedResponse.status,
+    //             Message: parsedResponse.Message,
+    //             PreAutCode:
+    //                 parsedResponse?.VisitDetails?.[0]?.PreAutCode || null,
+    //         };
+
+    //         setApiResponse(responseApi);
+    //         setIsModalOpen(true);
+    //     } catch (error) {
+    //         console.error("Error submitting data:", error);
+
+    //         const responseApi = {
+    //             VisitID: parsedResponse?.VisitID || data?.VisitID || "N/A",
+    //             status: parsedResponse?.status || "Error",
+    //             Message: parsedResponse?.Message || error.message,
+    //             PreAutCode: null,
+    //         };
+
+    //         setApiResponse(responseApi);
+    //         setIsModalOpen(true);
+    //     } finally {
+    //         setSubmitLoader(false);
+    //     }
+    // };
+
     const handleNavigate = (enrollee) => {
         navigate("/csenrolleeprofileupdate", { state: { enrollee } });
     };
@@ -544,27 +1030,16 @@ const CreateEnroleePACode = () => {
         );
     }
 
-    console.log(
-        "getprovdetails",
-        fetch(
-            `${apiUrl}api/ProviderNetwork/GetProvidersUser?providerid=${selectedProviders.provider_id}`,
-            {
-                method: "GET",
-            },
-        ),
-    );
-
-    // console.log(
-    //     "getBenefits",
-    //     fetch(
-    //         `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}`,
-    //         {
-    //             method: "GET",
-    //         },
-    //     ),
-    // );
-
     async function GetBenefit() {
+        console.log(
+            "benefit",
+            fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}`,
+                {
+                    method: "GET",
+                },
+            ),
+        );
         try {
             const response = await fetch(
                 `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}`,
@@ -580,16 +1055,16 @@ const CreateEnroleePACode = () => {
             console.error("Error getting benefits", error);
         }
     }
-
-    console.log(
-        "getprovdetails",
-        fetch(
-            `${apiUrl}api/ProviderNetwork/GetProvidersUser?providerid=${selectedProviders.provider_id}`,
-            {
-                method: "GET",
-            },
-        ),
-    );
+    console.log("states", selectedState?.Value);
+    // console.log(
+    //     "getprovdetails",
+    //     fetch(
+    //         `${apiUrl}api/ProviderNetwork/GetProvidersUser?providerid=${selectedProviders.provider_id}`,
+    //         {
+    //             method: "GET",
+    //         },
+    //     ),
+    // );
     async function GetProviderEmail() {
         try {
             const response = await fetch(
@@ -610,13 +1085,24 @@ const CreateEnroleePACode = () => {
     useEffect(() => {
         if (selectedProviders.provider_id) {
             GetProviderEmail();
+            GetProcedure();
         }
     }, [selectedProviders]);
+
+    // console.log(
+    //     "procedurezzz",
+    //     fetch(
+    //         `${apiUrl}api/EnrolleeProfile/GetEnrolleeCoveredProcedures?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}&benefitid=0`,
+    //         {
+    //             method: "GET",
+    //         },
+    //     ),
+    // );
 
     async function GetProcedure() {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeCoveredProcedures?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}&benefitid=${selectedBenefit?.value}`,
+                `${apiUrl}api/ProviderNetwork/GetProceduresByFilter?filtertype=0&providerid=${selectedProviders.provider_id}&searchbyname=`,
                 {
                     method: "GET",
                 },
@@ -625,7 +1111,8 @@ const CreateEnroleePACode = () => {
             const data = await response.json();
 
             console.log("Procedure7:", JSON.stringify(data, null, 2));
-            // setProcedure(data.result);
+            console.log("Proced:", response);
+
             setProceduresData(data.result);
         } catch (error) {
             console.error("Error getting Procedures", error);
@@ -689,7 +1176,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("service:", data.result);
+            // console.log("service:", data.result);
 
             setService(data.result);
         } catch (error) {
@@ -697,10 +1184,42 @@ const CreateEnroleePACode = () => {
         }
     }
 
-    async function GetProvider() {
+    // console.log(
+    //     "new providersss",
+    //     fetch(
+    //         `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=0&LGAID=0&enrolleeid=${enrollee.Member_EnrolleeID}&provider_id=0`,
+    //         {
+    //             method: "GET",
+    //         },
+    //     ),
+    // );
+
+    async function GetEnrolleeProvider() {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=20&pageSize=10&ProviderName=&TypeID=0&StateID=0&LGAID=0&enrolleeid=${enrollee.Member_EnrolleeID}&provider_id=0
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=${selectedState?.value}&LGAID=${selectedLga?.value}&enrolleeid=${enrollee.Member_EnrolleeID}&provider_id=0`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("EnrolleesProviders:", JSON.stringify(data, null, 2));
+
+            setAllEnrolleeProvider(data.result);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        }
+    }
+    async function GetEnrolleeProvider() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=${selectedState?.value}&LGAID=${selectedLga?.value}&enrolleeid=${enrollee.Member_EnrolleeID}&provider_id=0
 `,
                 {
                     method: "GET",
@@ -713,7 +1232,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            // console.log("providers:", data.result);
+            console.log("Providers:", JSON.stringify(providers, null, 2));
 
             setAllProvider(data.result);
         } catch (error) {
@@ -724,7 +1243,8 @@ const CreateEnroleePACode = () => {
     useEffect(() => {
         CalculateAllAmountSpentOnEnrollee();
         GetService();
-        GetProvider();
+
+        GetStates();
     }, []);
 
     useEffect(() => {
@@ -733,10 +1253,23 @@ const CreateEnroleePACode = () => {
         }
     }, [selectedVisitType?.value]);
     useEffect(() => {
-        if (selectedBenefit?.value) {
+        if (selectedVisitType?.value) {
             GetProcedure();
+            GetAllBenefits();
         }
-    }, [selectedBenefit?.value]);
+    }, [selectedVisitType?.value]);
+
+    useEffect(() => {
+        if (isModalsOpen) {
+            GetAllBenefits();
+        }
+    }, [isModalsOpen]);
+
+    useEffect(() => {
+        if (selectedLga?.value) {
+            GetEnrolleeProvider();
+        }
+    }, [selectedLga?.value]);
 
     // Function to delete a diagnosis by index
     const handleDeleteDiagnosis = (indexToDelete) => {
@@ -770,6 +1303,85 @@ const CreateEnroleePACode = () => {
     const filteredProviders = provider.filter((prov) =>
         prov.provider.toLowerCase().includes(searchProvider.toLowerCase()),
     );
+
+    useEffect(() => {
+        if (selectedState.value) GetLGA();
+    }, [selectedState.value]);
+
+    console.log("visitType", selectedVisitType);
+    console.log("State", selectedState);
+    console.log("State2", selectedState.value);
+    console.log("local", selectedLga.value);
+
+    async function GetAllBenefits() {
+        try {
+            setLoading(true);
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log(
+                "ConsoleALLBenefits:",
+                JSON.stringify(response, null, 2),
+            );
+            console.log("ALLBenefits:", data);
+
+            setAllBenefits(data);
+        } catch (error) {
+            console.error("Error getiing service:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        GetBiodata();
+    }, []);
+
+    // useEffect(() => {
+    //     if (isModalOpen) fetchProviders();
+    // }, [isModalOpen]);
+
+    async function GetBiodata() {
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrollee.Member_EnrolleeID}
+`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("Allbiodata:", data);
+
+            setBiodata(data);
+        } catch (error) {
+            console.error("Error getting enrollee bio data:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    // const base64Image = `data:image/jpeg;base64,${biodata.profilepic}`;
+
+    const base64Image = biodata?.profilepic
+        ? `data:image/jpeg;base64,${biodata.profilepic}`
+        : "/Avataraang.svg";
 
     return (
         <div>
@@ -810,8 +1422,8 @@ const CreateEnroleePACode = () => {
                                 {/* Profile Image */}
                                 <div className="flex flex-col items-center ml-6">
                                     <img
-                                        src="Avataraang.svg"
-                                        alt="Avatar"
+                                        src={base64Image}
+                                        alt="Profile"
                                         className="w-20 h-20 rounded-full"
                                     />
                                     <div className=" items-center mt-2 rounded-full flex gap-2 ">
@@ -907,7 +1519,7 @@ const CreateEnroleePACode = () => {
                                                 {enrollee.Member_Membertype}
                                             </span>
                                         </div>
-                                        <div>
+                                        {/* <div>
                                             <span className="block text-gray-500">
                                                 Policy Date
                                             </span>
@@ -928,7 +1540,7 @@ const CreateEnroleePACode = () => {
                                                     ) // Formats the date as day/month/year
                                                 }
                                             </span>
-                                        </div>
+                                        </div> */}
                                         <div>
                                             <span className="block text-gray-500">
                                                 Amount Spent
@@ -954,8 +1566,46 @@ const CreateEnroleePACode = () => {
                                             </span>
                                         </div>
 
-                                        <div></div>
-                                        <div></div>
+                                        <div>
+                                            <span className="block text-gray-500 whitespace-nowrap">
+                                                Original start Date
+                                            </span>
+
+                                            <span className=" block font-medium break-words text-[15px] leading-tight">
+                                                {
+                                                    new Date(
+                                                        enrollee.Client_DateAccepted,
+                                                    ).toLocaleDateString(
+                                                        "en-GB",
+                                                    ) // Formats the date as day/month/year
+                                                }
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span className="block text-gray-500 whitespace-nowrap">
+                                                Contract Start Date
+                                            </span>
+
+                                            <span className=" block font-medium break-words text-[15px] leading-tight">
+                                                N/A
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span className="block text-gray-500 whitespace-nowrap">
+                                                Contract End Date
+                                            </span>
+
+                                            <span className=" block font-medium break-words text-[15px] leading-tight">
+                                                {
+                                                    new Date(
+                                                        enrollee.Client_Expiry_date,
+                                                    ).toLocaleDateString(
+                                                        "en-GB",
+                                                    ) // Formats the date as day/month/year
+                                                }
+                                            </span>
+                                        </div>
+
                                         <div></div>
                                         <div></div>
 
@@ -985,7 +1635,6 @@ const CreateEnroleePACode = () => {
                             </h2>
                         </div>
 
-                        {/* First Row of Input Divs */}
                         <div className="flex ml-6 space-x-4">
                             <div className="relative w-[320px]">
                                 <label className="block mb-2 text-gray-700 font-medium">
@@ -1005,7 +1654,6 @@ const CreateEnroleePACode = () => {
                                 />
                             </div>
 
-                            {/* Date Picker */}
                             <div className="relative w-[320px]">
                                 <label className="block mb-2 text-gray-700 font-medium">
                                     Encounter Start Date
@@ -1021,8 +1669,13 @@ const CreateEnroleePACode = () => {
                                     />
                                 </div>
                             </div>
-
-                            <div className="relative w-[320px] ">
+                            <button
+                                className="whitespace-nowrap h-15 px-14 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
+                                onClick={() => setIsModalsOpen(true)}
+                            >
+                                Get Benefits
+                            </button>
+                            {/* <div className="relative w-[320px] ">
                                 <label className="block mb-2 text-gray-700 font-medium">
                                     Benefits
                                 </label>
@@ -1038,7 +1691,7 @@ const CreateEnroleePACode = () => {
                                     }
                                     className="relative w-full h-[44px] rounded-lg "
                                 />
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="flex ml-6 space-x-4 mt-4">
@@ -1054,12 +1707,13 @@ const CreateEnroleePACode = () => {
                                         setShowSearchDropDown(true);
                                     }}
                                     value={searchProvider}
+                                    placeholder="Search Provider"
                                 />
 
                                 {showSearchDropDown && (
                                     <div className="h-[220px] w-full absolute bg-white z-10 border rounded-[10px] p-3">
                                         <div className="h-[180px] overflow-y-auto">
-                                            {provider
+                                            {filteredProvider
                                                 .filter((prov) =>
                                                     prov.provider
                                                         .toLowerCase()
@@ -1160,654 +1814,610 @@ const CreateEnroleePACode = () => {
                                 </div>
                             </div>
 
-                            <button
-                                className=" whitespace-nowrap h-11 px-9 text-[#C61531] border border-[#C61531] bg-[#C615311A]  rounded-md mt-8 items-end"
-                                onClick={handleSubmit}
-                            >
-                                Get Visit Id
-                            </button>
+                            <div>
+                                {visitIdLoader ? (
+                                    <button
+                                        disabled
+                                        className="flex items-center gap-2 whitespace-nowrap h-11 px-9 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
+                                    >
+                                        <FaSpinner className="animate-spin text-xl" />
+                                        Getting Visit Number...
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="whitespace-nowrap h-11 px-9 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
+                                        onClick={handleSubmit}
+                                    >
+                                        Get Visit Number
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className=" whitespace-nowrap h-11 px-5 pt-1  text-black border border-[#3b3637] bg-[#312d2e1a]  rounded-md mt-8 items-end">
+                                <h2 className=" text-[25px]">{visitid}</h2>
+                            </div>
                         </div>
+                        {selectedVisitType?.label !== "Health Checks" && (
+                            <>
+                                <div className="ml-6 mt-6 mb-6">
+                                    <h3 className="text-[23px] text-red-700 mt-6 font-bold">
+                                        Services
+                                    </h3>
 
-                        <div className="ml-6 mt-6 mb-6">
-                            <h3 className="text-[23px] text-red-700 mt-6 font-bold">
-                                Services
-                            </h3>
+                                    <h3 className="text-gray-700 flex items-center">
+                                        Diagnosis
+                                        <hr className="flex-grow border-t-2 border-gray-700 mx-4" />
+                                    </h3>
 
-                            <h3 className="text-gray-700 flex items-center">
-                                Diagnosis
-                                <hr className="flex-grow border-t-2 border-gray-700 mx-4" />
-                            </h3>
+                                    <div className="flex space-x-4 mt-4">
+                                        <div className="flex flex-col mr-10">
+                                            <div>
+                                                {diagnoses.map(
+                                                    (diag, index) => (
+                                                        <div
+                                                            className="flex space-x-4 mt-2 relative"
+                                                            key={diag.id}
+                                                        >
+                                                            {/* Diagnosis Code Input */}
+                                                            <div className="flex flex-col mr-10">
+                                                                <label className="font-semibold">
+                                                                    Diagnosis
+                                                                    Code
+                                                                </label>
+                                                                <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                                                                    <img
+                                                                        src="./Search.svg"
+                                                                        alt="Search Icon"
+                                                                        className="h-6 w-6 absolute left-2"
+                                                                    />
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="Enter diag code"
+                                                                        className="w-full h-full outline-none border-none pl-10"
+                                                                        value={
+                                                                            diag.code
+                                                                        }
+                                                                        onChange={(
+                                                                            e,
+                                                                        ) =>
+                                                                            handleSearchChange(
+                                                                                index,
+                                                                                e
+                                                                                    .target
+                                                                                    .value,
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                </div>
 
-                            <div className="flex space-x-4 mt-4">
-                                <div className="flex flex-col mr-10">
-                                    <div>
-                                        {diagnoses.map((diag, index) => (
-                                            <div
-                                                className="flex space-x-4 mt-2 relative"
-                                                key={diag.id}
-                                            >
-                                                {/* Diagnosis Code Input */}
-                                                <div className="flex flex-col mr-10">
-                                                    <label className="font-semibold">
-                                                        Diagnosis Code
-                                                    </label>
-                                                    <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
-                                                        <img
-                                                            src="./Search.svg"
-                                                            alt="Search Icon"
-                                                            className="h-6 w-6 absolute left-2"
-                                                        />
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Enter diag code"
-                                                            className="w-full h-full outline-none border-none pl-10"
-                                                            value={diag.code}
-                                                            onChange={(e) =>
-                                                                handleSearchChange(
-                                                                    index,
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-
-                                                    {diag.filteredResults
-                                                        .length > 0 && (
-                                                        <ul className="border border-gray-300 w-[240px] mt-[4.5rem] bg-white shadow-lg rounded-md absolute z-10">
-                                                            {diag.filteredResults
-                                                                .slice(0, 5)
-                                                                .map(
-                                                                    (
-                                                                        diagnosis,
-                                                                    ) => (
-                                                                        <li
-                                                                            key={
-                                                                                diagnosis.Value
-                                                                            }
-                                                                            className="p-2 hover:bg-gray-200 cursor-pointer"
-                                                                            onClick={() =>
-                                                                                handleSelectd(
-                                                                                    index,
+                                                                {diag
+                                                                    .filteredResults
+                                                                    .length >
+                                                                    0 && (
+                                                                    <ul className="border border-gray-300 w-[240px] mt-[4.5rem] bg-white shadow-lg rounded-md absolute z-10">
+                                                                        {diag.filteredResults
+                                                                            .slice(
+                                                                                0,
+                                                                                5,
+                                                                            )
+                                                                            .map(
+                                                                                (
                                                                                     diagnosis,
+                                                                                ) => (
+                                                                                    <li
+                                                                                        key={
+                                                                                            diagnosis.Value
+                                                                                        }
+                                                                                        className="p-2 hover:bg-gray-200 cursor-pointer"
+                                                                                        onClick={() =>
+                                                                                            handleSelectd(
+                                                                                                index,
+                                                                                                diagnosis,
+                                                                                            )
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            diagnosis.Value
+                                                                                        }{" "}
+                                                                                        -{" "}
+                                                                                        {
+                                                                                            diagnosis.Text
+                                                                                        }
+                                                                                    </li>
+                                                                                ),
+                                                                            )}
+                                                                    </ul>
+                                                                )}
+                                                            </div>
+
+                                                            {/* Diagnosis Description Input */}
+                                                            <div className="flex flex-col">
+                                                                <label className="font-semibold">
+                                                                    Diagnostic
+                                                                    Description
+                                                                </label>
+                                                                <div className="w-[765px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="Enter description"
+                                                                        className="w-full h-full outline-none border-none px-2"
+                                                                        value={
+                                                                            diag.description
+                                                                        }
+                                                                        readOnly
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            {diagnoses.length >
+                                                                1 && (
+                                                                <div className="flex items-end mb-2 ml-2">
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            handleDeleteDiagnosis(
+                                                                                index,
+                                                                            )
+                                                                        }
+                                                                        className="text-red-500 hover:text-red-700 focus:outline-none"
+                                                                    >
+                                                                        <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            className="h-6 w-6"
+                                                                            fill="none"
+                                                                            viewBox="0 0 24 24"
+                                                                            stroke="currentColor"
+                                                                        >
+                                                                            <path
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                                strokeWidth={
+                                                                                    2
+                                                                                }
+                                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                                            />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ),
+                                                )}
+
+                                                <div
+                                                    className="flex ml-6 justify-end cursor-pointer mt-4"
+                                                    onClick={handleAddDiagnosis}
+                                                >
+                                                    <img
+                                                        src="./Group 2356.svg"
+                                                        alt="Add"
+                                                        className="mr-2"
+                                                    />
+                                                    Add Diagnosis
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="ml-6 mt-6 mb-6">
+                                    <h3 className="text-[23px] text-red-700 mt-6 font-bold">
+                                        Services
+                                    </h3>
+
+                                    <h3 className="text-gray-700 flex items-center">
+                                        Procedure
+                                        <hr className="flex-grow border-t-2 border-gray-700 mx-4" />
+                                    </h3>
+
+                                    <div className="mx-auto mt-2">
+                                        <select
+                                            value={selectedRemark}
+                                            onChange={handleSelect}
+                                            className="hidden"
+                                        >
+                                            <option value="">Select</option>
+                                            {utilizationLines.map((item) => (
+                                                <option
+                                                    key={item.FilterType}
+                                                    value={
+                                                        item.ExtensionRemarks
+                                                    }
+                                                >
+                                                    {item.ExtensionRemarks}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {selectedData && (
+                                            <div className="mt-4 p-4 border rounded-md">
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    {procedures.map(
+                                                        (proc, index) => (
+                                                            <div
+                                                                key={index}
+                                                                className="flex space-x-4 mt-2 relative"
+                                                            >
+                                                                {/* Procedure Code Search */}
+                                                                <div className="flex flex-col mr-10">
+                                                                    <label className="font-semibold">
+                                                                        Procedure
+                                                                        Code
+                                                                    </label>
+                                                                    <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                                                                        <img
+                                                                            src="./Search.svg"
+                                                                            alt="Search Icon"
+                                                                            className="h-6 w-6 absolute left-2"
+                                                                        />
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Search procedure code"
+                                                                            className="w-full h-full outline-none border-none  pl-9"
+                                                                            value={
+                                                                                proc.code
+                                                                            }
+                                                                            onChange={(
+                                                                                e,
+                                                                            ) =>
+                                                                                handleSearchChangeProcedure(
+                                                                                    index,
+                                                                                    e
+                                                                                        .target
+                                                                                        .value,
                                                                                 )
                                                                             }
-                                                                        >
-                                                                            {
-                                                                                diagnosis.Value
-                                                                            }{" "}
-                                                                            -{" "}
-                                                                            {
-                                                                                diagnosis.Text
+                                                                        />
+                                                                    </div>
+
+                                                                    {proc
+                                                                        .filteredResults
+                                                                        .length >
+                                                                        0 && (
+                                                                        <div className="">
+                                                                            <ul className="border border-gray-300 w-[240px] mt-[4.5rem] bg-white shadow-lg rounded-md absolute z-10">
+                                                                                {proc.filteredResults
+                                                                                    .slice(
+                                                                                        0,
+                                                                                        5,
+                                                                                    )
+                                                                                    .map(
+                                                                                        (
+                                                                                            procedure,
+                                                                                        ) => (
+                                                                                            <li
+                                                                                                key={
+                                                                                                    procedure.tariff_code
+                                                                                                }
+                                                                                                className="p-2 hover:bg-gray-200 cursor-pointer"
+                                                                                                onClick={() =>
+                                                                                                    handleSelectProcedures(
+                                                                                                        index,
+                                                                                                        procedure,
+                                                                                                    )
+                                                                                                }
+                                                                                            >
+                                                                                                {
+                                                                                                    procedure.tariff_code
+                                                                                                }{" "}
+                                                                                                -{" "}
+                                                                                                {
+                                                                                                    procedure.tariff_desc
+                                                                                                }
+                                                                                            </li>
+                                                                                        ),
+                                                                                    )}
+                                                                            </ul>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+
+                                                                <div className="flex flex-col ">
+                                                                    <label className="font-semibold">
+                                                                        Procedure
+                                                                        Description
+                                                                    </label>
+                                                                    <div className="w-[400px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Procedure description"
+                                                                            className="w-full h-full outline-none border-none px-2"
+                                                                            value={
+                                                                                proc.description
                                                                             }
-                                                                        </li>
-                                                                    ),
-                                                                )}
-                                                        </ul>
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex flex-col ">
+                                                                    <label className="font-semibold whitespace-nowrap">
+                                                                        Price
+                                                                    </label>
+                                                                    <div className="w-[90px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                                                                        <h2 className=" ml-1">
+                                                                            {
+                                                                                "\u20A6"
+                                                                            }
+                                                                            {
+                                                                                price
+                                                                            }
+                                                                        </h2>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex flex-col ">
+                                                                    <label className="font-semibold whitespace-nowrap">
+                                                                        Quantity
+                                                                    </label>
+                                                                    <div className="w-[90px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Quantity"
+                                                                            className="w-full h-full outline-none border-none px-1"
+                                                                            value={
+                                                                                proc.ProcedureQty ||
+                                                                                ""
+                                                                            }
+                                                                            onChange={(
+                                                                                e,
+                                                                            ) => {
+                                                                                const updatedProcedures =
+                                                                                    [
+                                                                                        ...procedures,
+                                                                                    ];
+                                                                                updatedProcedures[
+                                                                                    index
+                                                                                ].ProcedureQty =
+                                                                                    e.target.value;
+                                                                                setProcedures(
+                                                                                    updatedProcedures,
+                                                                                );
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex flex-col ">
+                                                                    <label className="font-semibold whitespace-nowrap">
+                                                                        Preferred
+                                                                        Price
+                                                                    </label>
+                                                                    <div className="w-[90px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Price"
+                                                                            className="w-full h-full outline-none border-none px-2"
+                                                                            value={
+                                                                                proc.ChargeAmount ||
+                                                                                ""
+                                                                            }
+                                                                            onChange={(
+                                                                                e,
+                                                                            ) => {
+                                                                                const updatedProcedures =
+                                                                                    [
+                                                                                        ...procedures,
+                                                                                    ];
+                                                                                updatedProcedures[
+                                                                                    index
+                                                                                ].ChargeAmount =
+                                                                                    e.target.value;
+                                                                                setProcedures(
+                                                                                    updatedProcedures,
+                                                                                );
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ),
                                                     )}
                                                 </div>
-
-                                                {/* Diagnosis Description Input */}
-                                                <div className="flex flex-col">
-                                                    <label className="font-semibold">
-                                                        Diagnostic Description
-                                                    </label>
-                                                    <div className="w-[765px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Enter description"
-                                                            className="w-full h-full outline-none border-none px-2"
-                                                            value={
-                                                                diag.description
-                                                            }
-                                                            readOnly
-                                                        />
-                                                    </div>
-                                                </div>
-                                                {diagnoses.length > 1 && (
-                                                    <div className="flex items-end mb-2 ml-2">
-                                                        <button
-                                                            onClick={() =>
-                                                                handleDeleteDiagnosis(
-                                                                    index,
-                                                                )
-                                                            }
-                                                            className="text-red-500 hover:text-red-700 focus:outline-none"
-                                                        >
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                className="h-6 w-6"
-                                                                fill="none"
-                                                                viewBox="0 0 24 24"
-                                                                stroke="currentColor"
-                                                            >
-                                                                <path
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    strokeWidth={
-                                                                        2
-                                                                    }
-                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                                                />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                )}
                                             </div>
-                                        ))}
-
-                                        <div
-                                            className="flex ml-6 justify-end cursor-pointer mt-4"
-                                            onClick={handleAddDiagnosis}
-                                        >
-                                            <img
-                                                src="./Group 2356.svg"
-                                                alt="Add"
-                                                className="mr-2"
-                                            />
-                                            Add Diagnosis
-                                        </div>
+                                        )}
                                     </div>
-                                </div>
-                                {/* <div className="flex flex-col">
-                                    <label
-                                        htmlFor="diagnostic-description"
-                                        className="font-semibold"
-                                    >
-                                        Diagnostic Description
-                                    </label>
-                                    <div className="w-[765px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
-                                        <input
-                                            type="text"
-                                            id="diagnostic-description"
-                                            placeholder="Enter description"
-                                            className="w-full h-full outline-none border-none px-2"
-                                            value={
-                                                selectedDiagnosis
-                                                    ? selectedDiagnosis.Text
-                                                    : ""
-                                            }
-                                            readOnly
-                                        />
-                                    </div>
-                                </div> */}
-                            </div>
-                        </div>
 
-                        <div className="ml-6 mt-6 mb-6">
-                            <h3 className="text-[23px] text-red-700 mt-6 font-bold">
-                                Services
-                            </h3>
-
-                            <h3 className="text-gray-700 flex items-center">
-                                Procedure
-                                <hr className="flex-grow border-t-2 border-gray-700 mx-4" />
-                            </h3>
-
-                            <div className="mx-auto mt-2">
-                                <select
-                                    value={selectedRemark}
-                                    onChange={handleSelect}
-                                    className="w-[15rem] p-2 border rounded-md"
-                                >
-                                    <option value="">Select</option>
-                                    {utilizationLines.map((item) => (
-                                        <option
-                                            key={item.FilterType}
-                                            value={item.ExtensionRemarks}
-                                        >
-                                            {item.ExtensionRemarks}
-                                        </option>
-                                    ))}
-                                </select>
-
-                                {selectedData && (
-                                    <div className="mt-4 p-4 border rounded-md">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            {procedures.map((proc, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="flex space-x-4 mt-2 relative"
-                                                >
-                                                    {/* Procedure Code Search */}
-                                                    <div className="flex flex-col mr-10">
-                                                        <label className="font-semibold">
+                                    <div className="mt-4">
+                                        <h2 className="text-lg font-semibold">
+                                            Selected Procedures
+                                        </h2>
+                                        {selectedProcedures.length === 0 ? (
+                                            <p className="text-gray-500">
+                                                No procedures added yet.
+                                            </p>
+                                        ) : (
+                                            <table className="w-full mt-4 border border-gray-300">
+                                                <thead className="bg-gray-100">
+                                                    <tr>
+                                                        <th className="p-2 border">
+                                                            #
+                                                        </th>
+                                                        <th className="p-2 border">
                                                             Procedure Code
-                                                        </label>
-                                                        <div className="relative w-[240px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
-                                                            <img
-                                                                src="./Search.svg"
-                                                                alt="Search Icon"
-                                                                className="h-6 w-6 absolute left-2"
-                                                            />
-                                                            <input
-                                                                type="text"
-                                                                placeholder="Search procedure code"
-                                                                className="w-full h-full outline-none border-none  pl-9"
-                                                                value={
-                                                                    proc.code
-                                                                }
-                                                                onChange={(e) =>
-                                                                    handleSearchChangeProcedure(
-                                                                        index,
-                                                                        e.target
-                                                                            .value,
-                                                                    )
-                                                                }
-                                                            />
-                                                        </div>
-                                                        {/* Filtered Results Dropdown */}
-                                                        {proc.filteredResults
-                                                            .length > 0 && (
-                                                            <div className="">
-                                                                <ul className="border border-gray-300 w-[240px] mt-[4.5rem] bg-white shadow-lg rounded-md absolute z-10">
-                                                                    {proc.filteredResults
-                                                                        .slice(
-                                                                            0,
-                                                                            5,
-                                                                        )
-                                                                        .map(
-                                                                            (
-                                                                                procedure,
-                                                                            ) => (
-                                                                                <li
-                                                                                    key={
-                                                                                        procedure.ProcedureCode
-                                                                                    }
-                                                                                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                                                                                    onClick={() =>
-                                                                                        handleSelectProcedures(
-                                                                                            index,
-                                                                                            procedure,
-                                                                                        )
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        procedure.ProcedureCode
-                                                                                    }{" "}
-                                                                                    -{" "}
-                                                                                    {
-                                                                                        procedure.ProcedureDescription
-                                                                                    }
-                                                                                </li>
-                                                                            ),
-                                                                        )}
-                                                                </ul>
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="flex flex-col ">
-                                                        <label className="font-semibold">
-                                                            Procedure
+                                                        </th>
+                                                        <th className="p-2 border">
+                                                            Procecedure
                                                             Description
-                                                        </label>
-                                                        <div className="w-[765px] h-[44px] border-2 border-black rounded-md flex items-center px-2">
-                                                            <input
-                                                                type="text"
-                                                                placeholder="Procedure description"
-                                                                className="w-full h-full outline-none border-none px-2"
-                                                                value={
-                                                                    proc.description
-                                                                }
-                                                                readOnly
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        {selectedRemark === "pharmacy" && (
-                                            <div className="mt-4 p-4 border rounded-md bg-white">
-                                                <h2 className="text-lg font-semibold mb-2">
-                                                    Pharmacy Details
-                                                </h2>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
+                                                        </th>
+                                                        <th className="p-2 border">
+                                                            Registered Price
+                                                        </th>
+                                                        <th className="p-2 border">
                                                             Quantity
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="ProcedureQty"
-                                                            value={
-                                                                formValues.ProcedureQty
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            Duration
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="Duration"
-                                                            value={
-                                                                formValues.Duration
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            Daily Quantity
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="DailyQuantity"
-                                                            value={
-                                                                formValues.DailyQuantity
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            Dosage Value
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="DosageValue"
-                                                            value={
-                                                                formValues.DosageValue
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            Drug form
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="DrugForm"
-                                                            value={
-                                                                formValues.DrugForm
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            Period
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="Period"
-                                                            value={
-                                                                formValues.Period
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
+                                                        </th>
+                                                        <th className="p-2 border">
+                                                            Preferred Price (₦)
+                                                        </th>
+                                                        <th className="p-2 border">
+                                                            PA Code/Status
+                                                        </th>
+                                                        <th className="p-2 border">
+                                                            Actions
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {selectedProcedures.length ===
+                                                    0 ? (
+                                                        <tr>
+                                                            <td
+                                                                colSpan="6"
+                                                                className="p-4 text-center text-gray-500"
+                                                            >
+                                                                No procedures
+                                                                added yet.
+                                                            </td>
+                                                        </tr>
+                                                    ) : (
+                                                        selectedProcedures.map(
+                                                            (proc, index) => (
+                                                                <tr
+                                                                    key={index}
+                                                                    className="border-t"
+                                                                >
+                                                                    <td className="p-2 border text-center">
+                                                                        {index +
+                                                                            1}
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            proc.ProcedureCode
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            proc.ExtensionRemarks
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border text-center">
+                                                                        ₦
+                                                                        {
+                                                                            proc.price
+                                                                        }
+                                                                    </td>
 
-                                        {selectedRemark === "Admitted" && (
-                                            <div className="mt-4 p-4 border rounded-md bg-white">
-                                                <h2 className="text-lg font-semibold mb-2">
-                                                    Admission Details
-                                                </h2>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            Admission Date
-                                                        </label>
-                                                        <input
-                                                            type="date"
-                                                            name="AdmissionDate"
-                                                            value={
-                                                                formValues.AdmissionDate
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            Discharge Date
-                                                        </label>
-                                                        <input
-                                                            type="date"
-                                                            name="DischargeDate"
-                                                            value={
-                                                                formValues.DischargeDate
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
+                                                                    <td className="p-2 border text-center">
+                                                                        {proc.ProcedureQty ||
+                                                                            "—"}
+                                                                    </td>
 
-                                        {selectedRemark === "Observation" && (
-                                            <div className="mt-4 p-4 border rounded-md bg-white">
-                                                <h2 className="text-lg font-semibold mb-2">
-                                                    Observation Details
-                                                </h2>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            Start Time
-                                                        </label>
-                                                        <input
-                                                            type="time"
-                                                            name="Start_Time"
-                                                            value={
-                                                                formValues.Start_Time
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium">
-                                                            End Time
-                                                        </label>
-                                                        <input
-                                                            type="time"
-                                                            name="End_Time"
-                                                            value={
-                                                                formValues.End_Time
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full border p-2 rounded-md"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                                    <td className="p-2 border text-center">
+                                                                        ₦
+                                                                        {proc.ChargeAmount
+                                                                            ? Number(
+                                                                                  proc.ChargeAmount,
+                                                                              ).toLocaleString()
+                                                                            : "—"}
+                                                                    </td>
+                                                                    <td className="p-2 border text-center whitespace-nowrap">
+                                                                        {apiResponse.PreAutCode ==
+                                                                        null
+                                                                            ? "Procedure requires PreAuthorization"
+                                                                            : apiResponse.PreAutCode}
+                                                                    </td>
+                                                                    <td className="p-2 border text-center">
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                handleRemoveProcedure(
+                                                                                    index,
+                                                                                )
+                                                                            }
+                                                                            className="text-red-500 hover:text-red-700 font-semibold"
+                                                                        >
+                                                                            Remove
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            ),
+                                                        )
+                                                    )}
+                                                </tbody>
+                                            </table>
                                         )}
                                     </div>
-                                )}
-                            </div>
-
-                            <div className="mt-4">
-                                <h2 className="text-lg font-semibold">
-                                    Selected Procedures
-                                </h2>
-                                {selectedProcedures.length === 0 ? (
-                                    <p className="text-gray-500">
-                                        No procedures added yet.
-                                    </p>
-                                ) : (
-                                    <ul className="mt-2">
-                                        {selectedProcedures.map(
-                                            (proc, index) => (
-                                                <li
-                                                    key={index}
-                                                    className="flex justify-between items-center p-2 border rounded-md mb-2"
-                                                >
-                                                    <span className="text-gray-700">
-                                                        {proc.ProcedureCode}-
-                                                        {
-                                                            proc.ProcedureDescription
-                                                        }
-                                                    </span>
-                                                    <button
-                                                        onClick={() =>
-                                                            handleRemoveProcedure(
-                                                                index,
-                                                            )
-                                                        }
-                                                        className="text-red-500 hover:text-red-700 font-semibold"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </li>
-                                            ),
-                                        )}
-                                    </ul>
-                                )}
-                            </div>
-                        </div>
-
-                        <div
-                            className="flex ml-6 justify-end cursor-pointer mt-4"
-                            onClick={handleAddProcedures}
-                        >
-                            <img
-                                src="./Group 2356.svg"
-                                alt=""
-                                className="mr-2"
-                            />
-                            <span className=" font-semibold">
-                                Add Procedure
-                            </span>
-                        </div>
-                        {/* 
-                        <div>
-                            <h2>Select Procedures</h2>
-                            {procedurex.map((procedure, index) => (
-                                <div key={index} className="procedure-item">
-                                    <p>
-                                        <strong>Procedure:</strong>{" "}
-                                        {procedurex.ExtensionRemarks}
-                                    </p>
-
-                                    {procedure.FilterType === "3" && (
-                                        <>
-                                            <label>Quantity:</label>
-                                            <input
-                                                type="number"
-                                                value={
-                                                    procedure.ProcedureQty || ""
-                                                }
-                                                onChange={(e) =>
-                                                    handleProcedureChangex(
-                                                        index,
-                                                        "ProcedureQty",
-                                                        e.target.value,
-                                                    )
-                                                }
-                                            />
-                                        </>
-                                    )}
-
-                                    {procedure.FilterType === "4" && (
-                                        <>
-                                            <label>Admission Date:</label>
-                                            <input
-                                                type="date"
-                                                value={
-                                                    procedure.AdmissionDate ||
-                                                    ""
-                                                }
-                                                onChange={(e) =>
-                                                    handleProcedureChangex(
-                                                        index,
-                                                        "AdmissionDate",
-                                                        e.target.value,
-                                                    )
-                                                }
-                                            />
-                                        </>
-                                    )}
-
-                                    {procedure.FilterType === "7" && (
-                                        <>
-                                            <label>Start Time:</label>
-                                            <input
-                                                type="time"
-                                                value={
-                                                    procedure.Start_Time || ""
-                                                }
-                                                onChange={(e) =>
-                                                    handleProcedureChangex(
-                                                        index,
-                                                        "Start_Time",
-                                                        e.target.value,
-                                                    )
-                                                }
-                                            />
-                                        </>
-                                    )}
                                 </div>
-                            ))}
 
-                            <button onClick={handleSubmit}>Submit</button>
-                        </div> */}
+                                <div className="mt-4  ml-6 font-semibold text-lg text-red-700">
+                                    Total Amount: ₦
+                                    {totalAmount.toLocaleString()}
+                                </div>
 
-                        {/* <div className="ml-6">
-                            <div className="flex items-center space-x-2">
-                                <input
-                                    type="checkbox"
-                                    id="escalation-checkbox"
-                                    checked={isChecked}
-                                    onChange={handleCheckboxChange}
-                                    className="h-4 w-4"
-                                />
-                                <div>Escalation</div>
-                            </div>
+                                <div
+                                    className="flex ml-6 justify-end cursor-pointer mt-4"
+                                    onClick={handleAddProcedures}
+                                >
+                                    <img
+                                        src="./Group 2356.svg"
+                                        alt=""
+                                        className="mr-2"
+                                    />
+                                    <span className=" font-semibold">
+                                        Add Procedure
+                                    </span>
+                                </div>
+                            </>
+                        )}
 
-                            {isChecked && (
-                                <div className="flex flex-col mt-4">
-                                    <label
-                                        htmlFor="diagnostic-description"
-                                        className="font-semibold"
-                                    >
-                                        Exclusion Reason
-                                    </label>
-                                    <div className="w-[1060px] h-[44px] border-2 border-black rounded-md flex items-center px-2 mt-2">
-                                        <input
-                                            type="text"
-                                            id="diagnostic-description"
-                                            placeholder="Enter Exclusion Reason"
-                                            className="w-full h-full outline-none border-none px-2"
+                        {selectedVisitType?.label === "Health Checks" && (
+                            <div className="mt-6">
+                                <h3 className="text-red-700 flex items-center font-bold text-[20px]  ml-10">
+                                    Hospital Visit Information
+                                    <hr className="flex-grow border-t-2 border-gray-700 mx-4" />
+                                </h3>
+                                <div className=" flex gap-4 mt-5">
+                                    <div className="relative w-[350px] ml-5">
+                                        <label className="block mb-2 text-gray-700 font-medium">
+                                            State of Residence
+                                        </label>
+                                        <DateDropdown
+                                            key="service-dropdown"
+                                            options={state.map((type) => ({
+                                                label: type.Text,
+                                                value: type.Value,
+                                            }))}
+                                            selectedValue={selectedState}
+                                            sendSelection={(selectedOption) =>
+                                                setState(selectedOption)
+                                            }
+                                            className="relative w-full h-[44px] rounded-lg outline-none"
+                                        />
+                                    </div>
+
+                                    <div className="relative w-[350px]">
+                                        <label className="block mb-2 text-gray-700 font-medium">
+                                            Screening Location
+                                        </label>
+                                        <DateDropdown
+                                            key="service-dropdown"
+                                            options={lga.map((type) => ({
+                                                label: type.Text,
+                                                value: type.Value,
+                                            }))}
+                                            selectedValue={selectedLga}
+                                            sendSelection={(selectedOption) =>
+                                                setSelectedLga(selectedOption)
+                                            }
+                                            className="relative w-full h-[44px] rounded-lg outline-none"
+                                        />
+                                    </div>
+                                    <div className="relative w-[350px]">
+                                        <label className="block mb-2 text-gray-700 font-medium">
+                                            Facility
+                                        </label>
+                                        <DateDropdown
+                                            key="facility"
+                                            options={filteredProvider.map(
+                                                (type) => ({
+                                                    label: type.provider,
+                                                    value: type.provider_id.toString(),
+                                                }),
+                                            )}
+                                            selectedValue={selectedFacility}
+                                            sendSelection={(selectedOption) =>
+                                                setSelectedFacility(
+                                                    selectedOption,
+                                                )
+                                            }
+                                            className="relative w-full h-[44px] rounded-lg outline-none"
                                         />
                                     </div>
                                 </div>
-                            )}
-                        </div> */}
+                            </div>
+                        )}
 
                         <div className="ml-6 mt-10">
                             <h3 className="text-gray-700 flex items-center">
@@ -1832,7 +2442,7 @@ const CreateEnroleePACode = () => {
                         </div>
 
                         <div className="flex justify-between mt-8">
-                            <div>
+                            {/* <div>
                                 <button
                                     className="w-[131.78px] h-[37.65px] text-center text-red-700 border border-red-700 rounded-md"
                                     onClick={() =>
@@ -1843,19 +2453,287 @@ const CreateEnroleePACode = () => {
                                 </button>
                             </div>
                             <div>
-                                <button
-                                    className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
-                                    onClick={handleSubmitPA}
-                                >
-                                    Proceed
-                                </button>
-                            </div>
+                                
+
+                                <div>
+                                    {submitLoader ? (
+                                        <button
+                                            disabled
+                                            className="flex items-center gap-2 whitespace-nowrap h-11 px-5 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md"
+                                        >
+                                            Submitting..
+                                            <FaSpinner className="animate-spin text-xl" />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="w-[131.78px] h-[37.65px] text-center text-white bg-red-700 rounded-md"
+                                            onClick={handleSubmitPA}
+                                        >
+                                            Submit
+                                        </button>
+                                    )}
+                                </div>
+                            </div> */}
+
                             <CreatePAModal
                                 isOpen={isModalOpen}
                                 onClose={() => setIsModalOpen(false)}
                                 response={apiResponse}
                             />
+                            {/* benefitModal */}
+
+                            {isModalsOpen && (
+                                <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                                    <div className="bg-white w-full max-w-6xl rounded-lg shadow-lg relative">
+                                        <div className="flex justify-between items-center px-4 py-3 border-b">
+                                            <h2 className="text-lg font-semibold text-red-700">
+                                                {selectedVisitType?.label}
+                                            </h2>
+                                            <button
+                                                onClick={() =>
+                                                    setIsModalsOpen(false)
+                                                }
+                                                className="text-gray-600 hover:text-red-500 text-xl"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+
+                                        <div className="max-h-[70vh] overflow-y-auto p-4">
+                                            {loading ? (
+                                                <p className="text-center text-gray-500">
+                                                    Loading...
+                                                </p>
+                                            ) : (
+                                                <table className="min-w-full table-auto border-collapse text-sm">
+                                                    <thead className="bg-gray-100 text-left">
+                                                        <tr>
+                                                            <th className="p-2 border">
+                                                                Benefit
+                                                            </th>
+                                                            <th className="p-2 border">
+                                                                Limit
+                                                            </th>
+                                                            <th className="p-2 border">
+                                                                Servicename
+                                                            </th>
+                                                            <th className="p-2 border">
+                                                                Membername
+                                                            </th>
+                                                            <th className="p-2 border">
+                                                                Authorised
+                                                            </th>
+                                                            <th className="p-2 border text-right">
+                                                                Used
+                                                            </th>
+                                                            <th className="p-2 border text-right">
+                                                                Balance
+                                                            </th>
+                                                            <th className="p-2 border text-right">
+                                                                Schemename
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {benefit.map(
+                                                            (item, index) => (
+                                                                <tr
+                                                                    key={index}
+                                                                    className="even:bg-gray-50"
+                                                                >
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            item.Benefit
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            item.Limit
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            item.servicename
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            item.membername
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            item.Authorised
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            item.Used
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            item.Balance
+                                                                        }
+                                                                    </td>
+                                                                    <td className="p-2 border">
+                                                                        {
+                                                                            item.schemename
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            ),
+                                                        )}
+                                                    </tbody>
+                                                </table>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
+
+                        {ShowPATable && (
+                            <div className="  flex gap-3 w-full">
+                                <div className="w-[98%] flex relative overflow-x-auto">
+                                    <table className="min-w-full table-auto border-collapse text-sm mt-5 ">
+                                        <thead className="bg-gray-100 text-left text-[10px]">
+                                            <tr>
+                                                <th className="p-2 border">
+                                                    DiagnosisCode
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    Diagnosis Description
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    Procedure Code
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    Procedure Description
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    PA Code
+                                                </th>
+                                                <th className="p-2 border">
+                                                    CifNumber
+                                                </th>
+                                                <th className="p-2 border">
+                                                    ProviderID
+                                                </th>
+                                                <th className="p-2 border">
+                                                    VisitID
+                                                </th>
+                                                <th className="p-2 border">
+                                                    VisitDate
+                                                </th>
+                                                <th className="p-2 border">
+                                                    Username
+                                                </th>
+                                                <th className="p-2 border whitespace-nowrap">
+                                                    Doctor Recommendations
+                                                </th>
+                                                <th className="p-2 border">
+                                                    ServiceTypeID
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {selectedProcedures.map(
+                                                (proc, idx) => (
+                                                    <tr
+                                                        key={idx}
+                                                        className="border-t text-[10px] "
+                                                    >
+                                                        <td className="px-4 py-2 border">
+                                                            {
+                                                                alldiagnosis[0]
+                                                                    ?.DiagnosisCode
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {
+                                                                alldiagnosis[0]
+                                                                    ?.DiagnosisDescription
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {proc.ProcedureCode}
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {
+                                                                proc.ExtensionRemarks
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {apiResponse.PreAutCode ==
+                                                            null
+                                                                ? "Procedure requires PreAuthorization"
+                                                                : apiResponse.PreAutCode}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {
+                                                                enrollee?.Member_MemberUniqueID
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {
+                                                                selectedProviders?.provider_id
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {data?.VisitID}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {encounterDate}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {providerEmail}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {doctorsprescription ==
+                                                            null
+                                                                ? "No prescription"
+                                                                : doctorsprescription}
+                                                        </td>
+                                                        <td className="px-4 py-2 border">
+                                                            {selectedVisitType?.value ||
+                                                                ""}
+                                                        </td>
+                                                    </tr>
+                                                ),
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div className="grid grid-cols-1  h-[90px] mt-3 gap-2 w-[10%] ">
+                                    <button
+                                        className="whitespace-nowrap   text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Approve All
+                                    </button>
+                                    <button
+                                        className="whitespace-nowrap  w-full  text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Reject All
+                                    </button>{" "}
+                                    <button
+                                        className="whitespace-nowrap  w-full   text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Approve
+                                    </button>
+                                    <button
+                                        className="whitespace-nowrap  w-full    text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Reject
+                                    </button>{" "}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

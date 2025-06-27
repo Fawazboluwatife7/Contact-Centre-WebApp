@@ -183,7 +183,9 @@ const CSPatientModal = ({ selectedStatus }) => {
                         className="w-20 h-20 rounded-full"
                     />
                     <div className=" items-center mt-2 rounded-full flex gap-2 ">
-                        {enrollee?.Status === "Active" ? (
+                        {enrollee?.Status ||
+                        enrollee?.Member_MemberStatus_Description ===
+                            "Active" ? (
                             <FaFlag className="text-green-500 w-[3rem] h-[3rem]" />
                         ) : (
                             <FaFlag className="text-red-500 w-[3rem] h-[3rem]" />
@@ -195,7 +197,10 @@ const CSPatientModal = ({ selectedStatus }) => {
                         <div>
                             <span className="block text-gray-500">Name</span>
                             <span className="block font-medium text-[14px]">
-                                {enrollee.surname} {""} {enrollee.firstname}
+                                {enrollee.surname || enrollee.Member_Surname}{" "}
+                                {""}{" "}
+                                {enrollee.firstname ||
+                                    enrollee.Member_FirstName}
                             </span>
                         </div>
 
@@ -206,7 +211,8 @@ const CSPatientModal = ({ selectedStatus }) => {
                             <span className="block font-medium text-[14px]">
                                 {
                                     new Date(
-                                        enrollee.dateofbirth,
+                                        enrollee.dateofbirth ||
+                                            enrollee.Member_DateOfBirth,
                                     ).toLocaleDateString("en-GB") // Formats the date as day/month/year
                                 }
                             </span>
@@ -216,7 +222,8 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Enrollee ID
                             </span>
                             <span className="block font-medium text-[14px]">
-                                {enrollee.MemberNumber}
+                                {enrollee.MemberNumber ||
+                                    enrollee.Member_EnrolleeID}
                             </span>
                         </div>
                         <div>
@@ -224,13 +231,16 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Phone Number
                             </span>
                             <span className="block font-medium text-[14px]">
-                                {enrollee.MobilePhone}
+                                {enrollee.MobilePhone ||
+                                    enrollee.Member_Phone_One}{" "}
+                                {enrollee.Member_Phone_Two}
                             </span>
                         </div>
                         <div>
                             <span className="block text-gray-500">Group</span>
                             <span className="block font-medium break-words text-[14px] leading-tight">
-                                {enrollee.group_name}
+                                {enrollee.group_name ||
+                                    enrollee.Client_ClientName}
                             </span>
                         </div>
 
@@ -239,13 +249,17 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Email Address
                             </span>
                             <span className="block font-medium break-words text-[14px] leading-tight">
-                                {enrollee.email || "N/A"}
+                                {enrollee.email ||
+                                    enrollee.Member_EmailAddress_One ||
+                                    "N/A"}
                             </span>
                         </div>
                         <div>
                             <span className="block text-gray-500">Scheme</span>
                             <span className="block font-medium text-[14px]">
-                                {enrollee.SCHEME_TYPE || "N/A"}
+                                {enrollee.SCHEME_TYPE ||
+                                    enrollee.client_schemename ||
+                                    "N/A"}{" "}
                             </span>
                         </div>
                         {/* <div>
@@ -262,7 +276,9 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Member Type
                             </span>
                             <span className="block font-medium text-[14px]">
-                                {enrollee.MemberType || "N/A"}
+                                {enrollee.MemberType ||
+                                    enrollee.Member_Membertype ||
+                                    "N/A"}
                             </span>
                         </div>
 
@@ -280,7 +296,7 @@ const CSPatientModal = ({ selectedStatus }) => {
                                 Age
                             </span>
                             <span className="block font-medium">
-                                {enrollee.Age}
+                                {enrollee.Age || enrollee.Member_Age}
                             </span>
                         </div>
 
@@ -292,7 +308,8 @@ const CSPatientModal = ({ selectedStatus }) => {
                             <span className=" block font-medium break-words text-[14px] leading-tight">
                                 {
                                     new Date(
-                                        enrollee.PolicyEndDate,
+                                        enrollee.PolicyEndDate ||
+                                            enrollee.Client_DateTerminated,
                                     ).toLocaleDateString("en-GB") // Formats the date as day/month/year
                                 }
                             </span>

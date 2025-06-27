@@ -118,7 +118,7 @@ const AllPendingPARequests = () => {
     return (
         <div className="flex bg-white-500">
             <CsSidebar />
-            <div className="bg-[#F0F2FA] w-[82%] ml-auto ">
+            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[100vh] ">
                 <Header className="sticky top-0 z-50 bg-white shadow-md" />
 
                 <div className="mx-3 ">
@@ -129,7 +129,7 @@ const AllPendingPARequests = () => {
                     </div>
                 </div>
 
-                <div className="relative overflow-x-auto shadow-md mt-3 rounded-md mx-3">
+                <div className="relative overflow-x-auto shadow-md mt-3 rounded-md mx-3 ">
                     <div className="max-h-[550px] overflow-y-auto">
                         <table className="w-full text-sm text-left rtl:text-right text-black rounded-md border-collapse">
                             {/* Table Header */}

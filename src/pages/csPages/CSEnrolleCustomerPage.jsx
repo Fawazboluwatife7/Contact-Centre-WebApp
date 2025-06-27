@@ -37,43 +37,7 @@ function DateDropdown({ options, sendNumber, className }) {
         </select>
     );
 }
-const BenefitsArray = [
-    {
-        sn: "",
 
-        benefitscode: "FRAME",
-        benefitsname: "FRAMES",
-        benefitsnamefr: "FRAMES",
-        date: "29/10/2024",
-    },
-    {
-        sn: "",
-
-        benefitscode: "FRAME",
-        benefitsname: "FRAMES",
-        benefitsnamefr: "FRAMES",
-        date: "29/10/2023",
-    },
-    {
-        sn: "",
-
-        benefitscode: "FRAME",
-        benefitsname: "FRAMES",
-        benefitsnamefr: "FRAMES",
-        date: "29/10/2022",
-    },
-];
-
-const concessionsArray = [
-    {
-        concessiondate: "02/02/2022",
-        concession: "Permitted to use grade A hospitals",
-    },
-    {
-        concessiondate: "02/02/2022",
-        concession: "Permitted to use grade A hospitals",
-    },
-];
 // Tabs for table filters
 const tabs = ["Requests", "PA History", "Hospital Visits", "Benefits"];
 
@@ -84,8 +48,8 @@ const headers = {
         "Diagnosis",
         "Benefits",
         "Description",
-        "CHarge Amount",
-
+        "Price",
+        "Provider",
         "Visit Type",
         "Status",
     ],
@@ -95,6 +59,7 @@ const headers = {
         "Date",
         "Diagnosis",
         "Provider",
+        "PA Status",
         "Procedure",
         "Issuer",
         "Case Manager",
@@ -456,6 +421,10 @@ const CSEnrolleCustomerPage = () => {
     const location = useLocation();
     const { enrollee, enrolleeRequests } = location.state || {};
 
+    const pendingRequest = enrolleeRequests?.filter(
+        (request) => request.PAStatus === "Authorization Pending",
+    );
+
     const closeHospitalModal = () => {
         setSelectedHospitalItem(null); // Clear the selected item
         setIsHospitalModalOpen(false); // Hide the modal
@@ -495,13 +464,47 @@ const CSEnrolleCustomerPage = () => {
 
     const [selectedStatus, setSelectedStatus] = useState(null); // Status state
 
-    const [currentPage, setCurrentPage] = useState(1); // Active page
-    const itemsPerPage = 3;
     const changePage = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
         }
     };
+
+    const sortedPA = [...pa].sort(
+        (a, b) => new Date(b.DateIssued) - new Date(a.DateIssued),
+    );
+    const sortedHospitalVisitPA = [...hospitalHistory].sort(
+        (a, b) =>
+            new Date(b.ClaimLine_TreatmentDate) -
+            new Date(a.ClaimLine_TreatmentDate),
+    );
+    // Constants and state
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const totalPages = Math.ceil(sortedPA.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedData = sortedPA.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+    );
+
+    const totalHospitalHistoryPages = Math.ceil(
+        sortedHospitalVisitPA.length / itemsPerPage,
+    );
+
+    const paginatedHospitalHistoryData = sortedHospitalVisitPA.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+    );
+
+    const totalPendingPages = Math.ceil(pendingRequest.length / itemsPerPage);
+
+    const paginatedPendingData = pendingRequest.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+    );
 
     console.log(
         "getting PA",
@@ -750,20 +753,6 @@ const CSEnrolleCustomerPage = () => {
                                 {tab}
                             </button>
                         ))}
-
-                        {/* <div className="">
-                            <DateDropdown
-                                options={service.map((type) => ({
-                                    label: type.visittype,
-                                    value: type.servtype_id,
-                                }))}
-                                sendNumber={(value) => {
-                                    setSelectedValue(value); // Update selected value
-                                    GetBenefit(value); // Fetch benefit based on selection
-                                }}
-                                className="outline-none bg-red-500 rounded-md  ml-[27rem] text-white"
-                            />
-                        </div> */}
                     </div>
 
                     <div className="overflow-x-auto bg-white p-4 rounded-md ">
@@ -791,67 +780,77 @@ const CSEnrolleCustomerPage = () => {
                             <tbody>
                                 {activeTab === "Requests" && (
                                     <>
-                                        {enrolleeRequests.map((item, index) => {
-                                            const isSelected =
-                                                selectedItems.some(
-                                                    (selected) =>
-                                                        selected.VisitDetailsID ===
-                                                        item.VisitDetailsID,
-                                                );
+                                        {paginatedPendingData.map(
+                                            (item, index) => {
+                                                const isSelected =
+                                                    selectedItems.some(
+                                                        (selected) =>
+                                                            selected.VisitDetailsID ===
+                                                            item.VisitDetailsID,
+                                                    );
 
-                                            return (
-                                                <tr
-                                                    key={index}
-                                                    className="hover:bg-gray-100"
-                                                >
-                                                    <td className="border p-2 text-center">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={isSelected}
-                                                            onChange={() =>
-                                                                handleCheckboxChange(
-                                                                    item,
+                                                return (
+                                                    <tr
+                                                        key={index}
+                                                        className="hover:bg-gray-100"
+                                                    >
+                                                        <td className="border p-2 text-center">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={
+                                                                    isSelected
+                                                                }
+                                                                onChange={() =>
+                                                                    handleCheckboxChange(
+                                                                        item,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {
+                                                                new Date(
+                                                                    item.DateIssued,
                                                                 )
+                                                                    .toISOString()
+                                                                    .split(
+                                                                        "T",
+                                                                    )[0]
                                                             }
-                                                        />
-                                                    </td>
-                                                    <td className="border px-4 py-2">
-                                                        {
-                                                            new Date(
-                                                                item.DateIssued,
-                                                            )
-                                                                .toISOString()
-                                                                .split("T")[0]
-                                                        }
-                                                    </td>
-                                                    <td className="border px-4 py-2">
-                                                        {item.diagcode
-                                                            ?.split(",")[0]
-                                                            ?.split(" ")
-                                                            .slice(1)
-                                                            .join(" ") || "N/A"}
-                                                    </td>
-                                                    <td className="border px-4 py-2">
-                                                        {item.Benefit}
-                                                    </td>
-                                                    <td className="border px-4 py-2">
-                                                        {
-                                                            item.ProcedureDescription
-                                                        }
-                                                    </td>
-                                                    <td className="border px-4 py-2">
-                                                        {item.chargeamount}
-                                                    </td>
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.diagcode
+                                                                ?.split(",")[0]
+                                                                ?.split(" ")
+                                                                .slice(1)
+                                                                .join(" ") ||
+                                                                "N/A"}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.Benefit}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {
+                                                                item.ProcedureDescription
+                                                            }
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.chargeamount}
+                                                        </td>
+                                                        <td className="border px-4 py-2">
+                                                            {item.provider}
+                                                        </td>
 
-                                                    <td className="border px-4 py-2">
-                                                        {item.visitType}
-                                                    </td>
-                                                    <td className="border px-4 py-2 text-orange-500">
-                                                        {item.PAStatus}
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
+                                                        <td className="border px-4 py-2">
+                                                            {item.visitType}
+                                                        </td>
+                                                        <td className="border px-4 py-2 text-orange-500">
+                                                            {item.PAStatus}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            },
+                                        )}
                                     </>
                                 )}
 
@@ -1306,7 +1305,7 @@ const CSEnrolleCustomerPage = () => {
                                         )}
                                     </>
                                 )}
-                                {activeTab === "PA History" &&
+                                {/* {activeTab === "PA History" &&
                                     pa.map((item, index) => (
                                         <tr
                                             key={index}
@@ -1326,9 +1325,7 @@ const CSEnrolleCustomerPage = () => {
                                                         .split("T")[0]
                                                 }
                                             </td>
-                                            {/* <td className="border px-4 py-2">
-                                                {item.plan}
-                                            </td> */}
+                                            
                                             <td className="border px-4 py-2">
                                                 {item.diagcode
                                                     ?.split(",")[0]
@@ -1338,6 +1335,9 @@ const CSEnrolleCustomerPage = () => {
                                             </td>
                                             <td className="border px-4 py-2">
                                                 {item.provider}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.PACode}
                                             </td>
 
                                             <td className="border px-4 py-2">
@@ -1359,58 +1359,119 @@ const CSEnrolleCustomerPage = () => {
                                                 {item.PAStatus}
                                             </td>
                                         </tr>
-                                    ))}
-                                {activeTab === "Hospital Visits" &&
-                                    (hospitalHistory.length > 0 ? (
-                                        hospitalHistory.map((item, index) => (
-                                            <tr
-                                                key={index}
-                                                className="hover:bg-gray-100"
-                                                onClick={() =>
-                                                    openHospitalModal(item)
+                                    ))} */}
+
+                                {activeTab === "PA History" &&
+                                    paginatedData.map((item, index) => (
+                                        <tr
+                                            key={index}
+                                            className="hover:bg-gray-100"
+                                            onClick={() => openModal(item)}
+                                        >
+                                            <td className="border px-4 py-2">
+                                                {item.visitid}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.surname} {item.firstname}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {
+                                                    new Date(item.DateIssued)
+                                                        .toISOString()
+                                                        .split("T")[0]
+                                                }
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.diagcode
+                                                    ?.split(",")[0]
+                                                    ?.split(" ")
+                                                    .slice(1)
+                                                    .join(" ") || "N/A"}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.provider}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.PACode}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.ProcedureDescription}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.issuedBy}
+                                            </td>
+                                            <td className="border px-4 py-2">
+                                                {item.casemanager}
+                                            </td>
+                                            <td
+                                                className={
+                                                    item.status === "Approved"
+                                                        ? "text-green-500 border px-4 py-2"
+                                                        : "text-red-500 border px-4 py-2"
                                                 }
                                             >
-                                                <td className="border px-4 py-2">
-                                                    {
-                                                        new Date(
-                                                            item.ClaimLine_TreatmentDate,
-                                                        )
-                                                            .toISOString()
-                                                            .split("T")[0]
+                                                {item.PAStatus}
+                                            </td>
+                                        </tr>
+                                    ))}
+
+                                {activeTab === "Hospital Visits" &&
+                                    (paginatedHospitalHistoryData.length > 0 ? (
+                                        paginatedHospitalHistoryData.map(
+                                            (item, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="hover:bg-gray-100"
+                                                    onClick={() =>
+                                                        openHospitalModal(item)
                                                     }
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.Claim_Provider}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.Claim_Diagnosis}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {
-                                                        item.ClaimLine_BenefitDepartment
-                                                    }
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.ClaimLine_TariffAmt ||
-                                                        "No Payment made"}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.ClaimLine_units}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.ClaimLine_AmtPaid}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.Claim_Authorisation}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.Claim_Service_Type}
-                                                </td>
-                                                <td className="border px-4 py-2">
-                                                    {item.Claim_status}
-                                                </td>
-                                            </tr>
-                                        ))
+                                                >
+                                                    <td className="border px-4 py-2">
+                                                        {
+                                                            new Date(
+                                                                item.ClaimLine_TreatmentDate,
+                                                            )
+                                                                .toISOString()
+                                                                .split("T")[0]
+                                                        }
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Claim_Provider}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Claim_Diagnosis}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {
+                                                            item.ClaimLine_BenefitDepartment
+                                                        }
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.ClaimLine_TariffAmt ||
+                                                            "No Payment made"}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.ClaimLine_units}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.ClaimLine_AmtPaid}
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {
+                                                            item.Claim_Authorisation
+                                                        }
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {
+                                                            item.Claim_Service_Type
+                                                        }
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        {item.Claim_status}
+                                                    </td>
+                                                </tr>
+                                            ),
+                                        )
                                     ) : (
                                         <tr>
                                             <td
@@ -1512,6 +1573,98 @@ const CSEnrolleCustomerPage = () => {
                             item={selectedHospitalItem}
                             onClose={closeHospitalModal}
                         />
+                    )}
+
+                    {activeTab === "PA History" && pa.length > itemsPerPage && (
+                        <div className="flex justify-center mt-3 items-center gap-4">
+                            <button
+                                className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                                disabled={currentPage === 1}
+                                onClick={() =>
+                                    setCurrentPage((prev) =>
+                                        Math.max(prev - 1, 1),
+                                    )
+                                }
+                            >
+                                Previous
+                            </button>
+
+                            <span className="text-gray-700 text-lg font-semibold">
+                                Page {currentPage} of {totalPages} Pages
+                            </span>
+
+                            <button
+                                className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                                disabled={currentPage >= totalPages}
+                                onClick={() =>
+                                    setCurrentPage((prev) => prev + 1)
+                                }
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
+                    {activeTab === "Hospital Visits" &&
+                        hospitalHistory.length > itemsPerPage && (
+                            <div className="flex justify-center mt-3 items-center gap-4">
+                                <button
+                                    className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                                    disabled={currentPage === 1}
+                                    onClick={() =>
+                                        setCurrentPage((prev) =>
+                                            Math.max(prev - 1, 1),
+                                        )
+                                    }
+                                >
+                                    Previous
+                                </button>
+
+                                <span className="text-gray-700 text-lg font-semibold">
+                                    Page {currentPage} of{" "}
+                                    {totalHospitalHistoryPages} Pages
+                                </span>
+
+                                <button
+                                    className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                                    disabled={
+                                        currentPage >= totalHospitalHistoryPages
+                                    }
+                                    onClick={() =>
+                                        setCurrentPage((prev) => prev + 1)
+                                    }
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    {activeTab === "Request" && pa.length > itemsPerPage && (
+                        <div className="flex justify-center mt-3 items-center gap-4">
+                            <button
+                                className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                                disabled={currentPage === 1}
+                                onClick={() =>
+                                    setCurrentPage((prev) =>
+                                        Math.max(prev - 1, 1),
+                                    )
+                                }
+                            >
+                                Previous
+                            </button>
+
+                            <span className="text-gray-700 text-lg font-semibold">
+                                Page {currentPage} of {totalPendingPages} Pages
+                            </span>
+
+                            <button
+                                className="px-4 py-2 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                                disabled={currentPage >= totalPendingPages}
+                                onClick={() =>
+                                    setCurrentPage((prev) => prev + 1)
+                                }
+                            >
+                                Next
+                            </button>
+                        </div>
                     )}
 
                     {selectedItems.length > 0 && (

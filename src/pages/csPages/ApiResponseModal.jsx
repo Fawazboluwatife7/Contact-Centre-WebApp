@@ -30,6 +30,11 @@ const ApiResponseModal = ({ isOpen, onClose, response }) => {
                                     <strong>PA-Code:</strong>{" "}
                                     {res.pacode || "N/A"}
                                 </p>
+                                {/* <p>
+                                    <strong>PreAutCode :</strong>{" "}
+                                    {res.VisitDetails[0].visitdetails_id ||
+                                        "N/A"}
+                                </p> */}
                             </li>
                         ))}
                     </ul>

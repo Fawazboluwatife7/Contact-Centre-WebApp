@@ -1,4 +1,14 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { FcCustomerSupport } from "react-icons/fc";
+import { FaHandHoldingDollar } from "react-icons/fa6";
+import { FaPeoplePulling } from "react-icons/fa6";
+import { RxDashboard } from "react-icons/rx";
+import { FaUserDoctor } from "react-icons/fa6";
+import { IoIosPeople } from "react-icons/io";
+import { FaPeopleRobbery } from "react-icons/fa6";
+import { FaHospital } from "react-icons/fa";
+import { TbDatabaseSearch } from "react-icons/tb";
+import { GiCash } from "react-icons/gi";
 
 const CsSidebar = () => {
     const navigate = useNavigate(); // Initialize the navigate function
@@ -77,11 +87,11 @@ const CsSidebar = () => {
                         }`}
                     onClick={() => handleNavigate("/CsDashboard")}
                 >
-                    <img src="Dashboard.svg" alt="" />
+                    <RxDashboard className=" text-[25px]" />
                     <p className="ml-2">Dashboard</p>
                 </div>
                 <div
-                    className={`mt-2 flex px-10 cursor-pointer p-2 
+                    className={`mt-1 flex px-10 cursor-pointer p-2 
                         ${
                             location.pathname.includes("history") ||
                             location.pathname.includes("createpacode")
@@ -90,22 +100,87 @@ const CsSidebar = () => {
                         }`}
                     onClick={() => handleNavigate("/history")}
                 >
-                    <img src="carbon_hospital-bed@3x.svg" alt="" />
-                    <p className="ml-2">PA Requests</p>
+                    <FaUserDoctor className=" text-[23px]" />
+                    <p className="ml-2 whitespace-nowrap">PA Requests</p>
                 </div>
                 <div
-                    className={`mt-2 flex px-10 cursor-pointer p-2 
+                    className={`mt-1 flex px-10 cursor-pointer p-2 
                         ${
-                            location.pathname.includes("enrollees")
+                            location.pathname.includes("enrollees") ||
+                            location.pathname.includes(
+                                "csenrolleeprofileupdate",
+                            )
                                 ? "bg-[#C61531] text-white"
                                 : "hover:bg-[#C61531] hover:text-white"
                         }`}
                     onClick={() => handleNavigate("/enrollees")}
                 >
-                    <img src="people-group@3x.svg" alt="" />
+                    <FaPeopleRobbery className=" text-[23px]" />
                     <p className="ml-2">Enrollees</p>
                 </div>
                 <div
+                    className={`mt-1 flex px-10 cursor-pointer p-2 
+                        ${
+                            location.pathname.includes("providers") ||
+                            location.pathname.includes("xx")
+                                ? "bg-[#C61531] text-white"
+                                : "hover:bg-[#C61531] hover:text-white"
+                        }`}
+                    onClick={() => handleNavigate("/providers")}
+                >
+                    <FaHospital className=" text-[23px]" />
+                    <p className="ml-2">Providers</p>
+                </div>
+                <div
+                    className={` mt-1 flex px-5  pl-10 cursor-pointer p-2 
+                        ${
+                            location.pathname.includes("claimsrefund")
+                                ? "bg-[#C61531] text-white"
+                                : "hover:bg-[#C61531] hover:text-white"
+                        }`}
+                    onClick={() => handleNavigate("/claimsrefund")}
+                >
+                    <FaHandHoldingDollar className=" text-[25px]" />
+                    <p className="ml-2 whitespace-nowrap">Claims refund</p>
+                </div>
+                <div
+                    className={` mt-1 flex px-5  pl-10 cursor-pointer p-2 
+                        ${
+                            location.pathname.includes("businessrm")
+                                ? "bg-[#C61531] text-white"
+                                : "hover:bg-[#C61531] hover:text-white"
+                        }`}
+                    onClick={() => handleNavigate("/businessrm")}
+                >
+                    <FaPeoplePulling className=" text-[25px]" />
+                    <p className="ml-2 whitespace-nowrap">Business RM</p>
+                </div>
+                <div
+                    className={`mt-1 flex px-5  pl-10 cursor-pointer p-2 
+                        ${
+                            location.pathname.includes("verifypa")
+                                ? "bg-[#C61531] text-white"
+                                : "hover:bg-[#C61531] hover:text-white"
+                        }`}
+                    onClick={() => handleNavigate("/verifypa")}
+                >
+                    <TbDatabaseSearch className=" text-[25px]" />
+                    <p className="ml-2 whitespace-nowrap">Verify PA </p>
+                </div>
+                <div
+                    className={`mt-1 flex px-5  pl-10 cursor-pointer p-2 
+                        ${
+                            location.pathname.includes("paymentadvise")
+                                ? "bg-[#C61531] text-white"
+                                : "hover:bg-[#C61531] hover:text-white"
+                        }`}
+                    onClick={() => handleNavigate("/paymentadvise")}
+                >
+                    <GiCash className=" text-[25px]" />
+                    <p className="ml-2 whitespace-nowrap">Payment Advise </p>
+                </div>
+
+                {/* <div
                     className={`mt-2 flex px-10 cursor-pointer p-2 
                         ${
                             location.pathname.includes("providers") ||
@@ -115,9 +190,10 @@ const CsSidebar = () => {
                         }`}
                     onClick={() => handleNavigate("/providers")}
                 >
-                    <img src="uil_invoice@3x.svg" alt="" />
-                    <p className="ml-2">Providers</p>
-                </div>
+                    <FcCustomerSupport className="text-gray-400 w-[1.5rem] h-[1.5rem]" />
+
+                    <p className="ml-2">Logging</p>
+                </div> */}
             </div>
         </div>
     );
