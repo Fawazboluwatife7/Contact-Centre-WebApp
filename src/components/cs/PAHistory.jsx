@@ -350,7 +350,7 @@ const PaHistory = () => {
                                                     </td>
                                                     <td className="px-4 border">
                                                         {
-                                                            request.ProcedureDescription
+                                                            request.visitType
                                                         }
                                                     </td>
                                                     <td
