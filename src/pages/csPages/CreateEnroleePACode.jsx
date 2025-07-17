@@ -2,12 +2,14 @@ import { Link, useNavigate } from "react-router-dom";
 
 import Sidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { useLocation } from "react-router-dom";
 import { FaFlag } from "react-icons/fa";
 import CreatePAModal from "./CreatePAModal";
 import { FaSpinner } from "react-icons/fa";
+import { CgPlayTrackNext } from "react-icons/cg";
+import { MdSkipPrevious } from "react-icons/md";
 
 const CreateEnroleePACode = () => {
     const [service, setService] = useState([]);
@@ -30,6 +32,9 @@ const CreateEnroleePACode = () => {
 
     const [selectAll, setSelectAll] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
+
+    const [selectedLoadedVisitType, setSelectedLoadedVisitType] =
+        useState(null);
 
     const handleCheckboxChanges = (enrollee) => {
         setSelectedItems((prev) => {
@@ -75,6 +80,7 @@ const CreateEnroleePACode = () => {
     const [tableData, setTableData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [benefits, setAllBenefits] = useState([]);
+    const [pa, SetPa] = useState([]);
 
     const [diagnoses, setDiagnoses] = useState([
         { id: 1, code: "", description: "", filteredResults: [] },
@@ -103,8 +109,6 @@ const CreateEnroleePACode = () => {
     const [proceduress, setProceduress] = useState([]);
     const [provDetails, SetProvDetails] = useState([]);
     const [selectedProcedures, setSelectedProcedures] = useState([]);
-
-    // Calculate total sum
 
     const totalAmount = selectedProcedures.reduce((sum, proc) => {
         console.log("log", selectedProcedures);
@@ -160,6 +164,203 @@ const CreateEnroleePACode = () => {
         setSelectedProcedures([...selectedProcedures, newProcedure]);
     };
 
+    const formatDateForInput = (dateString) => {
+        if (!dateString) return "";
+
+        // If it's already in YYYY-MM-DD format, return as is
+        if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            return dateString;
+        }
+
+        // If it's in MM/DD/YYYY format
+        if (dateString.includes("/")) {
+            const datePart = dateString.split(" ")[0]; // Remove time part if present
+            const [month, day, year] = datePart.split("/");
+            return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        }
+
+        // If it's an ISO date string
+        if (dateString.includes("T")) {
+            return dateString.split("T")[0];
+        }
+
+        // Try to parse as Date object
+        try {
+            const date = new Date(dateString);
+            return date.toISOString().split("T")[0];
+        } catch (error) {
+            console.error("Date formatting error:", error);
+            return "";
+        }
+    };
+
+    const handleSelectProcedure = (selectedProc) => {
+        // Format the visit date for the date input
+        const formattedDate = formatDateForInput(selectedProc.Visitdate);
+
+        // Update the encounter date state
+        const matchingVisitType = service.find(
+            (type) =>
+                type.visittype === selectedProc.visitType ||
+                type.servtype_id.toString() === selectedProc.visitType,
+        );
+
+        if (matchingVisitType) {
+            setSelectedVisitType({
+                value: matchingVisitType.servtype_id.toString(),
+                label: matchingVisitType.visittype,
+            });
+        } else {
+            setSelectedVisitType({
+                value: selectedProc.visitTypeId || selectedProc.visitType || "",
+                label: selectedProc.visitType || "Unknown Visit Type",
+            });
+        } //
+        SetEncounterDate(formattedDate);
+        setVisitId(selectedProc.visitid);
+        setSelectedProvider({
+            provider_id:
+                selectedProc.providerId || selectedProc.provider_id || null,
+            email: selectedProc.issuedBy || "No email available",
+            name: selectedProc.provider || "Unknown Provider",
+        });
+
+        setSearchProvider(selectedProc.provider);
+
+        // if (selectedProc.diagcode) {
+        //     setDiagnoses([
+        //         {
+        //             id: Date.now(),
+        //             code: selectedProc.diagcode,
+        //             description: selectedProc.diagcode,
+        //             filteredResults: [],
+        //         },
+        //     ]);
+        // }
+
+        const allDiagnosesForVisit = paginatedUniqueResults
+        .filter((proc) => proc.visitid === selectedProc.visitid)
+        .filter((proc) => proc.diagcode) // Only those with a diagcode
+        .map((proc, index) => ({
+            id: index + 1,
+            code: proc.diagcode,
+            description: proc.diagdescription || proc.diagcode,
+            filteredResults: [],
+        }));
+
+        const visitId = selectedProc.visitid;
+       const providerMatch = filteredProvider.find(item => item.ProviderCode === selectedProc.providercode);
+
+       console.log("providerMatch", providerMatch)
+    if (!providerMatch || !providerMatch.provider_id) {
+        alert("Provider ID not found.");
+        return;
+    }
+
+    const providerId = providerMatch.provider_id;
+    
+         const proceduresForVisit = pa
+        .filter((proc) => proc.visitid === visitId)
+        .map((proc) => ({
+            ProcedureCode: proc.ProcedureCode || "",
+            ExtensionRemarks: proc.ProcedureDescription || "",
+            price: proc.chargeamount || 0,
+            ProcedureQty: "",
+            ChargeAmount: "",
+            PACode: proc.PACode || "",
+            apiResponse: {
+                PreAutCode: proc?.PACode || null,
+            },
+        }));
+
+    console.log("Procedures for selected visit:", proceduresForVisit);
+
+    // ✅ Set the procedures to render them in the selected table
+    setSelectedProcedures(proceduresForVisit);
+
+    // Set diagnoses accordingly
+    if (allDiagnosesForVisit.length > 0) {
+        setDiagnoses(allDiagnosesForVisit);
+    } else if (selectedProc.diagcode) {
+        setDiagnoses([
+            {
+                id: 1,
+                code: selectedProc.diagcode,
+                description: selectedProc.diagdescription || selectedProc.diagcode,
+                filteredResults: [],
+            },
+        ]);
+    } else {
+        setDiagnoses([{ id: 1, code: "", description: "", filteredResults: [] }]);
+    }
+        // Optional: You can also set other fields if you have state for them
+        // setVisitId(selectedProc.visitid);
+        // setDiagnosisCode(selectedProc.diagcode);
+        // setProcedureCode(selectedProc.ProcedureCode);
+        // etc.
+
+        console.log("Selected procedure:", selectedProc);
+        console.log("Formatted date:", formattedDate);
+    };
+    console.log("paaa", pa);
+    // const handleAddProcedures = async () => {
+    //     setShowPATable(true);
+
+    //     if (!selectedData || !formValues.ExtensionRemarks) {
+    //         alert("Please select a procedure code first.");
+    //         return;
+    //     }
+
+    //     const updated = procedures.map((proc) => {
+    //         console.log("console", procedures, price);
+    //         return {
+    //             FilterType: formValues.FilterType,
+    //             ProcedureCode: proc.code,
+    //             ProcedureQty: proc.ProcedureQty,
+    //             ChargeAmount: proc.ChargeAmount || 0,
+    //             price: price,
+    //             ExtensionRemarks: formValues.ExtensionRemarks,
+    //             ...(selectedRemark === "pharmacy" && {
+    //                 ProcedureQty: formValues.ProcedureQty,
+    //                 Duration: formValues.Duration,
+    //                 DailyQuantity: formValues.DailyQuantity,
+    //                 DosageValue: "daily",
+    //                 DrugForm: formValues.DrugForm,
+    //                 Period: formValues.Period,
+    //             }),
+    //             ...(selectedRemark === "Admitted" && {
+    //                 AdmissionDate: formValues.AdmissionDate,
+    //                 DischargeDate: formValues.DischargeDate,
+    //             }),
+    //             ...(selectedRemark === "Observation" && {
+    //                 Start_Time: formValues.Start_Time,
+    //                 End_Time: formValues.End_Time,
+    //             }),
+    //         };
+    //     });
+
+    //     console.log("updated", updated);
+
+    //     // Update procedures first
+    //     setSelectedProcedures((prev) => [...prev, ...updated]);
+
+    //     // Reset the input fields
+    //     setProcedures([
+    //         {
+    //             id: "",
+    //             code: "",
+    //             description: "",
+    //             price: "",
+    //             ProcedureQty: "",
+    //             ChargeAmount: "",
+    //             filteredResults: [],
+    //         },
+    //     ]);
+
+    //     // 🔥 Directly call handleSubmitPA after updates
+    //     await handleSubmitPA();
+    // };
+
     const handleAddProcedures = async () => {
         setShowPATable(true);
 
@@ -168,40 +369,45 @@ const CreateEnroleePACode = () => {
             return;
         }
 
-        const updated = procedures.map((proc) => {
-            console.log("console", procedures, price);
-            return {
-                FilterType: formValues.FilterType,
-                ProcedureCode: proc.code,
-                ProcedureQty: proc.ProcedureQty,
-                ChargeAmount: proc.ChargeAmount || 0,
-                price: price,
-                ExtensionRemarks: formValues.ExtensionRemarks,
-                ...(selectedRemark === "pharmacy" && {
-                    ProcedureQty: formValues.ProcedureQty,
-                    Duration: formValues.Duration,
-                    DailyQuantity: formValues.DailyQuantity,
-                    DosageValue: "daily",
-                    DrugForm: formValues.DrugForm,
-                    Period: formValues.Period,
-                }),
-                ...(selectedRemark === "Admitted" && {
-                    AdmissionDate: formValues.AdmissionDate,
-                    DischargeDate: formValues.DischargeDate,
-                }),
-                ...(selectedRemark === "Observation" && {
-                    Start_Time: formValues.Start_Time,
-                    End_Time: formValues.End_Time,
-                }),
-            };
-        });
+        const lastProc = procedures[procedures.length - 1];
 
-        console.log("updated", updated);
+        const updated = {
+            FilterType: formValues.FilterType,
+            ProcedureCode: lastProc.code,
+            ProcedureQty: lastProc.ProcedureQty,
+            ChargeAmount: lastProc.ChargeAmount || 0,
+            price: price,
+            ExtensionRemarks: formValues.ExtensionRemarks,
+            ...(selectedRemark === "pharmacy" && {
+                ProcedureQty: formValues.ProcedureQty,
+                Duration: formValues.Duration,
+                DailyQuantity: formValues.DailyQuantity,
+                DosageValue: "daily",
+                DrugForm: formValues.DrugForm,
+                Period: formValues.Period,
+            }),
+            ...(selectedRemark === "Admitted" && {
+                AdmissionDate: formValues.AdmissionDate,
+                DischargeDate: formValues.DischargeDate,
+            }),
+            ...(selectedRemark === "Observation" && {
+                Start_Time: formValues.Start_Time,
+                End_Time: formValues.End_Time,
+            }),
+        };
 
-        // Update procedures first
-        setSelectedProcedures((prev) => [...prev, ...updated]);
+        // 🔥 Submit and get response
+        const apiResponse = await handleSubmitPA(updated);
 
-        // Reset the input fields
+        // 🔥 Attach response to the procedure
+        const updatedWithResponse = {
+            ...updated,
+            apiResponse, // contains status, PreAutCode, etc.
+        };
+
+        // Save it
+        setSelectedProcedures((prev) => [...prev, updatedWithResponse]);
+
         setProcedures([
             {
                 id: "",
@@ -213,21 +419,18 @@ const CreateEnroleePACode = () => {
                 filteredResults: [],
             },
         ]);
-
-        // 🔥 Directly call handleSubmitPA after updates
-        await handleSubmitPA();
     };
 
-    const handleSubmitPA = async () => {
+    const handleSubmitPA = async (procedure) => {
         setSubmitLoader(true);
-
-        console.log("Button clicked, function running");
 
         if (!data.VisitID) {
             alert("VisitID is missing from API response!");
             setSubmitLoader(false);
-            return;
+            return null;
         }
+
+        const { price, ...rest } = procedure;
 
         const submitPA = {
             CifNumber: enrollee.Member_MemberUniqueID,
@@ -238,12 +441,7 @@ const CreateEnroleePACode = () => {
             DoctorRecommendations: doctorsprescription,
             ServiceTypeID: selectedVisitType?.value || "",
             DiagnosisLines: alldiagnosis,
-            UtilizationLines: selectedProcedures.map(
-                ({ ProcedureDescription, price, ...rest }) => ({
-                    ...rest,
-                    ExtensionRemarks: "",
-                }),
-            ),
+            UtilizationLines: [{ ...rest, ExtensionRemarks: "" }],
             UtilizationDocuments: [
                 {
                     ClaimDocument: "fkfkfnff",
@@ -253,56 +451,41 @@ const CreateEnroleePACode = () => {
                 },
             ],
         };
-
         console.log("All procedures", JSON.stringify(submitPA, null, 2));
-
-        let parsedResponse = null;
-
         try {
             const response = await fetch(
                 `${apiUrl}api/ProviderNetwork/CreatePreauthorizationRequest_WithPreAuthCode`,
                 {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(submitPA),
                 },
             );
 
             const responseText = await response.text();
+            const parsedResponse = JSON.parse(responseText);
+            const apiResponse = await response.json();
 
-            try {
-                parsedResponse = JSON.parse(responseText);
-            } catch (jsonError) {
-                console.error("JSON parse error:", jsonError);
-                throw new Error("Invalid JSON response");
-            }
-
-            setSelectedProcedures(updatedProcedures);
+            console.log("PA API Response", apiResponse);
 
             const responseApi = {
-                VisitID: parsedResponse.VisitID || "N/A",
-                status: parsedResponse.status,
-                Message: parsedResponse.Message,
+                VisitID: parsedResponse?.VisitID || "N/A",
+                status: parsedResponse?.status || "Error",
+                Message: parsedResponse?.Message || "",
                 PreAutCode:
                     parsedResponse?.VisitDetails?.[0]?.PreAutCode || null,
             };
 
-            setApiResponse(responseApi);
-            setIsModalOpen(true);
+            return responseApi;
         } catch (error) {
             console.error("Error submitting data:", error);
 
-            const responseApi = {
-                VisitID: parsedResponse?.VisitID || data?.VisitID || "N/A",
-                status: parsedResponse?.status || "Error",
-                Message: parsedResponse?.Message || error.message,
+            return {
+                VisitID: data?.VisitID || "N/A",
+                status: "Error",
+                Message: error.message,
                 PreAutCode: null,
             };
-
-            setApiResponse(responseApi);
-            setIsModalOpen(true);
         } finally {
             setSubmitLoader(false);
         }
@@ -1100,6 +1283,15 @@ const CreateEnroleePACode = () => {
     // );
 
     async function GetProcedure() {
+const proceed= await fetch(
+                `${apiUrl}api/ProviderNetwork/GetProceduresByFilter?filtertype=0&providerid=${selectedProviders.provider_id}&searchbyname=`,
+                {
+                    method: "GET",
+                },
+            );
+
+            console.log("proceed")
+
         try {
             const response = await fetch(
                 `${apiUrl}api/ProviderNetwork/GetProceduresByFilter?filtertype=0&providerid=${selectedProviders.provider_id}&searchbyname=`,
@@ -1110,7 +1302,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("Procedure7:", JSON.stringify(data, null, 2));
+            console.log("Procedure77:", JSON.stringify(data, null, 2));
             console.log("Proced:", response);
 
             setProceduresData(data.result);
@@ -1344,13 +1536,104 @@ const CreateEnroleePACode = () => {
         }
     }
 
+    async function GetPAHistory() {
+        setLoading(true);
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("pahistory", data.result);
+
+            SetPa(data.result);
+             setPaginatedUniqueResults(getUniqueVisitIds(data.result));
+        } catch (error) {
+            console.error("Error getting PA:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+function getUniqueVisitIds(data) {
+    const seen = new Set();
+    return data.filter((item) => {
+        if (seen.has(item.visitid)) return false;
+        seen.add(item.visitid);
+        return true;
+    });
+}
+
     useEffect(() => {
         GetBiodata();
+        GetPAHistory();
     }, []);
 
     // useEffect(() => {
     //     if (isModalOpen) fetchProviders();
     // }, [isModalOpen]);
+
+    const [currentPAPage, setCurrentPAPage] = useState(1);
+
+    const seenIDs = new Set();
+
+    const uniqueResults = useMemo(() => {
+        // First, sort entire array by Visitdate
+        const sortedData = [...pa].sort((a, b) => {
+            const dateA = new Date(a.Visitdate).getTime();
+            const dateB = new Date(b.Visitdate).getTime();
+            return dateB - dateA; // Earliest first
+        });
+
+        // Then get first (earliest) occurrence of each enrolleeID
+        const seenIDs = new Set();
+        const uniqueArray = [];
+
+        for (const item of sortedData) {
+            if (!seenIDs.has(item.VisitID1)) {
+                seenIDs.add(item.VisitID1);
+                uniqueArray.push(item);
+            }
+        }
+
+        return uniqueArray;
+    }, [pa]); // Only recalculate when combinedOpenPA changes
+
+    // Pagination logic
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(uniqueResults.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedUniqueResults = uniqueResults.slice(
+        startIndex,
+        startIndex + itemsPerPage,
+    );
+
+    function formatISOToCustom(dateString) {
+        if (!dateString) return ""; // Handle cases where DateIssued might be undefined/null
+
+        const date = new Date(dateString);
+
+        // Extract components
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+        const year = date.getFullYear();
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+        // Convert to 12-hour format with AM/PM
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12; // Convert 0 to 12 for midnight
+
+        return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
+    }
 
     async function GetBiodata() {
         try {
@@ -1634,48 +1917,53 @@ const CreateEnroleePACode = () => {
                                 Procedure Information
                             </h2>
                         </div>
+                        <div className=" flex">
+                            <div className="">
+                                <div className="flex ml-6 space-x-4">
+                                    <div className="relative w-[250px]">
+                                        <label className="block mb-2 text-gray-700 font-medium">
+                                            Visit Type
+                                        </label>
+                                        <DateDropdown
+                                            key="service-dropdown"
+                                            options={service.map((type) => ({
+                                                label: type.visittype,
+                                                value: type.servtype_id.toString(),
+                                            }))}
+                                            selectedValue={selectedVisitType}
+                                            sendSelection={(selectedOption) =>
+                                                setSelectedVisitType(
+                                                    selectedOption,
+                                                )
+                                            }
+                                            className="relative w-full h-[44px] rounded-lg outline-none border border-black"
+                                        />
+                                    </div>
 
-                        <div className="flex ml-6 space-x-4">
-                            <div className="relative w-[320px]">
-                                <label className="block mb-2 text-gray-700 font-medium">
-                                    Visit Type
-                                </label>
-                                <DateDropdown
-                                    key="service-dropdown"
-                                    options={service.map((type) => ({
-                                        label: type.visittype,
-                                        value: type.servtype_id.toString(),
-                                    }))}
-                                    selectedValue={selectedVisitType}
-                                    sendSelection={(selectedOption) =>
-                                        setSelectedVisitType(selectedOption)
-                                    }
-                                    className="relative w-full h-[44px] rounded-lg outline-none"
-                                />
-                            </div>
-
-                            <div className="relative w-[320px]">
-                                <label className="block mb-2 text-gray-700 font-medium">
-                                    Encounter Start Date
-                                </label>
-                                <div className="relative w-full h-[44px] border border-black rounded-lg">
-                                    <input
-                                        type="date"
-                                        className="w-full h-full px-3 py-2 text-gray-600 bg-white rounded-lg placeholder-gray-400"
-                                        onChange={(e) =>
-                                            SetEncounterDate(e.target.value)
-                                        }
-                                        value={encounterDate}
-                                    />
-                                </div>
-                            </div>
-                            <button
-                                className="whitespace-nowrap h-15 px-14 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
-                                onClick={() => setIsModalsOpen(true)}
-                            >
-                                Get Benefits
-                            </button>
-                            {/* <div className="relative w-[320px] ">
+                                    <div className="relative w-[200/px]">
+                                        <label className="block mb-2 text-gray-700 font-medium">
+                                            Encounter Start Date
+                                        </label>
+                                        <div className="relative w-full h-[44px] border border-black rounded-lg outline-none">
+                                            <input
+                                                type="date"
+                                                className="w-full h-full px-3 py-2 text-gray-600 bg-white rounded-lg placeholder-gray-400"
+                                                onChange={(e) =>
+                                                    SetEncounterDate(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                value={encounterDate}
+                                            />
+                                        </div>
+                                    </div>
+                                    <button
+                                        className="whitespace-nowrap h-15 px-3 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
+                                        onClick={() => setIsModalsOpen(true)}
+                                    >
+                                        Get Benefits
+                                    </button>
+                                    {/* <div className="relative w-[320px] ">
                                 <label className="block mb-2 text-gray-700 font-medium">
                                     Benefits
                                 </label>
@@ -1691,155 +1979,310 @@ const CreateEnroleePACode = () => {
                                     }
                                     className="relative w-full h-[44px] rounded-lg "
                                 />
-                            </div> */}
-                        </div>
+                                 </div> */}
+                                </div>
 
-                        <div className="flex ml-6 space-x-4 mt-4">
-                            <div className="relative w-[320px]">
-                                <label className="block mb-2 text-gray-700 font-medium">
-                                    Requesting Provider
-                                </label>
+                                <div className="flex ml-6 space-x-4 mt-4">
+                                    <div className="relative w-[280px]">
+                                        <label className="block mb-2 text-gray-700 font-medium">
+                                            Requesting Provider
+                                        </label>
 
-                                <input
-                                    className="relative w-full h-[44px] rounded-lg outline-none border border-black px-2"
-                                    onChange={(e) => {
-                                        setSearchProvider(e.target.value);
-                                        setShowSearchDropDown(true);
-                                    }}
-                                    value={searchProvider}
-                                    placeholder="Search Provider"
-                                />
+                                        <input
+                                            className="relative w-full h-[44px] rounded-lg outline-none border border-black px-2"
+                                            onChange={(e) => {
+                                                setSearchProvider(
+                                                    e.target.value,
+                                                );
+                                                setShowSearchDropDown(true);
+                                            }}
+                                            value={searchProvider}
+                                            placeholder="Search Provider"
+                                        />
 
-                                {showSearchDropDown && (
-                                    <div className="h-[220px] w-full absolute bg-white z-10 border rounded-[10px] p-3">
-                                        <div className="h-[180px] overflow-y-auto">
-                                            {filteredProvider
-                                                .filter((prov) =>
-                                                    prov.provider
-                                                        .toLowerCase()
-                                                        .includes(
-                                                            searchProvider.toLowerCase(),
-                                                        ),
-                                                )
-                                                .slice(
-                                                    currentPage * 10,
-                                                    currentPage * 10 + 10,
-                                                )
-                                                .map((prov) => (
-                                                    <p
-                                                        key={
-                                                            prov.provider_id ||
-                                                            index
+                                        {showSearchDropDown && (
+                                            <div className="h-[220px] w-full absolute bg-white z-10 border rounded-[10px] p-3">
+                                                <div className="h-[180px] overflow-y-auto">
+                                                    {filteredProvider
+                                                        .filter((prov) =>
+                                                            prov.provider
+                                                                .toLowerCase()
+                                                                .includes(
+                                                                    searchProvider.toLowerCase(),
+                                                                ),
+                                                        )
+                                                        .slice(
+                                                            currentPage * 10,
+                                                            currentPage * 10 +
+                                                                10,
+                                                        )
+                                                        .map((prov) => (
+                                                            <p
+                                                                key={
+                                                                    prov.provider_id ||
+                                                                    index
+                                                                }
+                                                                className="my-1 p-1 cursor-pointer hover:bg-slate-100 rounded"
+                                                                onClick={(
+                                                                    e,
+                                                                ) => {
+                                                                    setSearchProvider(
+                                                                        prov.provider,
+                                                                    );
+                                                                    setSelectedProvider(
+                                                                        prov,
+                                                                    );
+                                                                    setShowSearchDropDown(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {prov.provider}
+                                                            </p>
+                                                        ))}
+                                                </div>
+
+                                                {/* Pagination controls */}
+                                                <div className="flex justify-between items-center pt-2 mt-2 border-t">
+                                                    <button
+                                                        onClick={() =>
+                                                            setCurrentPage(
+                                                                (prev) =>
+                                                                    Math.max(
+                                                                        0,
+                                                                        prev -
+                                                                            1,
+                                                                    ),
+                                                            )
                                                         }
-                                                        className="my-1 p-1 cursor-pointer hover:bg-slate-100 rounded"
-                                                        onClick={(e) => {
-                                                            setSearchProvider(
-                                                                prov.provider,
-                                                            );
-                                                            setSelectedProvider(
-                                                                prov,
-                                                            );
-                                                            setShowSearchDropDown(
-                                                                false,
-                                                            );
-                                                        }}
+                                                        disabled={
+                                                            currentPage === 0
+                                                        }
+                                                        className={`px-2 py-1 rounded ${
+                                                            currentPage === 0
+                                                                ? "text-gray-400"
+                                                                : "text-blue-500 hover:bg-blue-50"
+                                                        }`}
                                                     >
-                                                        {prov.provider}
-                                                    </p>
-                                                ))}
-                                        </div>
+                                                        Previous
+                                                    </button>
+                                                    <span className="text-sm text-gray-500">
+                                                        Page {currentPage + 1}{" "}
+                                                        of{" "}
+                                                        {Math.ceil(
+                                                            filteredProviders.length /
+                                                                10,
+                                                        )}
+                                                    </span>
+                                                    <button
+                                                        onClick={() =>
+                                                            setCurrentPage(
+                                                                (prev) =>
+                                                                    (prev + 1) *
+                                                                        10 <
+                                                                    filteredProviders.length
+                                                                        ? prev +
+                                                                          1
+                                                                        : prev,
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            (currentPage + 1) *
+                                                                10 >=
+                                                            filteredProviders.length
+                                                        }
+                                                        className={`px-2 py-1 rounded ${
+                                                            (currentPage + 1) *
+                                                                10 >=
+                                                            filteredProviders.length
+                                                                ? "text-gray-400"
+                                                                : "text-blue-500 hover:bg-blue-50"
+                                                        }`}
+                                                    >
+                                                        Next
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
 
-                                        {/* Pagination controls */}
-                                        <div className="flex justify-between items-center pt-2 mt-2 border-t">
-                                            <button
-                                                onClick={() =>
-                                                    setCurrentPage((prev) =>
-                                                        Math.max(0, prev - 1),
-                                                    )
+                                    <div className="relative w-[260px]">
+                                        <label className="block mb-2 text-gray-700 font-medium">
+                                            Provider Email
+                                        </label>
+                                        <div className="relative w-full h-[44px] border border-black rounded-lg">
+                                            <input
+                                                disabled
+                                                type="email"
+                                                placeholder={
+                                                    selectedProviders?.email
                                                 }
-                                                disabled={currentPage === 0}
-                                                className={`px-2 py-1 rounded ${
-                                                    currentPage === 0
-                                                        ? "text-gray-400"
-                                                        : "text-blue-500 hover:bg-blue-50"
-                                                }`}
-                                            >
-                                                Previous
-                                            </button>
-                                            <span className="text-sm text-gray-500">
-                                                Page {currentPage + 1} of{" "}
-                                                {Math.ceil(
-                                                    filteredProviders.length /
-                                                        10,
-                                                )}
-                                            </span>
-                                            <button
-                                                onClick={() =>
-                                                    setCurrentPage((prev) =>
-                                                        (prev + 1) * 10 <
-                                                        filteredProviders.length
-                                                            ? prev + 1
-                                                            : prev,
-                                                    )
-                                                }
-                                                disabled={
-                                                    (currentPage + 1) * 10 >=
-                                                    filteredProviders.length
-                                                }
-                                                className={`px-2 py-1 rounded ${
-                                                    (currentPage + 1) * 10 >=
-                                                    filteredProviders.length
-                                                        ? "text-gray-400"
-                                                        : "text-blue-500 hover:bg-blue-50"
-                                                }`}
-                                            >
-                                                Next
-                                            </button>
+                                                className="w-full h-full px-3 py-2 text-gray-600 bg-white rounded-lg placeholder-black"
+                                            />
                                         </div>
                                     </div>
-                                )}
-                            </div>
+                                </div>
 
-                            <div className="relative w-[320px]">
-                                <label className="block mb-2 text-gray-700 font-medium">
-                                    Provider Email
-                                </label>
-                                <div className="relative w-full h-[44px] border border-black rounded-lg">
-                                    <input
-                                        disabled
-                                        type="email"
-                                        placeholder={selectedProviders?.email}
-                                        className="w-full h-full px-3 py-2 text-gray-600 bg-white rounded-lg placeholder-black"
-                                    />
+                                <div className=" flex ml-6 space-x-4 ">
+                                    <div>
+                                        {visitIdLoader ? (
+                                            <button
+                                                disabled
+                                                className="flex items-center gap-2 whitespace-nowrap h-11 px-9 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
+                                            >
+                                                <FaSpinner className="animate-spin text-xl" />
+                                                Getting Visit Number...
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="whitespace-nowrap h-11 px-9 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
+                                                onClick={handleSubmit}
+                                            >
+                                                Get Visit Number
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className=" whitespace-nowrap h-11 px-5 pt-1  text-black border border-[#3b3637] bg-[#312d2e1a]  rounded-md mt-8 items-end">
+                                        <h2 className=" text-[25px]">
+                                            {visitid}
+                                        </h2>
+                                    </div>
                                 </div>
                             </div>
+                            <div className=" border border-l-2 border-black  ml-1"></div>
 
-                            <div>
-                                {visitIdLoader ? (
-                                    <button
-                                        disabled
-                                        className="flex items-center gap-2 whitespace-nowrap h-11 px-9 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
-                                    >
-                                        <FaSpinner className="animate-spin text-xl" />
-                                        Getting Visit Number...
-                                    </button>
-                                ) : (
-                                    <button
-                                        className="whitespace-nowrap h-11 px-9 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md mt-8"
-                                        onClick={handleSubmit}
-                                    >
-                                        Get Visit Number
-                                    </button>
-                                )}
-                            </div>
+                            <div className="  flex relative overflow-x-auto ml-2">
+                                <table className="min-w-full table-auto border-collapse text-sm  ">
+                                    <thead className="bg-gray-100 text-left text-[10px]">
+                                        <tr>
+                                            <th className="p-2 border"></th>
+                                            <th className="p-2 border">
+                                                VisitId
+                                            </th>
+                                            <th className="p-2 border">Date</th>
+                                            <th className="p-2 border">
+                                                DiagnosisCode
+                                            </th>
+                                            <th className="p-2 border whitespace-nowrap">
+                                                Diagnosis Description
+                                            </th>
+                                            <th className="p-2 border whitespace-nowrap">
+                                                Procedure Code
+                                            </th>
+                                            <th className="p-2 border whitespace-nowrap">
+                                                Procedure Description
+                                            </th>
+                                            <th className="p-2 border whitespace-nowrap">
+                                                PA Code
+                                            </th>
+                                            <th className="p-2 border whitespace-nowrap">
+                                                Visit Type
+                                            </th>
+                                            <th className="p-2 border">
+                                                Provider
+                                            </th>
+                                            <th className="p-2 border">
+                                                Issuer
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {paginatedUniqueResults.map(
+                                            (proc, idx) => (
+                                                <tr
+                                                    key={idx}
+                                                    className="border-t text-[10px] "
+                                                >
+                                                    <td className="px-4  border">
+                                                        <button
+                                                            className="px-3  whitespace-nowrap border border-blue-500 hover:bg-blue-50"
+                                                            onClick={() =>
+                                                                handleSelectProcedure(
+                                                                    proc,
+                                                                )
+                                                            }
+                                                        >
+                                                            Select
+                                                        </button>
+                                                    </td>
 
-                            <div className=" whitespace-nowrap h-11 px-5 pt-1  text-black border border-[#3b3637] bg-[#312d2e1a]  rounded-md mt-8 items-end">
-                                <h2 className=" text-[25px]">{visitid}</h2>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.visitid}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {formatISOToCustom(
+                                                            proc.Visitdate,
+                                                        )}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.diagcode}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.diagcode}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.ProcedureCode}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {
+                                                            proc.ProcedureDescription
+                                                        }
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.PACode}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.visitType}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.provider}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.issuedBy}
+                                                    </td>
+                                                </tr>
+                                            ),
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                        {uniqueResults.length > itemsPerPage && (
+                            <div className="flex  mt-2 items-center gap-4 pb-2 ml-[41rem]">
+                                <button
+                                    className="px-1 py-0.5 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                                    disabled={currentPage === 1}
+                                    onClick={() =>
+                                        setCurrentPage((prev) =>
+                                            Math.max(prev - 1, 1),
+                                        )
+                                    }
+                                >
+                                    <MdSkipPrevious className="w-7 h-7 mr-2" />
+                                    Previous
+                                </button>
+
+                                <span className="text-gray-700 text-lg font-semibold">
+                                    Page {currentPage} of {totalPages} Pages
+                                </span>
+
+                                <button
+                                    className="px-1 py-0.5 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
+                                    disabled={currentPage >= totalPages}
+                                    onClick={() =>
+                                        setCurrentPage((prev) => prev + 1)
+                                    }
+                                >
+                                    <CgPlayTrackNext className="w-7 h-7 mr-2" />
+                                    Next
+                                </button>
+                            </div>
+                        )}
+
                         {selectedVisitType?.label !== "Health Checks" && (
                             <>
-                                <div className="ml-6 mt-6 mb-6">
+                                <div className="ml-6  mb-6">
                                     <h3 className="text-[23px] text-red-700 mt-6 font-bold">
                                         Services
                                     </h3>
@@ -2138,6 +2581,7 @@ const CreateEnroleePACode = () => {
                                                                                 price
                                                                             }
                                                                         </h2>
+                                                                      
                                                                     </div>
                                                                 </div>
                                                                 <div className="flex flex-col ">
@@ -2304,10 +2748,14 @@ const CreateEnroleePACode = () => {
                                                                             : "—"}
                                                                     </td>
                                                                     <td className="p-2 border text-center whitespace-nowrap">
-                                                                        {apiResponse.PreAutCode ==
+                                                                        {proc
+                                                                            .apiResponse
+                                                                            .PreAutCode ==
                                                                         null
                                                                             ? "Procedure requires PreAuthorization"
-                                                                            : apiResponse.PreAutCode}
+                                                                            : proc
+                                                                                  .apiResponse
+                                                                                  .PreAutCode}
                                                                     </td>
                                                                     <td className="p-2 border text-center">
                                                                         <button
@@ -2665,10 +3113,13 @@ const CreateEnroleePACode = () => {
                                                             }
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
-                                                            {apiResponse.PreAutCode ==
+                                                            {proc.apiResponse
+                                                                .PreAutCode ==
                                                             null
                                                                 ? "Procedure requires PreAuthorization"
-                                                                : apiResponse.PreAutCode}
+                                                                : proc
+                                                                      .apiResponse
+                                                                      .PreAutCode}
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {
@@ -2681,7 +3132,10 @@ const CreateEnroleePACode = () => {
                                                             }
                                                         </td>
                                                         <td className="px-4 py-2 border">
-                                                            {data?.VisitID}
+                                                            {
+                                                                proc.apiResponse
+                                                                    .visitdetails_id
+                                                            }
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {encounterDate}
