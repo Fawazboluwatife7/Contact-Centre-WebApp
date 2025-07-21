@@ -47,6 +47,7 @@ const GeneratePAEnrolleeSearch = () => {
     };
 
     const fetchEnrollees = async () => {
+        console.log('search params', searchInputs)
         setIsLoading(true);
         try {
             const params = {
@@ -69,15 +70,15 @@ const GeneratePAEnrolleeSearch = () => {
                 )
                 .join("&");
 
-            console.log(
-                "enrollee",
-                await fetch(
-                    `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByDetails?${queryParams}`,
-                    {
-                        method: "GET",
-                    },
-                ),
-            );
+            // console.log(
+            //     "enrollee",
+            //     await fetch(
+            //         `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByDetails?${queryParams}`,
+            //         {
+            //             method: "GET",
+            //         },
+            //     ),
+            // );
 
             const response = await fetch(
                 `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByDetails?${queryParams}`,
