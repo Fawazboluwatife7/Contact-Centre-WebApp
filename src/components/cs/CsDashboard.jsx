@@ -115,15 +115,15 @@ function CsDashboard() {
         return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
     }
 
-    console.log(
-        "paaa",
-        fetch(
-            `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
-            {
-                method: "GET",
-            },
-        ),
-    );
+    // console.log(
+    //     "paaa",
+    //     fetch(
+    //         `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
+    //         {
+    //             method: "GET",
+    //         },
+    //     ),
+    // );
 
     useEffect(() => {
         const today = new Date().toISOString().split("T")[0]; // Gets YYYY-MM-DD
@@ -415,14 +415,14 @@ function CsDashboard() {
 
                             {/* Create Ticket Button with Image */}
                         </div>
-                        <div className=" cursor-pointer ">
+                        {/* <div className=" cursor-pointer ">
                             <h2
                                 className=" text-white px-4 rounded-md  mt-6 py-2 border bg-red-500 border-white"
                                 onClick={() => handleNavigate("/pendingpa")}
                             >
                                 See all pending PA
                             </h2>
-                        </div>
+                        </div> */}
                     </div>
                     {/* Data Table Section */}
                     <div className="relative overflow-x-auto shadow-md mt-3 rounded-md">

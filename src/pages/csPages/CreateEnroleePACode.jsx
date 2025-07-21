@@ -13,11 +13,14 @@ import { MdSkipPrevious } from "react-icons/md";
 
 const CreateEnroleePACode = () => {
     const [service, setService] = useState([]);
+    const [ProvId, setProvId] = useState([]);
     const [provider, setAllProvider] = useState([]);
     const [benefit, setBenefit] = useState([]);
     const [alldiagnosis, SetAllDiagnosis] = useState([]);
     const [apiResponse, setApiResponse] = useState("");
     const [price, setPrice] = useState("");
+    const [provEmail, setProvEmail] = useState("");
+    const [paProviderId, setPaProviderId] = useState("");
     const [visitid, setVisitId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [visitIdLoader, setVisitIdLoader] = useState(false);
@@ -194,113 +197,139 @@ const CreateEnroleePACode = () => {
         }
     };
 
-    const handleSelectProcedure = (selectedProc) => {
-        // Format the visit date for the date input
-        const formattedDate = formatDateForInput(selectedProc.Visitdate);
+    const handleSelectProcedure = async (selectedProc) => {
+        try {
+            console.log("Daignosess Check0", selectedProc);
 
-        // Update the encounter date state
-        const matchingVisitType = service.find(
-            (type) =>
-                type.visittype === selectedProc.visitType ||
-                type.servtype_id.toString() === selectedProc.visitType,
-        );
+            // Format the visit date for the date input
+            const formattedDate = formatDateForInput(selectedProc.Visitdate);
+            const providerIds = selectedProc.PROVIDER_ID;
+            console.log("provDetails", providerIds);
 
-        if (matchingVisitType) {
-            setSelectedVisitType({
-                value: matchingVisitType.servtype_id.toString(),
-                label: matchingVisitType.visittype,
+            // Update the encounter date state
+            const matchingVisitType = service.find(
+                (type) =>
+                    type.visittype === selectedProc.visitType ||
+                    type.servtype_id.toString() === selectedProc.visitType,
+            );
+
+            if (matchingVisitType) {
+                setSelectedVisitType({
+                    value: matchingVisitType.servtype_id.toString(),
+                    label: matchingVisitType.visittype,
+                });
+            } else {
+                setSelectedVisitType({
+                    value:
+                        selectedProc.visitTypeId ||
+                        selectedProc.visitType ||
+                        "",
+                    label: selectedProc.visitType || "Unknown Visit Type",
+                });
+            } //
+            SetEncounterDate(formattedDate);
+            setVisitId(selectedProc.visitid);
+            setSelectedProvider({
+                provider_id:
+                    selectedProc.providerId || selectedProc.provider_id || null,
+                email: selectedProc.issuedBy || "No email available",
+                name: selectedProc.provider || "Unknown Provider",
             });
-        } else {
-            setSelectedVisitType({
-                value: selectedProc.visitTypeId || selectedProc.visitType || "",
-                label: selectedProc.visitType || "Unknown Visit Type",
-            });
-        } //
-        SetEncounterDate(formattedDate);
-        setVisitId(selectedProc.visitid);
-        setSelectedProvider({
-            provider_id:
-                selectedProc.providerId || selectedProc.provider_id || null,
-            email: selectedProc.issuedBy || "No email available",
-            name: selectedProc.provider || "Unknown Provider",
-        });
 
-        setSearchProvider(selectedProc.provider);
+            setSearchProvider(selectedProc.provider);
 
-        // if (selectedProc.diagcode) {
-        //     setDiagnoses([
-        //         {
-        //             id: Date.now(),
-        //             code: selectedProc.diagcode,
-        //             description: selectedProc.diagcode,
-        //             filteredResults: [],
-        //         },
-        //     ]);
-        // }
+            // if (selectedProc.diagcode) {
+            //     setDiagnoses([
+            //         {
+            //             id: Date.now(),
+            //             code: selectedProc.diagcode,
+            //             description: selectedProc.diagcode,
+            //             filteredResults: [],
+            //         },
+            //     ]);
+            // }
 
-        const allDiagnosesForVisit = paginatedUniqueResults
-        .filter((proc) => proc.visitid === selectedProc.visitid)
-        .filter((proc) => proc.diagcode) // Only those with a diagcode
-        .map((proc, index) => ({
-            id: index + 1,
-            code: proc.diagcode,
-            description: proc.diagdescription || proc.diagcode,
-            filteredResults: [],
-        }));
+            const allDiagnosesForVisit = paginatedUniqueResults
+                .filter((proc) => proc.visitid === selectedProc.visitid)
+                .filter((proc) => proc.diagcode) // Only those with a diagcode
+                .map((proc, index) => ({
+                    id: index + 1,
+                    code: proc.diagcode,
+                    description: proc.diagdescription || proc.diagcode,
+                    filteredResults: [],
+                }));
 
-        const visitId = selectedProc.visitid;
-       const providerMatch = filteredProvider.find(item => item.ProviderCode === selectedProc.providercode);
+            const visitId = selectedProc.visitid;
+            const providerMatch = filteredProvider.find(
+                (item) => item.ProviderCode === selectedProc.providercode,
+            );
 
-       console.log("providerMatch", providerMatch)
-    if (!providerMatch || !providerMatch.provider_id) {
-        alert("Provider ID not found.");
-        return;
-    }
+            console.log("providerMatch", providerMatch);
+            if (!providerMatch || !providerMatch.provider_id) {
+                alert("Provider ID not found.");
+                return;
+            }
 
-    const providerId = providerMatch.provider_id;
-    
-         const proceduresForVisit = pa
-        .filter((proc) => proc.visitid === visitId)
-        .map((proc) => ({
-            ProcedureCode: proc.ProcedureCode || "",
-            ExtensionRemarks: proc.ProcedureDescription || "",
-            price: proc.chargeamount || 0,
-            ProcedureQty: "",
-            ChargeAmount: "",
-            PACode: proc.PACode || "",
-            apiResponse: {
-                PreAutCode: proc?.PACode || null,
-            },
-        }));
+            const providerId = providerMatch.provider_id;
+            const providerEmail = providerMatch.email;
 
-    console.log("Procedures for selected visit:", proceduresForVisit);
+            console.log("provDetails", providerIds);
+            console.log("providerEmail", providerEmail);
 
-    // ✅ Set the procedures to render them in the selected table
-    setSelectedProcedures(proceduresForVisit);
+            setProvId(providerId);
+            setProvEmail(providerEmail);
 
-    // Set diagnoses accordingly
-    if (allDiagnosesForVisit.length > 0) {
-        setDiagnoses(allDiagnosesForVisit);
-    } else if (selectedProc.diagcode) {
-        setDiagnoses([
-            {
-                id: 1,
-                code: selectedProc.diagcode,
-                description: selectedProc.diagdescription || selectedProc.diagcode,
-                filteredResults: [],
-            },
-        ]);
-    } else {
-        setDiagnoses([{ id: 1, code: "", description: "", filteredResults: [] }]);
-    }
-        // Optional: You can also set other fields if you have state for them
-        // setVisitId(selectedProc.visitid);
-        // setDiagnosisCode(selectedProc.diagcode);
-        // setProcedureCode(selectedProc.ProcedureCode);
-        // etc.
+            const proceduresForVisit = pa
+                .filter((proc) => proc.visitid === visitId)
+                .map((proc) => ({
+                    ProcedureCode: proc.ProcedureCode || "",
+                    ExtensionRemarks: proc.ProcedureDescription || "",
+                    price: proc.chargeamount || 0,
+                    ProcedureQty: "",
+                    ChargeAmount: "",
+                    PACode: proc.PACode || "",
+                    apiResponse: {
+                        PreAutCode: proc?.PACode || null,
+                    },
+                }));
 
-        console.log("Selected procedure:", selectedProc);
-        console.log("Formatted date:", formattedDate);
+            console.log("Procedures for selected visit:", proceduresForVisit);
+            console.log("Daignosess Check1", allDiagnosesForVisit);
+
+            // ✅ Set the procedures to render them in the selected table
+            setSelectedProcedures(proceduresForVisit);
+
+            // Set diagnoses accordingly
+            if (allDiagnosesForVisit.length > 0) {
+                setDiagnoses(allDiagnosesForVisit);
+            } else if (selectedProc.diagcode) {
+                setDiagnoses([
+                    {
+                        id: 1,
+                        code: selectedProc.diagcode,
+                        description:
+                            selectedProc.diagdescription ||
+                            selectedProc.diagcode,
+                        filteredResults: [],
+                    },
+                ]);
+            } else {
+                setDiagnoses([
+                    { id: 1, code: "", description: "", filteredResults: [] },
+                ]);
+            }
+            // Optional: You can also set other fields if you have state for them
+            // setVisitId(selectedProc.visitid);
+            // setDiagnosisCode(selectedProc.diagcode);
+            // setProcedureCode(selectedProc.ProcedureCode);
+            // etc.
+
+            console.log("Daignosess Check2", diagnoses);
+            console.log("Selected procedure:", selectedProc);
+            console.log("Formatted date:", formattedDate);
+        } catch (error) {
+            console.log("Daignosess Check3", error);
+        }
     };
     console.log("paaa", pa);
     // const handleAddProcedures = async () => {
@@ -421,10 +450,13 @@ const CreateEnroleePACode = () => {
         ]);
     };
 
+    console.log("providerId", paProviderId);
     const handleSubmitPA = async (procedure) => {
         setSubmitLoader(true);
-
-        if (!data.VisitID) {
+        console.log("Daignosess Check12", data);
+        console.log("Daignosess Check13", visitid);
+        const checkVisitId = data.VisitID || visitid;
+        if (!checkVisitId) {
             alert("VisitID is missing from API response!");
             setSubmitLoader(false);
             return null;
@@ -434,10 +466,10 @@ const CreateEnroleePACode = () => {
 
         const submitPA = {
             CifNumber: enrollee.Member_MemberUniqueID,
-            ProviderID: selectedProviders?.provider_id,
-            VisitID: data.VisitID,
+            ProviderID: selectedProviders?.provider_id || ProvId,
+            VisitID: data.VisitID || visitid,
             VisitDate: encounterDate,
-            username: providerEmail,
+            username: providerEmail || provEmail,
             DoctorRecommendations: doctorsprescription,
             ServiceTypeID: selectedVisitType?.value || "",
             DiagnosisLines: alldiagnosis,
@@ -462,18 +494,17 @@ const CreateEnroleePACode = () => {
                 },
             );
 
-            const responseText = await response.text();
-            const parsedResponse = JSON.parse(responseText);
+            // const responseText = await response.text();
+            // const parsedResponse = JSON.parse(responseText);
             const apiResponse = await response.json();
 
             console.log("PA API Response", apiResponse);
 
             const responseApi = {
-                VisitID: parsedResponse?.VisitID || "N/A",
-                status: parsedResponse?.status || "Error",
-                Message: parsedResponse?.Message || "",
-                PreAutCode:
-                    parsedResponse?.VisitDetails?.[0]?.PreAutCode || null,
+                VisitID: apiResponse?.VisitID || "N/A",
+                status: apiResponse?.status || "Error",
+                Message: apiResponse?.Message || "",
+                PreAutCode: apiResponse?.VisitDetails?.[0]?.PreAutCode || null,
             };
 
             return responseApi;
@@ -577,7 +608,7 @@ const CreateEnroleePACode = () => {
 
     // Handle Procedure Code search
     const handleSearchChangeProcedure = (index, value) => {
-        const filtered = proceduresData.filter(
+        const filtered = proceduresData?.filter(
             (proc) =>
                 proc.tariff_code.toLowerCase().includes(value.toLowerCase()) ||
                 proc.tariff_desc.toLowerCase().includes(value.toLowerCase()),
@@ -656,7 +687,9 @@ const CreateEnroleePACode = () => {
     }, [procedureCodes]);
 
     async function GetProcedurePrice() {
-        const priceUrl = `${apiUrl}api/ProviderNetwork/GetProviderProcedureTarrifAmount?providerid=${selectedProviders?.provider_id}&procedurecode=${procedureCodes}&cifnumber=0`;
+        const priceUrl = `${apiUrl}api/ProviderNetwork/GetProviderProcedureTarrifAmount?providerid=${
+            selectedProviders?.provider_id || ProvId
+        }&procedurecode=${procedureCodes}&cifnumber=0`;
 
         console.log("priceUrl", priceUrl);
 
@@ -703,8 +736,10 @@ const CreateEnroleePACode = () => {
             console.error("Error fetching lga", error);
         }
     }
+    console.log("providerCheck FilterProvider", filteredProvider);
     async function GetProvider() {
         try {
+            console.log("providerCheck0");
             const provider = await fetch(
                 `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=0&LGAID=0&enrolleeid=${enrollee.Member_EnrolleeID}&provider_id=0`,
                 {
@@ -713,10 +748,10 @@ const CreateEnroleePACode = () => {
             );
 
             const response = await provider.json();
-            console.log("provider", response);
+            console.log("providerCheck", response);
             setFilteredProvider(response.result);
         } catch (error) {
-            console.error("Error fetching provider", error);
+            console.error("providerCheck Error fetching provider", error);
         }
     }
 
@@ -816,12 +851,13 @@ const CreateEnroleePACode = () => {
         updatedDiagnoses[index].filteredResults = []; // Hide dropdown
         setDiagnoses(updatedDiagnoses);
 
-        // Add this to update the all diagnosis list when manually selecting
-        const diag = updatedDiagnoses.map(({ code, description }) => ({
-            DiagnosisCode: code,
-            DiagnosisDescription: description,
-        }));
-        SetAllDiagnosis(diag);
+        // ✅ Only add the latest diagnosis
+        SetAllDiagnosis([
+            {
+                DiagnosisCode: diagnosis.Value,
+                DiagnosisDescription: diagnosis.Text,
+            },
+        ]);
     };
     // Function to add a new diagnosis input set
     const handleAddDiagnosis = () => {
@@ -835,11 +871,11 @@ const CreateEnroleePACode = () => {
             },
         ]);
 
-        const diag = diagnoses.map(({ code, description }) => ({
-            DiagnosisCode: code,
-            DiagnosisDescription: description,
-        }));
-        SetAllDiagnosis(diag);
+        // const diag = diagnoses.map(({ code, description }) => ({
+        //     DiagnosisCode: code,
+        //     DiagnosisDescription: description,
+        // }));
+        // SetAllDiagnosis(diag);
 
         console.log("daignosis:", JSON.stringify(diag, null, 2));
     };
@@ -1272,6 +1308,12 @@ const CreateEnroleePACode = () => {
         }
     }, [selectedProviders]);
 
+    useEffect(() => {
+        if (ProvId) {
+            GetProcedure();
+        }
+    }, [ProvId]);
+
     // console.log(
     //     "procedurezzz",
     //     fetch(
@@ -1282,19 +1324,13 @@ const CreateEnroleePACode = () => {
     //     ),
     // );
 
+    console.log("Checkingpovid1", ProvId);
     async function GetProcedure() {
-const proceed= await fetch(
-                `${apiUrl}api/ProviderNetwork/GetProceduresByFilter?filtertype=0&providerid=${selectedProviders.provider_id}&searchbyname=`,
-                {
-                    method: "GET",
-                },
-            );
-
-            console.log("proceed")
-
         try {
             const response = await fetch(
-                `${apiUrl}api/ProviderNetwork/GetProceduresByFilter?filtertype=0&providerid=${selectedProviders.provider_id}&searchbyname=`,
+                `${apiUrl}api/ProviderNetwork/GetProceduresByFilter?filtertype=0&providerid=${
+                    selectedProviders.provider_id || ProvId
+                }&searchbyname=`,
                 {
                     method: "GET",
                 },
@@ -1302,14 +1338,15 @@ const proceed= await fetch(
 
             const data = await response.json();
 
-            console.log("Procedure77:", JSON.stringify(data, null, 2));
-            console.log("Proced:", response);
+            console.log("Checkingpovid2:", JSON.stringify(data, null, 2));
+            console.log("Checkingpovid3", response);
 
             setProceduresData(data.result);
         } catch (error) {
-            console.error("Error getting Procedures", error);
+            console.error("CheckingpovidError", error);
         }
     }
+
     async function CalculateAllAmountSpentOnEnrollee() {
         try {
             const response = await fetch(
@@ -1491,7 +1528,7 @@ const proceed= await fetch(
         SetAllDiagnosis(diag);
     };
 
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const filteredProviders = provider.filter((prov) =>
         prov.provider.toLowerCase().includes(searchProvider.toLowerCase()),
     );
@@ -1555,7 +1592,9 @@ const proceed= await fetch(
             console.log("pahistory", data.result);
 
             SetPa(data.result);
-             setPaginatedUniqueResults(getUniqueVisitIds(data.result));
+            //SetPaProvider(data.result.issuedBy);
+            setPaProviderId(data.PROVIDER_ID);
+            setPaginatedUniqueResults(getUniqueVisitIds(data.result));
         } catch (error) {
             console.error("Error getting PA:", error);
         } finally {
@@ -1563,14 +1602,14 @@ const proceed= await fetch(
         }
     }
 
-function getUniqueVisitIds(data) {
-    const seen = new Set();
-    return data.filter((item) => {
-        if (seen.has(item.visitid)) return false;
-        seen.add(item.visitid);
-        return true;
-    });
-}
+    function getUniqueVisitIds(data) {
+        const seen = new Set();
+        return data.filter((item) => {
+            if (seen.has(item.visitid)) return false;
+            seen.add(item.visitid);
+            return true;
+        });
+    }
 
     useEffect(() => {
         GetBiodata();
@@ -2512,7 +2551,7 @@ function getUniqueVisitIds(data) {
 
                                                                     {proc
                                                                         .filteredResults
-                                                                        .length >
+                                                                        ?.length >
                                                                         0 && (
                                                                         <div className="">
                                                                             <ul className="border border-gray-300 w-[240px] mt-[4.5rem] bg-white shadow-lg rounded-md absolute z-10">
@@ -2581,7 +2620,6 @@ function getUniqueVisitIds(data) {
                                                                                 price
                                                                             }
                                                                         </h2>
-                                                                      
                                                                     </div>
                                                                 </div>
                                                                 <div className="flex flex-col ">
@@ -2708,69 +2746,76 @@ function getUniqueVisitIds(data) {
                                                         </tr>
                                                     ) : (
                                                         selectedProcedures.map(
-                                                            (proc, index) => (
-                                                                <tr
-                                                                    key={index}
-                                                                    className="border-t"
-                                                                >
-                                                                    <td className="p-2 border text-center">
-                                                                        {index +
-                                                                            1}
-                                                                    </td>
-                                                                    <td className="p-2 border">
-                                                                        {
-                                                                            proc.ProcedureCode
-                                                                        }
-                                                                    </td>
-                                                                    <td className="p-2 border">
-                                                                        {
-                                                                            proc.ExtensionRemarks
-                                                                        }
-                                                                    </td>
-                                                                    <td className="p-2 border text-center">
-                                                                        ₦
-                                                                        {
-                                                                            proc.price
-                                                                        }
-                                                                    </td>
+                                                            (proc, index) => {
+                                                                console.log(
+                                                                    "selectedProcedure",
+                                                                    proc,
+                                                                );
 
-                                                                    <td className="p-2 border text-center">
-                                                                        {proc.ProcedureQty ||
-                                                                            "—"}
-                                                                    </td>
-
-                                                                    <td className="p-2 border text-center">
-                                                                        ₦
-                                                                        {proc.ChargeAmount
-                                                                            ? Number(
-                                                                                  proc.ChargeAmount,
-                                                                              ).toLocaleString()
-                                                                            : "—"}
-                                                                    </td>
-                                                                    <td className="p-2 border text-center whitespace-nowrap">
-                                                                        {proc
-                                                                            .apiResponse
-                                                                            .PreAutCode ==
-                                                                        null
-                                                                            ? "Procedure requires PreAuthorization"
-                                                                            : proc
-                                                                                  .apiResponse
-                                                                                  .PreAutCode}
-                                                                    </td>
-                                                                    <td className="p-2 border text-center">
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                handleRemoveProcedure(
-                                                                                    index,
-                                                                                )
+                                                                return (
+                                                                    <tr
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        className="border-t"
+                                                                    >
+                                                                        <td className="p-2 border text-center">
+                                                                            {index +
+                                                                                1}
+                                                                        </td>
+                                                                        <td className="p-2 border">
+                                                                            {
+                                                                                proc.ProcedureCode
                                                                             }
-                                                                            className="text-red-500 hover:text-red-700 font-semibold"
-                                                                        >
-                                                                            Remove
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                            ),
+                                                                        </td>
+                                                                        <td className="p-2 border">
+                                                                            {
+                                                                                proc.ExtensionRemarks
+                                                                            }
+                                                                        </td>
+                                                                        <td className="p-2 border text-center">
+                                                                            ₦
+                                                                            {
+                                                                                proc.price
+                                                                            }
+                                                                        </td>
+                                                                        <td className="p-2 border text-center">
+                                                                            {proc.ProcedureQty ||
+                                                                                "—"}
+                                                                        </td>
+                                                                        <td className="p-2 border text-center">
+                                                                            ₦
+                                                                            {proc.ChargeAmount
+                                                                                ? Number(
+                                                                                      proc.ChargeAmount,
+                                                                                  ).toLocaleString()
+                                                                                : "—"}
+                                                                        </td>
+                                                                        <td className="p-2 border text-center whitespace-nowrap">
+                                                                            {proc
+                                                                                ?.apiResponse
+                                                                                ?.PreAutCode ==
+                                                                            null
+                                                                                ? "Procedure requires PreAuthorization"
+                                                                                : proc
+                                                                                      .apiResponse
+                                                                                      .PreAutCode}
+                                                                        </td>
+                                                                        <td className="p-2 border text-center">
+                                                                            <button
+                                                                                onClick={() =>
+                                                                                    handleRemoveProcedure(
+                                                                                        index,
+                                                                                    )
+                                                                                }
+                                                                                className="text-red-500 hover:text-red-700 font-semibold"
+                                                                            >
+                                                                                Remove
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                );
+                                                            },
                                                         )
                                                     )}
                                                 </tbody>
@@ -3093,10 +3138,9 @@ function getUniqueVisitIds(data) {
                                                         className="border-t text-[10px] "
                                                     >
                                                         <td className="px-4 py-2 border">
-                                                            {
-                                                                alldiagnosis[0]
-                                                                    ?.DiagnosisCode
-                                                            }
+                                                            {alldiagnosis[0]
+                                                                ?.DiagnosisCode ||
+                                                                pa.diagcode}
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
                                                             {
@@ -3113,8 +3157,8 @@ function getUniqueVisitIds(data) {
                                                             }
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
-                                                            {proc.apiResponse
-                                                                .PreAutCode ==
+                                                            {proc?.apiResponse
+                                                                ?.PreAutCode ==
                                                             null
                                                                 ? "Procedure requires PreAuthorization"
                                                                 : proc
@@ -3133,8 +3177,9 @@ function getUniqueVisitIds(data) {
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {
-                                                                proc.apiResponse
-                                                                    .visitdetails_id
+                                                                proc
+                                                                    ?.apiResponse
+                                                                    ?.visitdetails_id
                                                             }
                                                         </td>
                                                         <td className="px-4 py-2 border">
