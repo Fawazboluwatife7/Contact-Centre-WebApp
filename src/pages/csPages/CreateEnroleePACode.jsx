@@ -12,6 +12,7 @@ import { CgPlayTrackNext } from "react-icons/cg";
 import { MdSkipPrevious } from "react-icons/md";
 
 const CreateEnroleePACode = () => {
+    const [rejectionMessage, setRejectionMessage] = useState("");
     const [service, setService] = useState([]);
     const [ProvId, setProvId] = useState([]);
     const [provider, setAllProvider] = useState([]);
@@ -32,31 +33,7 @@ const CreateEnroleePACode = () => {
     const [biodata, setBiodata] = useState([]);
     const [enrolleeProvider, setAllEnrolleeProvider] = useState([]);
     const [ShowPATable, setShowPATable] = useState(false);
-
-    const [selectAll, setSelectAll] = useState(false);
-    const [selectedItems, setSelectedItems] = useState([]);
-
-    const [selectedLoadedVisitType, setSelectedLoadedVisitType] =
-        useState(null);
-
-    const handleCheckboxChanges = (enrollee) => {
-        setSelectedItems((prev) => {
-            const isSelected = prev.some(
-                (i) => i.batch_number === enrollee.batch_number,
-            );
-
-            if (isSelected) {
-                return prev.filter(
-                    (i) => i.batch_number !== enrollee.batch_number,
-                );
-            } else {
-                return [...prev, enrollee];
-            }
-        });
-
-        // Update selectAll state based on new selection
-        setSelectAll(selectedItems.length + 1 === paginatedResults.length);
-    };
+    const [rejectModal, setRejectModal] = useState(false);
 
     const collectProcedureCodes = () => {
         const codes = procedures.map((proc) => proc.code);
@@ -112,6 +89,7 @@ const CreateEnroleePACode = () => {
     const [proceduress, setProceduress] = useState([]);
     const [provDetails, SetProvDetails] = useState([]);
     const [selectedProcedures, setSelectedProcedures] = useState([]);
+    const [selectedPa, SetSelectedPa] = useState([]);
 
     const totalAmount = selectedProcedures.reduce((sum, proc) => {
         console.log("log", selectedProcedures);
@@ -198,6 +176,7 @@ const CreateEnroleePACode = () => {
     };
 
     const handleSelectProcedure = async (selectedProc) => {
+        setShowPATable(true);
         try {
             console.log("Daignosess Check0", selectedProc);
 
@@ -324,6 +303,7 @@ const CreateEnroleePACode = () => {
             // setProcedureCode(selectedProc.ProcedureCode);
             // etc.
 
+            GetLoadedPAHistory(visitid);
             console.log("Daignosess Check2", diagnoses);
             console.log("Selected procedure:", selectedProc);
             console.log("Formatted date:", formattedDate);
@@ -391,8 +371,6 @@ const CreateEnroleePACode = () => {
     // };
 
     const handleAddProcedures = async () => {
-        setShowPATable(true);
-
         if (!selectedData || !formValues.ExtensionRemarks) {
             alert("Please select a procedure code first.");
             return;
@@ -425,16 +403,13 @@ const CreateEnroleePACode = () => {
             }),
         };
 
-        // 🔥 Submit and get response
         const apiResponse = await handleSubmitPA(updated);
 
-        // 🔥 Attach response to the procedure
         const updatedWithResponse = {
             ...updated,
-            apiResponse, // contains status, PreAutCode, etc.
+            apiResponse,
         };
 
-        // Save it
         setSelectedProcedures((prev) => [...prev, updatedWithResponse]);
 
         setProcedures([
@@ -448,6 +423,9 @@ const CreateEnroleePACode = () => {
                 filteredResults: [],
             },
         ]);
+
+        GetLoadedPAHistory(visitid);
+        GetPAHistory();
     };
 
     console.log("providerId", paProviderId);
@@ -469,7 +447,7 @@ const CreateEnroleePACode = () => {
             ProviderID: selectedProviders?.provider_id || ProvId,
             VisitID: data.VisitID || visitid,
             VisitDate: encounterDate,
-            username: providerEmail || provEmail,
+            username: user?.result[0]?.UserName, //providerEmail || provEmail,
             DoctorRecommendations: doctorsprescription,
             ServiceTypeID: selectedVisitType?.value || "",
             DiagnosisLines: alldiagnosis,
@@ -1141,9 +1119,7 @@ const CreateEnroleePACode = () => {
         navigate("/csenrolleeprofileupdate", { state: { enrollee } });
     };
     const [isChecked, setIsChecked] = useState(false);
-    const handleCheckboxChange = () => {
-        setIsChecked(!isChecked);
-    };
+
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
     const location = useLocation();
@@ -1154,6 +1130,146 @@ const CreateEnroleePACode = () => {
     const [procedurex, setProcedurex] = useState([]);
     const [selectedRemark, setSelectedRemark] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+
+    const [selectAll, setSelectAll] = useState(false);
+
+    const handleSelectAll = () => {
+        const newSelectAll = !selectAll;
+        setSelectAll(newSelectAll);
+        setSelectedItems(newSelectAll ? [...selectedProcedures] : []);
+    };
+
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    const handleCheckboxChange = (item) => {
+        setSelectedItems((prev) => {
+            const isSelected = prev.some(
+                (i) => i.ProcedureCode === item.ProcedureCode,
+            );
+
+            const updated = isSelected
+                ? prev.filter((i) => i.ProcedureCode !== item.ProcedureCode)
+                : [...prev, item];
+
+            // ✅ Update Select All status
+            setSelectAll(updated.length === selectedProcedures.length);
+
+            console.log("Item selected:", item);
+
+            // if (!isSelected) {
+            //     const payload = {
+            //         visitid: item.visitid,
+            //         username: user?.result[0]?.UserName,
+            //         VisitDetailIDs: [
+            //             {
+            //                 visitdetail_id: item.VisitDetailsID,
+            //             },
+            //         ],
+            //     };
+            //     console.log("Item selected:", payload);
+            //     sendPASelectionToAPI(payload);
+            // }
+
+            return updated;
+        });
+    };
+
+    const handleApprovePA = async () => {
+        setSubmitLoader(true);
+        const responses = [];
+
+        for (const item of selectedItems) {
+            const requestData = {
+                visitid: item.VisitID1,
+                username: user?.result[0]?.UserName,
+                VisitDetailIDs: [{ visitdetail_id: item.VisitDetailsID }],
+            };
+
+            console.log("Sending to API:", requestData);
+
+            try {
+                const response = await fetch(
+                    `${apiUrl}api/ProviderNetwork/approvePreauthorization`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(requestData),
+                    },
+                );
+
+                const data = await response.json();
+                console.log("API Response:", data);
+
+                responses.push({
+                    status: data.status,
+                    message: data.message,
+                    pacode: data.pacode,
+                });
+            } catch (error) {
+                console.error("API Error:", error);
+                responses.push({
+                    visitdetail_id: item.VisitDetailsID,
+                    status: "Error",
+                    message: "Network error occurred",
+                });
+            }
+        }
+
+        setSubmitLoader(false);
+        setApiResponse(responses);
+        setIsModalOpen(true);
+        GetPAHistory();
+        GetLoadedPAHistory();
+    };
+
+    const handleRejectPA = async () => {
+        setSubmitLoader(true);
+        const responses = [];
+
+        for (const item of selectedItems) {
+            const requestData = {
+                message: rejectionMessage,
+                userid: user?.result[0]?.User_id,
+                VisitDetailid: item.VisitDetailsID,
+            };
+
+            console.log("Sent Dataz:", JSON.stringify(requestData, null, 2));
+
+            try {
+                const response = await fetch(
+                    `${apiUrl}api/EnrolleeProfile/reject_EnrolleePA`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(requestData),
+                    },
+                );
+
+                const data = await response.json();
+                console.log("API Responsez:", data);
+
+                responses.push({
+                    status: data.status,
+                    message: data.message,
+                    pacode: data.pacode,
+                });
+            } catch (error) {
+                console.error("API Error:", error);
+                responses.push({
+                    visitdetail_id: item.VisitDetailsID,
+                    status: "Error",
+                    message: "Network error occurred",
+                });
+            }
+        }
+
+        setSubmitLoader(false);
+        setApiResponse(responses);
+        //setIsModalOpen(true);
+        GetPAHistory();
+        GetLoadedPAHistory();
+    };
+
     const getRemarkText = (remark) => {
         const remarksMap = {
             1: "Consultation",
@@ -1595,6 +1711,36 @@ const CreateEnroleePACode = () => {
             //SetPaProvider(data.result.issuedBy);
             setPaProviderId(data.PROVIDER_ID);
             setPaginatedUniqueResults(getUniqueVisitIds(data.result));
+        } catch (error) {
+            console.error("Error getting PA:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    console.log("sss", visitid);
+    async function GetLoadedPAHistory() {
+        setLoading(true);
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=0&PAStatus&visitid=${visitid}`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("paselectedhistory", data.result);
+
+            SetSelectedPa(data.result);
+            //SetPaProvider(data.result.issuedBy);
+            // setPaProviderId(data.PROVIDER_ID);
+            // setPaginatedUniqueResults(getUniqueVisitIds(data.result));
         } catch (error) {
             console.error("Error getting PA:", error);
         } finally {
@@ -2781,7 +2927,7 @@ const CreateEnroleePACode = () => {
                                                                         </td>
                                                                         <td className="p-2 border text-center">
                                                                             {proc.ProcedureQty ||
-                                                                                "—"}
+                                                                                1}
                                                                         </td>
                                                                         <td className="p-2 border text-center">
                                                                             ₦
@@ -3092,6 +3238,16 @@ const CreateEnroleePACode = () => {
                                     <table className="min-w-full table-auto border-collapse text-sm mt-5 ">
                                         <thead className="bg-gray-100 text-left text-[10px]">
                                             <tr>
+                                                <th className=" px-2 py-1 text-left border">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectAll}
+                                                        onChange={
+                                                            handleSelectAll
+                                                        }
+                                                        className="h-3 w-3"
+                                                    />
+                                                </th>
                                                 <th className="p-2 border">
                                                     DiagnosisCode
                                                 </th>
@@ -3111,7 +3267,7 @@ const CreateEnroleePACode = () => {
                                                     CifNumber
                                                 </th>
                                                 <th className="p-2 border">
-                                                    ProviderID
+                                                    Provider
                                                 </th>
                                                 <th className="p-2 border">
                                                     VisitID
@@ -3126,67 +3282,84 @@ const CreateEnroleePACode = () => {
                                                     Doctor Recommendations
                                                 </th>
                                                 <th className="p-2 border">
-                                                    ServiceTypeID
+                                                    ServiceType
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {selectedProcedures.map(
-                                                (proc, idx) => (
+                                            {selectedPa.map((proc, idx) => {
+                                                const isSelected =
+                                                    selectedItems.some(
+                                                        (selected) =>
+                                                            selected.VisitDetailsID ===
+                                                            proc.VisitDetailsID,
+                                                    );
+
+                                                return (
                                                     <tr
                                                         key={idx}
                                                         className="border-t text-[10px] "
                                                     >
-                                                        <td className="px-4 py-2 border">
+                                                        <td className=" p-2 text-center  ">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={
+                                                                    isSelected
+                                                                }
+                                                                onChange={() =>
+                                                                    handleCheckboxChange(
+                                                                        proc,
+                                                                    )
+                                                                }
+                                                                className="border-black border"
+                                                            />
+                                                        </td>
+
+                                                        <td className="px-4 py-2 ">
                                                             {alldiagnosis[0]
                                                                 ?.DiagnosisCode ||
-                                                                pa.diagcode}
+                                                                pa.diagcode ||
+                                                                proc.diagcode.split(
+                                                                    " ",
+                                                                )[0] ||
+                                                                "N/A"}
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
-                                                            {
-                                                                alldiagnosis[0]
-                                                                    ?.DiagnosisDescription
-                                                            }
+                                                            {alldiagnosis[0]
+                                                                ?.DiagnosisDescription ||
+                                                                proc.diagcode
+                                                                    .split(" ")
+                                                                    .slice(1)
+                                                                    .join(" ")}
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {proc.ProcedureCode}
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
-                                                            {
-                                                                proc.ExtensionRemarks
-                                                            }
+                                                            {proc.ExtensionRemarks ||
+                                                                proc.ProcedureDescription}
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
-                                                            {proc?.apiResponse
-                                                                ?.PreAutCode ==
-                                                            null
-                                                                ? "Procedure requires PreAuthorization"
-                                                                : proc
-                                                                      .apiResponse
-                                                                      .PreAutCode}
+                                                            {proc.PACode}
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {
                                                                 enrollee?.Member_MemberUniqueID
                                                             }
                                                         </td>
-                                                        <td className="px-4 py-2 border">
-                                                            {
-                                                                selectedProviders?.provider_id
-                                                            }
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {searchProvider}
                                                         </td>
                                                         <td className="px-4 py-2 border">
-                                                            {
-                                                                proc
-                                                                    ?.apiResponse
-                                                                    ?.visitdetails_id
-                                                            }
+                                                            {proc?.apiResponse
+                                                                ?.visitdetails_id ||
+                                                                proc.visitid}
                                                         </td>
-                                                        <td className="px-4 py-2 border">
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
                                                             {encounterDate}
                                                         </td>
                                                         <td className="px-4 py-2 border">
-                                                            {providerEmail}
+                                                            {provEmail}
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {doctorsprescription ==
@@ -3195,12 +3368,11 @@ const CreateEnroleePACode = () => {
                                                                 : doctorsprescription}
                                                         </td>
                                                         <td className="px-4 py-2 border">
-                                                            {selectedVisitType?.value ||
-                                                                ""}
+                                                            {proc.visitType}
                                                         </td>
                                                     </tr>
-                                                ),
-                                            )}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -3208,28 +3380,62 @@ const CreateEnroleePACode = () => {
                                 <div className="grid grid-cols-1  h-[90px] mt-3 gap-2 w-[10%] ">
                                     <button
                                         className="whitespace-nowrap   text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
-                                        onClick={() => setIsModalsOpen(true)}
+                                        onClick={() => handleApprovePA()}
                                     >
                                         Approve All
                                     </button>
                                     <button
                                         className="whitespace-nowrap  w-full  text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
-                                        onClick={() => setIsModalsOpen(true)}
+                                        onClick={() => setRejectModal(true)}
                                     >
                                         Reject All
                                     </button>{" "}
                                     <button
                                         className="whitespace-nowrap  w-full   text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
-                                        onClick={() => setIsModalsOpen(true)}
+                                        onClick={() => handleApprovePA()}
                                     >
                                         Approve
                                     </button>
                                     <button
                                         className="whitespace-nowrap  w-full    text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
-                                        onClick={() => setIsModalsOpen(true)}
+                                        onClick={() => setRejectModal(true)}
                                     >
                                         Reject
                                     </button>{" "}
+                                </div>
+                            </div>
+                        )}
+                        {rejectModal && (
+                            <div className=" z-50 bg-black justify-center items-center inset-0 fixed flex bg-opacity-50">
+                                <div className=" bg-white  rounded-lg shadow-lg w-full max-w-md p-6">
+                                    <h2 className="text-lg font-semibold mb-4">
+                                        Reject PA
+                                    </h2>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter reason"
+                                        className="w-full border border-gray-300 rounded p-2 outline-red-600 "
+                                        value={rejectionMessage}
+                                        onChange={(e) =>
+                                            setRejectionMessage(e.target.value)
+                                        }
+                                    ></input>
+                                    <div className=" flex justify-end gap-2 mt-3">
+                                        <button
+                                            className=" whitespace-nowrap  bg-red-600 text-white px-4 py-2 rounded"
+                                            onClick={handleRejectPA}
+                                        >
+                                            Reject Pa
+                                        </button>
+                                        <button
+                                            className=" whitespace-nowrap  border border-gray-300 rounded p-2 "
+                                            onClick={() =>
+                                                setRejectModal(false)
+                                            }
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}

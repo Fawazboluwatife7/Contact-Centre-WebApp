@@ -31,6 +31,7 @@ const Login = () => {
             navigate("/csdashboard");
         }
     }, []);
+
     const handleLogin = async () => {
         if (!email || !password) {
             setMsg("Email and password are required.");
