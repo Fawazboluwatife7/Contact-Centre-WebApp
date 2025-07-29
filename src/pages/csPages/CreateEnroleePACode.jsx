@@ -67,6 +67,7 @@ const CreateEnroleePACode = () => {
     const [isModalsOpen, setIsModalsOpen] = useState(false);
     const [tableData, setTableData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [paginatedLoader, setPaginatedLoader] = useState(false);
     const [benefits, setAllBenefits] = useState([]);
     const [pa, SetPa] = useState([]);
 
@@ -1849,7 +1850,7 @@ const CreateEnroleePACode = () => {
     }
 
     async function GetPAHistory() {
-        setLoading(true);
+        setPaginatedLoader(true);
 
         const response = fetch(
             `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid`,
@@ -1882,7 +1883,7 @@ const CreateEnroleePACode = () => {
         } catch (error) {
             //  console?.error("Error getting PA:", error);
         } finally {
-            setLoading(false);
+            setPaginatedLoader(false);
         }
     }
 
@@ -2402,10 +2403,13 @@ const CreateEnroleePACode = () => {
                                                                 ),
                                                         )
                                                         .slice(
-                                                            currentPage * 10,
-                                                            currentPage * 10 +
+                                                            (providerCurrentPage -
+                                                                1) *
+                                                                10,
+                                                            providerCurrentPage *
                                                                 10,
                                                         )
+
                                                         .map((prov, index) => (
                                                             <p
                                                                 key={
@@ -2447,11 +2451,11 @@ const CreateEnroleePACode = () => {
                                                         }
                                                         disabled={
                                                             providerCurrentPage ===
-                                                            0
+                                                            1
                                                         }
                                                         className={`px-2 py-1 rounded ${
                                                             providerCurrentPage ===
-                                                            0
+                                                            1
                                                                 ? "text-gray-400"
                                                                 : "text-blue-500 hover:bg-blue-50"
                                                         }`}
@@ -2459,8 +2463,8 @@ const CreateEnroleePACode = () => {
                                                         Previous
                                                     </button>
                                                     <span className="text-sm text-gray-500">
-                                                        Page {currentPage + 1}{" "}
-                                                        of{" "}
+                                                        Page{" "}
+                                                        {providerCurrentPage} of{" "}
                                                         {Math.ceil(
                                                             filteredProvider.filter(
                                                                 (prov) =>
@@ -2474,7 +2478,7 @@ const CreateEnroleePACode = () => {
                                                     </span>
                                                     <button
                                                         onClick={() =>
-                                                            setCurrentPage(
+                                                            setProviderCurrentPage(
                                                                 (prev) => {
                                                                     const filteredLength =
                                                                         filteredProvider.filter(
@@ -2498,7 +2502,8 @@ const CreateEnroleePACode = () => {
                                                             )
                                                         }
                                                         disabled={
-                                                            (currentPage + 1) *
+                                                            (providerCurrentPage +
+                                                                1) *
                                                                 10 >=
                                                             filteredProvider.filter(
                                                                 (prov) =>
@@ -2510,7 +2515,8 @@ const CreateEnroleePACode = () => {
                                                             ).length
                                                         }
                                                         className={`px-2 py-1 rounded ${
-                                                            (currentPage + 1) *
+                                                            (providerCurrentPage +
+                                                                1) *
                                                                 10 >=
                                                             filteredProvider.filter(
                                                                 (prov) =>
@@ -2577,33 +2583,15 @@ const CreateEnroleePACode = () => {
                             </div>
                             <div className=" border border-l-2 border-black  ml-1"></div>
 
-                            <div className="  flex relative overflow-x-auto ml-2">
-                                <table className="min-w-full table-auto border-collapse text-sm  ">
+                            <div className="flex relative overflow-x-auto ml-2">
+                                <table className="min-w-full table-auto border-collapse text-sm">
                                     <thead className="bg-gray-100 text-left text-[10px]">
                                         <tr>
                                             <th className="p-2 border"></th>
                                             <th className="p-2 border whitespace-nowrap">
-                                                Visit PA Code
-                                            </th>
-                                            <th className="p-2 border">
-                                                VisitId
+                                                Visit PA Code
                                             </th>
                                             <th className="p-2 border">Date</th>
-                                            <th className="p-2 border">
-                                                DiagnosisCode
-                                            </th>
-                                            <th className="p-2 border whitespace-nowrap">
-                                                Diagnosis Description
-                                            </th>
-                                            <th className="p-2 border whitespace-nowrap">
-                                                Procedure Code
-                                            </th>
-                                            <th className="p-2 border whitespace-nowrap">
-                                                Procedure Description
-                                            </th>
-                                            <th className="p-2 border whitespace-nowrap">
-                                                PA Code
-                                            </th>
                                             <th className="p-2 border whitespace-nowrap">
                                                 Visit Type
                                             </th>
@@ -2616,64 +2604,77 @@ const CreateEnroleePACode = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {paginatedUniqueResults.map(
-                                            (proc, idx) => (
-                                                <tr
-                                                    key={idx}
-                                                    className="border-t text-[10px] "
+                                        {paginatedLoader ? (
+                                            <tr>
+                                                <td
+                                                    colSpan={6}
+                                                    className="text-center py-10 w-[40rem]"
                                                 >
-                                                    <td className="px-4  border">
-                                                        <button
-                                                            className="px-3  whitespace-nowrap border border-blue-500 hover:bg-blue-50"
-                                                            onClick={() =>
-                                                                handleSelectProcedure(
-                                                                    proc,
-                                                                )
-                                                            }
-                                                        >
-                                                            Select
-                                                        </button>
-                                                    </td>
+                                                    <div className="flex flex-col justify-center items-center w-full">
+                                                        <img
+                                                            src="./loaderx.gif"
+                                                            alt="Loading animation"
+                                                            className="w-40 h-40"
+                                                        />
+                                                        <h2 className="text-lg font-semibold text-gray-700 mt-2 w-full">
+                                                            Fetching data...
+                                                        </h2>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ) : paginatedUniqueResults &&
+                                          paginatedUniqueResults.length > 0 ? (
+                                            paginatedUniqueResults.map(
+                                                (proc, idx) => (
+                                                    <tr
+                                                        key={idx}
+                                                        className="border-t text-[10px]"
+                                                    >
+                                                        <td className="px-4 border">
+                                                            <button
+                                                                className="px-3 whitespace-nowrap border border-blue-500 hover:bg-blue-50"
+                                                                onClick={() =>
+                                                                    handleSelectProcedure(
+                                                                        proc,
+                                                                    )
+                                                                }
+                                                            >
+                                                                Select
+                                                            </button>
+                                                        </td>
 
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.PACODE1}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.visitid}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {formatISOToCustom(
-                                                            proc.Visitdate,
-                                                        )}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.diagcode}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.diagcode}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.ProcedureCode}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {
-                                                            proc.ProcedureDescription
-                                                        }
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.PACode}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.visitType}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.provider}
-                                                    </td>
-                                                    <td className="px-4 py-2 border whitespace-nowrap">
-                                                        {proc.issuedBy}
-                                                    </td>
-                                                </tr>
-                                            ),
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {proc.PACODE1}
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {formatISOToCustom(
+                                                                proc.Visitdate,
+                                                            )}
+                                                        </td>
+
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {proc.visitType}
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {proc.provider}
+                                                        </td>
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {proc.issuedBy}
+                                                        </td>
+                                                    </tr>
+                                                ),
+                                            )
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan={6}
+                                                    className="text-center py-10 w-[40rem]"
+                                                >
+                                                    <div className="flex justify-center items-center h-full">
+                                                        <h2>Server Error</h2>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         )}
                                     </tbody>
                                 </table>
