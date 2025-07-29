@@ -179,7 +179,7 @@ const PARejectionPage = ({ selectedItemz }) => {
         const selectedItem = selectedItems[0];
         const requestData = {
             VisitDetailid: selectedItem.VisitDetailsID,
-            userid: user?.result?.[0]?.User_id || "Unknown",
+            userid: user?.result?.[0]?.User_id,
             message: messages?.[selectedItem?.VisitDetailsID] || "",
         };
 

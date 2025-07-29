@@ -10,8 +10,10 @@ import CreatePAModal from "./CreatePAModal";
 import { FaSpinner } from "react-icons/fa";
 import { CgPlayTrackNext } from "react-icons/cg";
 import { MdSkipPrevious } from "react-icons/md";
+import Alert from "../../components/Alert";
 
 const CreateEnroleePACode = () => {
+    const [rejectionMessage, setRejectionMessage] = useState("");
     const [service, setService] = useState([]);
     const [ProvId, setProvId] = useState([]);
     const [provider, setAllProvider] = useState([]);
@@ -25,6 +27,9 @@ const CreateEnroleePACode = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [visitIdLoader, setVisitIdLoader] = useState(false);
     const [submitLoader, setSubmitLoader] = useState(false);
+    const [rejectLoader, setRejectLoader] = useState(false);
+    const [addProcedureLoader, setAddProcedureLoader] = useState(false);
+    const [singleSubmitLoader, setSIngleSubmitLoader] = useState(false);
     const [procedureCodes, setProcedureCodes] = useState([]);
     const [state, SetStates] = useState([]);
     const [lga, setLga] = useState([]);
@@ -32,31 +37,11 @@ const CreateEnroleePACode = () => {
     const [biodata, setBiodata] = useState([]);
     const [enrolleeProvider, setAllEnrolleeProvider] = useState([]);
     const [ShowPATable, setShowPATable] = useState(false);
-
-    const [selectAll, setSelectAll] = useState(false);
-    const [selectedItems, setSelectedItems] = useState([]);
-
-    const [selectedLoadedVisitType, setSelectedLoadedVisitType] =
-        useState(null);
-
-    const handleCheckboxChanges = (enrollee) => {
-        setSelectedItems((prev) => {
-            const isSelected = prev.some(
-                (i) => i.batch_number === enrollee.batch_number,
-            );
-
-            if (isSelected) {
-                return prev.filter(
-                    (i) => i.batch_number !== enrollee.batch_number,
-                );
-            } else {
-                return [...prev, enrollee];
-            }
-        });
-
-        // Update selectAll state based on new selection
-        setSelectAll(selectedItems.length + 1 === paginatedResults.length);
-    };
+    const [rejectModal, setRejectModal] = useState(false);
+    const [fetchingData, setFetchingData] = useState(false);
+    const [alertType, setAlertType] = useState("");
+    const [msg, setMsg] = useState("");
+    const [loadedDiagnosis, setLoadedDiagnosis] = useState([]);
 
     const collectProcedureCodes = () => {
         const codes = procedures.map((proc) => proc.code);
@@ -105,6 +90,7 @@ const CreateEnroleePACode = () => {
         },
     ]);
     console.log("procedurzz", procedures);
+
     const [proceduresData, setProceduresData] = useState([]);
 
     const [selectedRemarks, setSelectedRemarks] = useState("");
@@ -112,6 +98,7 @@ const CreateEnroleePACode = () => {
     const [proceduress, setProceduress] = useState([]);
     const [provDetails, SetProvDetails] = useState([]);
     const [selectedProcedures, setSelectedProcedures] = useState([]);
+    const [selectedPa, SetSelectedPa] = useState([]);
 
     const totalAmount = selectedProcedures.reduce((sum, proc) => {
         console.log("log", selectedProcedures);
@@ -198,6 +185,8 @@ const CreateEnroleePACode = () => {
     };
 
     const handleSelectProcedure = async (selectedProc) => {
+        setFetchingData(true);
+        setShowPATable(true);
         try {
             console.log("Daignosess Check0", selectedProc);
 
@@ -249,15 +238,49 @@ const CreateEnroleePACode = () => {
             //     ]);
             // }
 
-            const allDiagnosesForVisit = paginatedUniqueResults
+            const allDiagnosesForVisit = pa
                 .filter((proc) => proc.visitid === selectedProc.visitid)
-                .filter((proc) => proc.diagcode) // Only those with a diagcode
-                .map((proc, index) => ({
-                    id: index + 1,
-                    code: proc.diagcode,
-                    description: proc.diagdescription || proc.diagcode,
-                    filteredResults: [],
-                }));
+                .filter((proc) => proc.diagcode)
+                .reduce((unique, proc) => {
+                    const exists = unique.some(
+                        (item) => item.code === proc.diagcode,
+                    );
+                    if (!exists) {
+                        unique.push({
+                            id: unique.length + 1,
+                            code: proc.diagcode,
+                            description: proc.diagdescription || proc.diagcode,
+                            filteredResults: [],
+                        });
+                    }
+                    return unique;
+                }, []);
+
+            console.log("allDiagnosesForVisit", allDiagnosesForVisit);
+            const automaticDiagnosesForVisit = paginatedUniqueResults
+                .filter((proc) => proc.visitid === selectedProc.visitid)
+                .filter((proc) => proc.diagcode)
+                .reduce((unique, proc) => {
+                    const exists = unique.some(
+                        (item) => item.code === proc.diagcode,
+                    );
+                    if (!exists) {
+                        unique.push({
+                            DiagnosisCode: proc.diagcode.split(" ")[0],
+                            DiagnosisDescription:
+                                proc.diagdescription ||
+                                proc.diagcode.split(" ").slice(1).join(" "),
+                        });
+                    }
+                    return unique;
+                }, []);
+
+            setLoadedDiagnosis(automaticDiagnosesForVisit);
+
+            console.log(
+                "automaticDiagnosesForVisit",
+                automaticDiagnosesForVisit,
+            );
 
             const visitId = selectedProc.visitid;
             const providerMatch = filteredProvider.find(
@@ -285,7 +308,7 @@ const CreateEnroleePACode = () => {
                     ProcedureCode: proc.ProcedureCode || "",
                     ExtensionRemarks: proc.ProcedureDescription || "",
                     price: proc.chargeamount || 0,
-                    ProcedureQty: "",
+                    ProcedureQty: proc.ProcedureQty?.trim(),
                     ChargeAmount: "",
                     PACode: proc.PACode || "",
                     apiResponse: {
@@ -318,11 +341,20 @@ const CreateEnroleePACode = () => {
                     { id: 1, code: "", description: "", filteredResults: [] },
                 ]);
             }
+
+            console.log("diagnoses", diagnoses);
             // Optional: You can also set other fields if you have state for them
             // setVisitId(selectedProc.visitid);
             // setDiagnosisCode(selectedProc.diagcode);
             // setProcedureCode(selectedProc.ProcedureCode);
             // etc.
+            try {
+                await GetLoadedPAHistory(selectedProc.visitid); // Make sure this is async
+            } catch (err) {
+                console.error("Error loading PA history", err);
+            } finally {
+                setFetchingData(false); // Hide modal when done
+            }
 
             console.log("Daignosess Check2", diagnoses);
             console.log("Selected procedure:", selectedProc);
@@ -391,8 +423,7 @@ const CreateEnroleePACode = () => {
     // };
 
     const handleAddProcedures = async () => {
-        setShowPATable(true);
-
+        setAddProcedureLoader(true);
         if (!selectedData || !formValues.ExtensionRemarks) {
             alert("Please select a procedure code first.");
             return;
@@ -425,16 +456,13 @@ const CreateEnroleePACode = () => {
             }),
         };
 
-        // 🔥 Submit and get response
         const apiResponse = await handleSubmitPA(updated);
 
-        // 🔥 Attach response to the procedure
         const updatedWithResponse = {
             ...updated,
-            apiResponse, // contains status, PreAutCode, etc.
+            apiResponse,
         };
 
-        // Save it
         setSelectedProcedures((prev) => [...prev, updatedWithResponse]);
 
         setProcedures([
@@ -448,13 +476,19 @@ const CreateEnroleePACode = () => {
                 filteredResults: [],
             },
         ]);
+        setShowPATable(true);
+        setAddProcedureLoader(false);
+        GetLoadedPAHistory(visitid);
+        GetPAHistory();
     };
 
     console.log("providerId", paProviderId);
+
+    console.log("loadedDiagnosis", JSON.stringify(loadedDiagnosis, null, 2));
     const handleSubmitPA = async (procedure) => {
         setSubmitLoader(true);
         console.log("Daignosess Check12", data);
-        console.log("Daignosess Check13", visitid);
+        console.log("loadedDiagnosis3", loadedDiagnosis);
         const checkVisitId = data.VisitID || visitid;
         if (!checkVisitId) {
             alert("VisitID is missing from API response!");
@@ -469,10 +503,13 @@ const CreateEnroleePACode = () => {
             ProviderID: selectedProviders?.provider_id || ProvId,
             VisitID: data.VisitID || visitid,
             VisitDate: encounterDate,
-            username: providerEmail || provEmail,
+            username: user?.result[0]?.UserName, //providerEmail || provEmail,
             DoctorRecommendations: doctorsprescription,
             ServiceTypeID: selectedVisitType?.value || "",
-            DiagnosisLines: alldiagnosis,
+            DiagnosisLines:
+                alldiagnosis && alldiagnosis.length > 0
+                    ? alldiagnosis
+                    : loadedDiagnosis,
             UtilizationLines: [{ ...rest, ExtensionRemarks: "" }],
             UtilizationDocuments: [
                 {
@@ -498,6 +535,18 @@ const CreateEnroleePACode = () => {
             // const parsedResponse = JSON.parse(responseText);
             const apiResponse = await response.json();
 
+            if (apiResponse.status == 200) {
+                setMsg(apiResponse.Message);
+                setAlertType("success");
+            }
+            if (apiResponse.status == 306) {
+                setMsg(apiResponse.Message || "An error occurred");
+                setAlertType("error");
+            }
+            if (apiResponse.status !== 200) {
+                setMsg(apiResponse.Message || "An error occurred");
+                setAlertType("error");
+            }
             console.log("PA API Response", apiResponse);
 
             const responseApi = {
@@ -519,6 +568,8 @@ const CreateEnroleePACode = () => {
             };
         } finally {
             setSubmitLoader(false);
+            GetPAHistory();
+            GetLoadedPAHistory();
         }
     };
 
@@ -647,6 +698,10 @@ const CreateEnroleePACode = () => {
             });
         }
     }, []);
+
+    useEffect(() => {
+        setCurrentPage(0);
+    }, [searchProvider]);
 
     useEffect(() => {
         setFormValues((prev) => {
@@ -851,7 +906,6 @@ const CreateEnroleePACode = () => {
         updatedDiagnoses[index].filteredResults = []; // Hide dropdown
         setDiagnoses(updatedDiagnoses);
 
-        // ✅ Only add the latest diagnosis
         SetAllDiagnosis([
             {
                 DiagnosisCode: diagnosis.Value,
@@ -1141,9 +1195,7 @@ const CreateEnroleePACode = () => {
         navigate("/csenrolleeprofileupdate", { state: { enrollee } });
     };
     const [isChecked, setIsChecked] = useState(false);
-    const handleCheckboxChange = () => {
-        setIsChecked(!isChecked);
-    };
+
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
     const location = useLocation();
@@ -1154,6 +1206,226 @@ const CreateEnroleePACode = () => {
     const [procedurex, setProcedurex] = useState([]);
     const [selectedRemark, setSelectedRemark] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+
+    const [selectAll, setSelectAll] = useState(false);
+
+    const handleSelectAll = () => {
+        const newSelectAll = !selectAll;
+        setSelectAll(newSelectAll);
+        setSelectedItems(newSelectAll ? [...selectedProcedures] : []);
+    };
+
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    const handleCheckboxChange = (item) => {
+        setSelectedItems((prev) => {
+            const isSelected = prev.some(
+                (i) => i.ProcedureCode === item.ProcedureCode,
+            );
+
+            const updated = isSelected
+                ? prev.filter((i) => i.ProcedureCode !== item.ProcedureCode)
+                : [...prev, item];
+
+            // ✅ Update Select All status
+            setSelectAll(updated.length === selectedProcedures.length);
+
+            console.log("Item selected:", item);
+
+            // if (!isSelected) {
+            //     const payload = {
+            //         visitid: item.visitid,
+            //         username: user?.result[0]?.UserName,
+            //         VisitDetailIDs: [
+            //             {
+            //                 visitdetail_id: item.VisitDetailsID,
+            //             },
+            //         ],
+            //     };
+            //     console.log("Item selected:", payload);
+            //     sendPASelectionToAPI(payload);
+            // }
+
+            return updated;
+        });
+    };
+
+    const handleApprovePA = async () => {
+        setSubmitLoader(true);
+
+        const responses = [];
+
+        for (const item of selectedItems) {
+            const requestData = {
+                visitid: item.VisitID1,
+                username: user?.result[0]?.UserName,
+                VisitDetailIDs: [{ visitdetail_id: item.VisitDetailsID }],
+            };
+
+            console.log("Sending to API:", requestData);
+
+            try {
+                const response = await fetch(
+                    `${apiUrl}api/ProviderNetwork/approvePreauthorization`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(requestData),
+                    },
+                );
+
+                const data = await response.json();
+                console.log("API Response:", data);
+
+                if (data.status == 200) {
+                    setMsg(data.message);
+                    setAlertType("success");
+                } else if (data.status == 417) {
+                    setMsg(data.message || "An error occurred");
+                    setAlertType("error");
+                } else if (data.status !== 200) {
+                    setMsg(data.pacode || "An error occurred");
+                    setAlertType("error");
+                }
+
+                responses.push({
+                    status: data.status,
+                    message: data.message,
+                    pacode: data.pacode,
+                });
+            } catch (error) {
+                console.error("API Error:", error);
+                responses.push({
+                    visitdetail_id: item.VisitDetailsID,
+                    status: "Error",
+                    message: "Network error occurred",
+                });
+            }
+        }
+
+        setSubmitLoader(false);
+        setApiResponse(responses);
+        //setIsModalOpen(true);
+        GetPAHistory();
+        GetLoadedPAHistoryID();
+    };
+    const handleSingleApprovePA = async () => {
+        setSIngleSubmitLoader(true);
+
+        const responses = [];
+
+        for (const item of selectedItems) {
+            const requestData = {
+                visitid: item.VisitID1,
+                username: user?.result[0]?.UserName,
+                VisitDetailIDs: [{ visitdetail_id: item.VisitDetailsID }],
+            };
+
+            console.log("Sending to API:", requestData);
+
+            try {
+                const response = await fetch(
+                    `${apiUrl}api/ProviderNetwork/approvePreauthorization`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(requestData),
+                    },
+                );
+
+                const data = await response.json();
+                console.log("API Response:", data);
+
+                if (data.status == 200) {
+                    setMsg(data.message);
+                    setAlertType("success");
+                } else if (data.status == 417) {
+                    setMsg(data.message || "An error occurred");
+                    setAlertType("error");
+                } else if (data.status !== 200) {
+                    setMsg(data.pacode || "An error occurred");
+                    setAlertType("error");
+                }
+
+                responses.push({
+                    status: data.status,
+                    message: data.message,
+                    pacode: data.pacode,
+                });
+            } catch (error) {
+                console.error("API Error:", error);
+                responses.push({
+                    visitdetail_id: item.VisitDetailsID,
+                    status: "Error",
+                    message: "Network error occurred",
+                });
+            }
+        }
+
+        setSIngleSubmitLoader(false);
+        setApiResponse(responses);
+        //setIsModalOpen(true);
+        GetPAHistory();
+        GetLoadedPAHistoryID();
+    };
+
+    const handleRejectPA = async () => {
+        setRejectLoader(true);
+        const responses = [];
+
+        for (const item of selectedItems) {
+            const requestData = {
+                message: rejectionMessage,
+                userid: user?.result[0]?.User_id,
+                VisitDetailid: item.VisitDetailsID,
+            };
+
+            console.log("Sent Dataz:", JSON.stringify(requestData, null, 2));
+
+            try {
+                const response = await fetch(
+                    `${apiUrl}api/EnrolleeProfile/reject_EnrolleePA`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(requestData),
+                    },
+                );
+
+                const data = await response.json();
+                console.log("API Responsez:", data);
+
+                if (data.status == 200) {
+                    setMsg(data.ReturnMessage);
+                    setAlertType("success");
+                }
+                if (data.status !== 200) {
+                    setMsg(data.ReturnMessage || "An error occurred");
+                    setAlertType("error");
+                }
+
+                responses.push({
+                    status: data.status,
+                    message: data.message,
+                    pacode: data.pacode,
+                });
+            } catch (error) {
+                console.error("API Error:", error);
+                responses.push({
+                    visitdetail_id: item.VisitDetailsID,
+                    status: "Error",
+                    message: "Network error occurred",
+                });
+            }
+        }
+
+        setRejectLoader(false);
+        setApiResponse(responses);
+        //setIsModalOpen(true);
+        GetPAHistory();
+        GetLoadedPAHistoryID();
+    };
+
     const getRemarkText = (remark) => {
         const remarksMap = {
             1: "Consultation",
@@ -1529,6 +1801,9 @@ const CreateEnroleePACode = () => {
     };
 
     const [currentPage, setCurrentPage] = useState(1);
+    const [pageCurrentPage, setPageCurrentPage] = useState(1);
+
+    const [providerCurrentPage, setProviderCurrentPage] = useState(1);
     const filteredProviders = provider.filter((prov) =>
         prov.provider.toLowerCase().includes(searchProvider.toLowerCase()),
     );
@@ -1575,6 +1850,15 @@ const CreateEnroleePACode = () => {
 
     async function GetPAHistory() {
         setLoading(true);
+
+        const response = fetch(
+            `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid`,
+            {
+                method: "GET",
+            },
+        );
+
+        console.log("lll", response);
         try {
             const response = await fetch(
                 `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid`,
@@ -1589,12 +1873,79 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("pahistory", data.result);
+            console.log("pasel", data.result);
 
             SetPa(data.result);
             //SetPaProvider(data.result.issuedBy);
             setPaProviderId(data.PROVIDER_ID);
-            setPaginatedUniqueResults(getUniqueVisitIds(data.result));
+            setPaginatedUniqueResults(getUniqueVisitIds(data?.result));
+        } catch (error) {
+            //  console?.error("Error getting PA:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    console.log("sss", visitid);
+    async function GetLoadedPAHistory(visit_id) {
+        setLoading(true);
+
+        const response = fetch(
+            `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=0&PAStatus&visitid=${visit_id}`,
+            {
+                method: "GET",
+            },
+        );
+        console.log("pasels", response);
+
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=0&PAStatus&visitid=${visit_id}`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("paselectedhistory", data.result);
+
+            SetSelectedPa(data.result);
+            //SetPaProvider(data.result.issuedBy);
+            // setPaProviderId(data.PROVIDER_ID);
+            // setPaginatedUniqueResults(getUniqueVisitIds(data.result));
+        } catch (error) {
+            console.error("Error getting PA:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    async function GetLoadedPAHistoryID() {
+        setLoading(true);
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=0&PAStatus&visitid=${visitid}`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("paselectedhistory", data.result);
+
+            SetSelectedPa(data.result);
+            //SetPaProvider(data.result.issuedBy);
+            // setPaProviderId(data.PROVIDER_ID);
+            // setPaginatedUniqueResults(getUniqueVisitIds(data.result));
         } catch (error) {
             console.error("Error getting PA:", error);
         } finally {
@@ -1649,7 +2000,7 @@ const CreateEnroleePACode = () => {
     // Pagination logic
     const itemsPerPage = 5;
     const totalPages = Math.ceil(uniqueResults.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
+    const startIndex = (pageCurrentPage - 1) * itemsPerPage;
     const paginatedUniqueResults = uniqueResults.slice(
         startIndex,
         startIndex + itemsPerPage,
@@ -2055,11 +2406,11 @@ const CreateEnroleePACode = () => {
                                                             currentPage * 10 +
                                                                 10,
                                                         )
-                                                        .map((prov) => (
+                                                        .map((prov, index) => (
                                                             <p
                                                                 key={
                                                                     prov.provider_id ||
-                                                                    index
+                                                                    `${prov.provider}-${index}`
                                                                 }
                                                                 className="my-1 p-1 cursor-pointer hover:bg-slate-100 rounded"
                                                                 onClick={(
@@ -2085,7 +2436,7 @@ const CreateEnroleePACode = () => {
                                                 <div className="flex justify-between items-center pt-2 mt-2 border-t">
                                                     <button
                                                         onClick={() =>
-                                                            setCurrentPage(
+                                                            setProviderCurrentPage(
                                                                 (prev) =>
                                                                     Math.max(
                                                                         0,
@@ -2095,10 +2446,12 @@ const CreateEnroleePACode = () => {
                                                             )
                                                         }
                                                         disabled={
-                                                            currentPage === 0
+                                                            providerCurrentPage ===
+                                                            0
                                                         }
                                                         className={`px-2 py-1 rounded ${
-                                                            currentPage === 0
+                                                            providerCurrentPage ===
+                                                            0
                                                                 ? "text-gray-400"
                                                                 : "text-blue-500 hover:bg-blue-50"
                                                         }`}
@@ -2109,31 +2462,64 @@ const CreateEnroleePACode = () => {
                                                         Page {currentPage + 1}{" "}
                                                         of{" "}
                                                         {Math.ceil(
-                                                            filteredProviders.length /
-                                                                10,
+                                                            filteredProvider.filter(
+                                                                (prov) =>
+                                                                    prov.provider
+                                                                        .toLowerCase()
+                                                                        .includes(
+                                                                            searchProvider.toLowerCase(),
+                                                                        ),
+                                                            ).length / 10,
                                                         )}
                                                     </span>
                                                     <button
                                                         onClick={() =>
                                                             setCurrentPage(
-                                                                (prev) =>
-                                                                    (prev + 1) *
+                                                                (prev) => {
+                                                                    const filteredLength =
+                                                                        filteredProvider.filter(
+                                                                            (
+                                                                                prov,
+                                                                            ) =>
+                                                                                prov.provider
+                                                                                    .toLowerCase()
+                                                                                    .includes(
+                                                                                        searchProvider.toLowerCase(),
+                                                                                    ),
+                                                                        ).length;
+                                                                    return (prev +
+                                                                        1) *
                                                                         10 <
-                                                                    filteredProviders.length
+                                                                        filteredLength
                                                                         ? prev +
-                                                                          1
-                                                                        : prev,
+                                                                              1
+                                                                        : prev;
+                                                                },
                                                             )
                                                         }
                                                         disabled={
                                                             (currentPage + 1) *
                                                                 10 >=
-                                                            filteredProviders.length
+                                                            filteredProvider.filter(
+                                                                (prov) =>
+                                                                    prov.provider
+                                                                        .toLowerCase()
+                                                                        .includes(
+                                                                            searchProvider.toLowerCase(),
+                                                                        ),
+                                                            ).length
                                                         }
                                                         className={`px-2 py-1 rounded ${
                                                             (currentPage + 1) *
                                                                 10 >=
-                                                            filteredProviders.length
+                                                            filteredProvider.filter(
+                                                                (prov) =>
+                                                                    prov.provider
+                                                                        .toLowerCase()
+                                                                        .includes(
+                                                                            searchProvider.toLowerCase(),
+                                                                        ),
+                                                            ).length
                                                                 ? "text-gray-400"
                                                                 : "text-blue-500 hover:bg-blue-50"
                                                         }`}
@@ -2196,6 +2582,9 @@ const CreateEnroleePACode = () => {
                                     <thead className="bg-gray-100 text-left text-[10px]">
                                         <tr>
                                             <th className="p-2 border"></th>
+                                            <th className="p-2 border whitespace-nowrap">
+                                                Visit PA Code
+                                            </th>
                                             <th className="p-2 border">
                                                 VisitId
                                             </th>
@@ -2247,6 +2636,9 @@ const CreateEnroleePACode = () => {
                                                     </td>
 
                                                     <td className="px-4 py-2 border whitespace-nowrap">
+                                                        {proc.PACODE1}
+                                                    </td>
+                                                    <td className="px-4 py-2 border whitespace-nowrap">
                                                         {proc.visitid}
                                                     </td>
                                                     <td className="px-4 py-2 border whitespace-nowrap">
@@ -2291,9 +2683,9 @@ const CreateEnroleePACode = () => {
                             <div className="flex  mt-2 items-center gap-4 pb-2 ml-[41rem]">
                                 <button
                                     className="px-1 py-0.5 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
-                                    disabled={currentPage === 1}
+                                    disabled={pageCurrentPage === 1}
                                     onClick={() =>
-                                        setCurrentPage((prev) =>
+                                        setPageCurrentPage((prev) =>
                                             Math.max(prev - 1, 1),
                                         )
                                     }
@@ -2303,14 +2695,14 @@ const CreateEnroleePACode = () => {
                                 </button>
 
                                 <span className="text-gray-700 text-lg font-semibold">
-                                    Page {currentPage} of {totalPages} Pages
+                                    Page {pageCurrentPage} of {totalPages} Pages
                                 </span>
 
                                 <button
                                     className="px-1 py-0.5 mx-1 bg-white text-red-600 border border-red-600 rounded-md flex"
-                                    disabled={currentPage >= totalPages}
+                                    disabled={pageCurrentPage >= totalPages}
                                     onClick={() =>
-                                        setCurrentPage((prev) => prev + 1)
+                                        setPageCurrentPage((prev) => prev + 1)
                                     }
                                 >
                                     <CgPlayTrackNext className="w-7 h-7 mr-2" />
@@ -2685,6 +3077,35 @@ const CreateEnroleePACode = () => {
                                                                         />
                                                                     </div>
                                                                 </div>
+
+                                                                <div>
+                                                                    {addProcedureLoader ? (
+                                                                        <button
+                                                                            disabled
+                                                                            className="flex justify-end cursor-pointer mt-6 border border-red-500 bg-red-700 text-white rounded-md whitespace-nowrap text-[0.8rem] px-3 py-3"
+                                                                        >
+                                                                            Adding...
+                                                                            <FaSpinner className="animate-spin text-xl" />
+                                                                        </button>
+                                                                    ) : (
+                                                                        <div
+                                                                            className="flex justify-end cursor-pointer mt-6 border border-red-500 bg-red-700 text-white rounded-md whitespace-nowrap text-[0.8rem] px-1 py-3"
+                                                                            onClick={
+                                                                                handleAddProcedures
+                                                                            }
+                                                                        >
+                                                                            {/* <img
+                                                                                src="./Group 2356.svg"
+                                                                                alt=""
+                                                                                className="mr-2"
+                                                                            /> */}
+                                                                            <span className=" font-semibold">
+                                                                                Add
+                                                                                Procedure
+                                                                            </span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         ),
                                                     )}
@@ -2727,9 +3148,9 @@ const CreateEnroleePACode = () => {
                                                         <th className="p-2 border">
                                                             PA Code/Status
                                                         </th>
-                                                        <th className="p-2 border">
+                                                        {/* <th className="p-2 border">
                                                             Actions
-                                                        </th>
+                                                        </th> */}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -2745,22 +3166,17 @@ const CreateEnroleePACode = () => {
                                                             </td>
                                                         </tr>
                                                     ) : (
-                                                        selectedProcedures.map(
-                                                            (proc, index) => {
-                                                                console.log(
-                                                                    "selectedProcedure",
-                                                                    proc,
-                                                                );
-
+                                                        selectedPa.map(
+                                                            (proc, idx) => {
                                                                 return (
                                                                     <tr
                                                                         key={
-                                                                            index
+                                                                            idx
                                                                         }
                                                                         className="border-t"
                                                                     >
                                                                         <td className="p-2 border text-center">
-                                                                            {index +
+                                                                            {idx +
                                                                                 1}
                                                                         </td>
                                                                         <td className="p-2 border">
@@ -2769,19 +3185,17 @@ const CreateEnroleePACode = () => {
                                                                             }
                                                                         </td>
                                                                         <td className="p-2 border">
-                                                                            {
-                                                                                proc.ExtensionRemarks
-                                                                            }
+                                                                            {proc.ExtensionRemarks ||
+                                                                                proc.ProcedureDescription}
                                                                         </td>
                                                                         <td className="p-2 border text-center">
                                                                             ₦
                                                                             {
-                                                                                proc.price
+                                                                                proc.chargeamount
                                                                             }
                                                                         </td>
                                                                         <td className="p-2 border text-center">
-                                                                            {proc.ProcedureQty ||
-                                                                                "—"}
+                                                                            {proc.ProcedureQty?.trim()}
                                                                         </td>
                                                                         <td className="p-2 border text-center">
                                                                             ₦
@@ -2792,16 +3206,11 @@ const CreateEnroleePACode = () => {
                                                                                 : "—"}
                                                                         </td>
                                                                         <td className="p-2 border text-center whitespace-nowrap">
-                                                                            {proc
-                                                                                ?.apiResponse
-                                                                                ?.PreAutCode ==
-                                                                            null
-                                                                                ? "Procedure requires PreAuthorization"
-                                                                                : proc
-                                                                                      .apiResponse
-                                                                                      .PreAutCode}
+                                                                            {
+                                                                                proc.PACode
+                                                                            }
                                                                         </td>
-                                                                        <td className="p-2 border text-center">
+                                                                        {/* <td className="p-2 border text-center">
                                                                             <button
                                                                                 onClick={() =>
                                                                                     handleRemoveProcedure(
@@ -2812,7 +3221,7 @@ const CreateEnroleePACode = () => {
                                                                             >
                                                                                 Remove
                                                                             </button>
-                                                                        </td>
+                                                                        </td> */}
                                                                     </tr>
                                                                 );
                                                             },
@@ -2829,7 +3238,7 @@ const CreateEnroleePACode = () => {
                                     {totalAmount.toLocaleString()}
                                 </div>
 
-                                <div
+                                {/* <div
                                     className="flex ml-6 justify-end cursor-pointer mt-4"
                                     onClick={handleAddProcedures}
                                 >
@@ -2841,7 +3250,7 @@ const CreateEnroleePACode = () => {
                                     <span className=" font-semibold">
                                         Add Procedure
                                     </span>
-                                </div>
+                                </div> */}
                             </>
                         )}
 
@@ -3088,10 +3497,20 @@ const CreateEnroleePACode = () => {
 
                         {ShowPATable && (
                             <div className="  flex gap-3 w-full">
-                                <div className="w-[98%] flex relative overflow-x-auto">
+                                <div className="w-[80%] flex relative overflow-x-auto">
                                     <table className="min-w-full table-auto border-collapse text-sm mt-5 ">
                                         <thead className="bg-gray-100 text-left text-[10px]">
                                             <tr>
+                                                <th className=" px-2 py-1 text-left border">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectAll}
+                                                        onChange={
+                                                            handleSelectAll
+                                                        }
+                                                        className="h-3 w-3"
+                                                    />
+                                                </th>
                                                 <th className="p-2 border">
                                                     DiagnosisCode
                                                 </th>
@@ -3111,7 +3530,7 @@ const CreateEnroleePACode = () => {
                                                     CifNumber
                                                 </th>
                                                 <th className="p-2 border">
-                                                    ProviderID
+                                                    Provider
                                                 </th>
                                                 <th className="p-2 border">
                                                     VisitID
@@ -3126,67 +3545,84 @@ const CreateEnroleePACode = () => {
                                                     Doctor Recommendations
                                                 </th>
                                                 <th className="p-2 border">
-                                                    ServiceTypeID
+                                                    ServiceType
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {selectedProcedures.map(
-                                                (proc, idx) => (
+                                            {selectedPa.map((proc, idx) => {
+                                                const isSelected =
+                                                    selectedItems.some(
+                                                        (selected) =>
+                                                            selected.VisitDetailsID ===
+                                                            proc.VisitDetailsID,
+                                                    );
+
+                                                return (
                                                     <tr
                                                         key={idx}
                                                         className="border-t text-[10px] "
                                                     >
-                                                        <td className="px-4 py-2 border">
+                                                        <td className=" p-2 text-center  ">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={
+                                                                    isSelected
+                                                                }
+                                                                onChange={() =>
+                                                                    handleCheckboxChange(
+                                                                        proc,
+                                                                    )
+                                                                }
+                                                                className="border-black border"
+                                                            />
+                                                        </td>
+
+                                                        <td className="px-4 py-2 ">
                                                             {alldiagnosis[0]
                                                                 ?.DiagnosisCode ||
-                                                                pa.diagcode}
+                                                                pa.diagcode ||
+                                                                proc.diagcode.split(
+                                                                    " ",
+                                                                )[0] ||
+                                                                "N/A"}
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
-                                                            {
-                                                                alldiagnosis[0]
-                                                                    ?.DiagnosisDescription
-                                                            }
+                                                            {alldiagnosis[0]
+                                                                ?.DiagnosisDescription ||
+                                                                proc.diagcode
+                                                                    .split(" ")
+                                                                    .slice(1)
+                                                                    .join(" ")}
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {proc.ProcedureCode}
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
-                                                            {
-                                                                proc.ExtensionRemarks
-                                                            }
+                                                            {proc.ExtensionRemarks ||
+                                                                proc.ProcedureDescription}
                                                         </td>
                                                         <td className="px-4 py-2 border whitespace-nowrap">
-                                                            {proc?.apiResponse
-                                                                ?.PreAutCode ==
-                                                            null
-                                                                ? "Procedure requires PreAuthorization"
-                                                                : proc
-                                                                      .apiResponse
-                                                                      .PreAutCode}
+                                                            {proc.PACode}
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {
                                                                 enrollee?.Member_MemberUniqueID
                                                             }
                                                         </td>
-                                                        <td className="px-4 py-2 border">
-                                                            {
-                                                                selectedProviders?.provider_id
-                                                            }
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
+                                                            {searchProvider}
                                                         </td>
                                                         <td className="px-4 py-2 border">
-                                                            {
-                                                                proc
-                                                                    ?.apiResponse
-                                                                    ?.visitdetails_id
-                                                            }
+                                                            {proc?.apiResponse
+                                                                ?.visitdetails_id ||
+                                                                proc.visitid}
                                                         </td>
-                                                        <td className="px-4 py-2 border">
+                                                        <td className="px-4 py-2 border whitespace-nowrap">
                                                             {encounterDate}
                                                         </td>
                                                         <td className="px-4 py-2 border">
-                                                            {providerEmail}
+                                                            {provEmail}
                                                         </td>
                                                         <td className="px-4 py-2 border">
                                                             {doctorsprescription ==
@@ -3195,47 +3631,140 @@ const CreateEnroleePACode = () => {
                                                                 : doctorsprescription}
                                                         </td>
                                                         <td className="px-4 py-2 border">
-                                                            {selectedVisitType?.value ||
-                                                                ""}
+                                                            {proc.visitType}
                                                         </td>
                                                     </tr>
-                                                ),
-                                            )}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
 
-                                <div className="grid grid-cols-1  h-[90px] mt-3 gap-2 w-[10%] ">
+                                <div className="grid grid-cols-2  h-[90px] mt-3 gap-2 ">
+                                    <div>
+                                        {submitLoader ? (
+                                            <button
+                                                disabled
+                                                className="flex items-center gap-2 whitespace-nowrap h-9 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md"
+                                            >
+                                                Approving...
+                                                <FaSpinner className="animate-spin text-xl" />
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="h-9 px-3 whitespace-nowrap text-center text-white bg-red-700 rounded-md"
+                                                onClick={() =>
+                                                    handleApprovePA()
+                                                }
+                                            >
+                                                Approve All
+                                            </button>
+                                        )}
+                                    </div>
                                     <button
-                                        className="whitespace-nowrap   text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
-                                        onClick={() => setIsModalsOpen(true)}
-                                    >
-                                        Approve All
-                                    </button>
-                                    <button
-                                        className="whitespace-nowrap  w-full  text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
-                                        onClick={() => setIsModalsOpen(true)}
+                                        className="h-9 px-4 whitespace-nowrap text-center text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md"
+                                        onClick={() => setRejectModal(true)}
                                     >
                                         Reject All
                                     </button>{" "}
+                                    <div>
+                                        {singleSubmitLoader ? (
+                                            <button
+                                                disabled
+                                                className="flex items-center gap-2 whitespace-nowrap h-9  text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md"
+                                            >
+                                                Approving..
+                                                <FaSpinner className="animate-spin text-xl" />
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="h-9 px-6 text-center text-white bg-red-700 rounded-md"
+                                                onClick={() =>
+                                                    handleSingleApprovePA()
+                                                }
+                                            >
+                                                Approve
+                                            </button>
+                                        )}
+                                    </div>
                                     <button
-                                        className="whitespace-nowrap  w-full   text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
-                                        onClick={() => setIsModalsOpen(true)}
-                                    >
-                                        Approve
-                                    </button>
-                                    <button
-                                        className="whitespace-nowrap  w-full    text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
-                                        onClick={() => setIsModalsOpen(true)}
+                                        className="whitespace-nowrap  h-9 px-8    text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md "
+                                        onClick={() => setRejectModal(true)}
                                     >
                                         Reject
                                     </button>{" "}
                                 </div>
                             </div>
                         )}
+                        {rejectModal && (
+                            <div className=" z-50 bg-black justify-center items-center inset-0 fixed flex bg-opacity-50">
+                                <div className=" bg-white  rounded-lg shadow-lg w-full max-w-md p-6">
+                                    <h2 className="text-lg font-semibold mb-4">
+                                        Reject PA
+                                    </h2>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter reason"
+                                        className="w-full border border-gray-300 rounded p-2 outline-red-600 "
+                                        value={rejectionMessage}
+                                        onChange={(e) =>
+                                            setRejectionMessage(e.target.value)
+                                        }
+                                    ></input>
+                                    <div className=" flex justify-end gap-2 mt-3">
+                                        {/* <button
+                                            className=" whitespace-nowrap  bg-red-600 text-white px-4 py-2 rounded"
+                                            onClick={handleRejectPA}
+                                        >
+                                            Reject Pa
+                                        </button> */}
+
+                                        <div>
+                                            {rejectLoader ? (
+                                                <button
+                                                    disabled
+                                                    className="flex items-center gap-2 whitespace-nowrap px-4 py-2 text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md"
+                                                >
+                                                    Rejecting Pa...
+                                                    <FaSpinner className="animate-spin text-xl" />
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className="px-4 py-2 text-center text-white bg-red-700 rounded-md"
+                                                    onClick={handleRejectPA}
+                                                >
+                                                    Reject Pa
+                                                </button>
+                                            )}
+                                        </div>
+                                        <button
+                                            className=" whitespace-nowrap  border border-gray-300 rounded p-2 "
+                                            onClick={() =>
+                                                setRejectModal(false)
+                                            }
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {fetchingData && (
+                            <div className=" z-50 bg-black justify-center items-center inset-0 fixed flex bg-opacity-50">
+                                <img
+                                    src="./loaderx.gif"
+                                    alt="Loading animation"
+                                    className="w-40 h-40" /* Adjust size as needed */
+                                />
+                                <h2 className="text-lg font-semibold mb-4 text-white">
+                                    Fetching data...
+                                </h2>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
+            {msg && <Alert msg={msg} setMsg={setMsg} alertType={alertType} />}
         </div>
     );
 };
