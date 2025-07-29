@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 // import Login from "./pages/caseManagement/Login";
 import Sidebar from "./components/Landing/Sidebar";
 import CsSideBar from "./components/cs/csSideBar";
-import "./index.css";
+import "./App.css";
 import CsDashboardLayoutPage from "./pages/csPages/DashboardLayoutPage";
 import EnrolleesPage from "./pages/csPages/EnrolleesPage";
 // import CreateNewTicketPage from "./pages/csPages/CreateNewTicketPage";

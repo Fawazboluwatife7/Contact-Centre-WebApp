@@ -98,7 +98,7 @@ const Login = () => {
                             <label className="block">Username</label>
                             <input
                                 type="text"
-                                placeholder="Dr. Jay Jay"
+                                placeholder="Email@leadway.com"
                                 className="outline-none w-full mt-[10px]"
                                 onChange={(e) => setEmail(e.target.value)}
                             />
