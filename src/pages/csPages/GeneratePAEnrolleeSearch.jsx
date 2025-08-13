@@ -47,7 +47,7 @@ const GeneratePAEnrolleeSearch = () => {
     };
 
     const fetchEnrollees = async () => {
-        console.log('search params', searchInputs)
+        console.log("search params", searchInputs);
         setIsLoading(true);
         try {
             const params = {

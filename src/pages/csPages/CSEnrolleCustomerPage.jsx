@@ -1371,30 +1371,30 @@ const CSEnrolleCustomerPage = () => {
                                             <td className="border px-4 py-2">
                                                 {item.visitid}
                                             </td>
-                                            <td className="border px-4 py-2">
+                                            <td className="border px-4 py-2 whitespace-nowrap">
                                                 {item.surname} {item.firstname}
                                             </td>
-                                            <td className="border px-4 py-2">
+                                            <td className="border px-4 py-2 whitespace-nowrap">
                                                 {
                                                     new Date(item.DateIssued)
                                                         .toISOString()
                                                         .split("T")[0]
                                                 }
                                             </td>
-                                            <td className="border px-4 py-2">
+                                            <td className="border px-4 py-2 whitespace-nowrap">
                                                 {item.diagcode
                                                     ?.split(",")[0]
                                                     ?.split(" ")
                                                     .slice(1)
                                                     .join(" ") || "N/A"}
                                             </td>
-                                            <td className="border px-4 py-2">
+                                            <td className="border px-4 py-2 whitespace-nowrap">
                                                 {item.provider}
                                             </td>
                                             <td className="border px-4 py-2">
                                                 {item.PACode}
                                             </td>
-                                            <td className="border px-4 py-2">
+                                            <td className="border px-4 py-2 whitespace-nowrap">
                                                 {item.ProcedureDescription}
                                             </td>
                                             <td className="border px-4 py-2">
@@ -1406,7 +1406,7 @@ const CSEnrolleCustomerPage = () => {
                                             <td
                                                 className={
                                                     item.status === "Approved"
-                                                        ? "text-green-500 border px-4 py-2"
+                                                        ? "text-green-500 border px-4 py-2 "
                                                         : "text-red-500 border px-4 py-2"
                                                 }
                                             >

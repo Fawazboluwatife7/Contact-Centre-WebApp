@@ -5,6 +5,7 @@ import { MdSkipPrevious } from "react-icons/md";
 import Sidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
 import { BiSearchAlt2 } from "react-icons/bi";
+import { useQuery } from "@tanstack/react-query";
 
 const PaHistory = () => {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ const PaHistory = () => {
         navigate("/csenrolleepage", { state: { enrollee, enrolleeRequests } });
     };
 
-    const [selectedTab, setSelectedTab] = useState("All");
+    const [selectedTab, setSelectedTab] = useState("Authorization Pending");
     const [allPA, setAllPA] = useState([]);
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const [currentDate, setCurrentDate] = useState("");
@@ -25,19 +26,20 @@ const PaHistory = () => {
 
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
-    const [visitId, setVisitId] = useState("");
+    const [providerName, setProviderName] = useState("");
+    const [enrolleeName, setEnrolleeName] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
     const tabs = [
-        { name: "All", status: "All" },
-        { name: "Declined", status: "Declined" },
         {
             name: "Pending",
             status: "Authorization Pending",
         },
+        { name: "Declined", status: "Declined" },
         { name: "Approved", status: "Approved" },
+        { name: "All", status: "All" },
     ];
 
     function formatISOToCustom(dateString) {
@@ -82,9 +84,23 @@ const PaHistory = () => {
 
     const GetAllPA = async (from, to, visit = "", cifno = 0, status = "") => {
         setIsLoading(true);
+
+        // const sss = fetch(
+        //     `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${
+        //         from || fromDate
+        //     }&Todate=${
+        //         to || toDate
+        //     }&cifno=${cifno}&PAStatus=${status}&visitid=${visit}`,
+        // );
+
+        // console.log("sss", sss);
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${from}&Todate=${to}&cifno=${cifno}&PAStatus=${status}&visitid=${visit}`,
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${
+                    from || fromDate
+                }&Todate=${
+                    to || toDate
+                }&cifno=${cifno}&PAStatus=${status}&visitid=${visit}`,
             );
             const data = await response.json();
             console.log("API Response:", data.result);
@@ -102,7 +118,6 @@ const PaHistory = () => {
         setFromDate(today);
         setToDate(today);
 
-        // Fetch data after state is updated
         GetAllPA(today, today);
     }, []);
 
@@ -122,55 +137,45 @@ const PaHistory = () => {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        GetAllPA(fromDate, toDate, visitId);
+        console.log("Search function called!");
+        GetAllPA(fromDate, toDate);
     };
 
     const handleTabClick = (status) => {
         setSelectedTab(status);
         setCurrentPage(1); // Reset to first page when switching tabs
     };
+    const searchedData = useMemo(() => {
+        if (!enrolleeName) return filteredData;
+        return filteredData.filter((item) => {
+            const fullName =
+                `${item.surname} ${item.firstname} ${item.provider}`.toLowerCase();
+            return fullName.includes(enrolleeName.toLowerCase());
+        });
+    }, [filteredData, enrolleeName]);
 
-    // const uniqueFilteredData = useMemo(() => {
-    //     const seenIDs = new Set();
-    //     return filteredData.filter((item) => {
-    //         if (!seenIDs.has(item.enrolleeID)) {
-    //             seenIDs.add(item.enrolleeID);
-    //             return true;
-    //         }
-    //         return false;
-    //     });
-    // }, [filteredData]);
-
-    // const totalPages = Math.ceil(uniqueFilteredData.length / itemsPerPage);
-    // const startIndex = (currentPage - 1) * itemsPerPage;
-    // const paginatedResults = uniqueFilteredData.slice(
-    //     startIndex,
-    //     startIndex + itemsPerPage,
-    // );
-
+    // Then remove duplicates by enrolleeID
     const uniqueFilteredData = useMemo(() => {
         const seenIDs = new Set();
-        return filteredData.filter((item) => {
+        return searchedData.filter((item) => {
             if (!seenIDs.has(item.enrolleeID)) {
                 seenIDs.add(item.enrolleeID);
                 return true;
             }
             return false;
         });
-    }, [filteredData]);
+    }, [searchedData]);
 
-    // Sort uniqueFilteredData by Visitdate
+    // Sort by Visitdate
     const sortedUniqueData = useMemo(() => {
         return [...uniqueFilteredData].sort((a, b) => {
-            // Convert dates to timestamps for comparison
             const dateA = new Date(a.Visitdate).getTime();
             const dateB = new Date(b.Visitdate).getTime();
-
-            // Sort in ascending order (earliest first)
-            return dateA - dateB;
+            return dateA - dateB; // ascending
         });
     }, [uniqueFilteredData]);
 
+    // Pagination
     const totalPages = Math.ceil(sortedUniqueData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedResults = sortedUniqueData.slice(
@@ -189,56 +194,64 @@ const PaHistory = () => {
                             PA Requests
                         </h3>
                     </div>
+                    <div className=" flex">
+                        <form
+                            onSubmit={handleSearch}
+                            className=" flex gap-6 mb-3 px-4"
+                        >
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">
+                                    From Date
+                                </label>
+                                <input
+                                    type="date"
+                                    value={fromDate}
+                                    onChange={(e) =>
+                                        setFromDate(e.target.value)
+                                    }
+                                    className="mt-1 block w-[8rem] h-[2.5rem] px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                />
+                            </div>
 
-                    <form
-                        onSubmit={handleSearch}
-                        className=" flex gap-6 mb-3 px-4"
-                    >
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                                From Date
-                            </label>
-                            <input
-                                type="date"
-                                value={fromDate}
-                                onChange={(e) => setFromDate(e.target.value)}
-                                className="mt-1 block w-[8rem] h-[2rem] px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                            />
-                        </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">
+                                    To Date
+                                </label>
+                                <input
+                                    type="date"
+                                    value={toDate}
+                                    onChange={(e) => setToDate(e.target.value)}
+                                    className=" block w-[8rem] h-[2.5rem] px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                />
+                            </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                                To Date
-                            </label>
-                            <input
-                                type="date"
-                                value={toDate}
-                                onChange={(e) => setToDate(e.target.value)}
-                                className="mt-1 block w-[8rem] h-[2rem] px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                            />
-                        </div>
+                            <div
+                                className="  flex ml-[3rem] mt-4 px-4 w-[7rem] h-[2.5rem] gap-2 font-medium  rounded-md  text-white bg-red-600 hover:bg-white  cursor-pointer hover:text-red-600"
+                                onClick={GetAllPA}
+                            >
+                                <BiSearchAlt2 className=" mt-3 text-[20px]" />
 
-                        <div>
+                                <button type="submit" className=" font-medium ">
+                                    Search
+                                </button>
+                            </div>
+                        </form>
+                        <div className="ml-[32rem]">
                             <label className="block text-sm font-medium text-gray-700">
-                                Visit ID
+                                Search by Provider/ Enrollee's Name
                             </label>
                             <input
                                 type="text"
-                                value={visitId}
-                                onChange={(e) => setVisitId(e.target.value)}
-                                placeholder="Enter Visit ID"
-                                className="mt-1 block w-[8rem] h-[2rem] px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                value={enrolleeName}
+                                onChange={(e) => {
+                                    setEnrolleeName(e.target.value);
+                                    setCurrentPage(1); // reset to page 1 when searching
+                                }}
+                                placeholder="Enter Provider / Enrollee's Name"
+                                className="mt-1 block  w-[20rem] h-[2rem] px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 outline-none"
                             />
                         </div>
-
-                        <div className="  flex ml-[33rem] mt-4 px-4 w-[7rem] h-[2.5rem] gap-2 font-medium  rounded-md  text-white bg-red-600 hover:bg-white  cursor-pointer hover:text-red-600">
-                            <BiSearchAlt2 className=" mt-3 text-[20px]" />
-
-                            <button type="submit" className=" font-medium ">
-                                Search
-                            </button>
-                        </div>
-                    </form>
+                    </div>
 
                     <div className="w-full bg-lightgray flex justify-between">
                         <div className="flex gap-x-1  w-[520px] h-[43px] bg-white ml-2 rounded-t-md">
@@ -349,9 +362,7 @@ const PaHistory = () => {
                                                             .join(" ")}
                                                     </td>
                                                     <td className="px-4 border">
-                                                        {
-                                                            request.visitType
-                                                        }
+                                                        {request.visitType}
                                                     </td>
                                                     <td
                                                         className={`px-4 border ${getStatusColor(
