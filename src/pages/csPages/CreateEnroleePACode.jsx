@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import Sidebar from "../../components/cs/csSideBar";
 import Header from "../../components/cs/Header";
@@ -42,11 +42,13 @@ const CreateEnroleePACode = () => {
     const [alertType, setAlertType] = useState("");
     const [msg, setMsg] = useState("");
     const [loadedDiagnosis, setLoadedDiagnosis] = useState([]);
+    const [loadedPa, SetLoadedPa] = useState([]);
+    const [reloadedPa, setReloadedPa] = useState([]);
 
     const collectProcedureCodes = () => {
         const codes = procedures.map((proc) => proc.code);
         setProcedureCodes(codes);
-        console.log("Collected Procedure Codes:", codes);
+        // console.log("Collected Procedure Codes:", codes);
     };
 
     const [diagnosisData, setDiagnosisData] = useState([]);
@@ -70,6 +72,8 @@ const CreateEnroleePACode = () => {
     const [paginatedLoader, setPaginatedLoader] = useState(false);
     const [benefits, setAllBenefits] = useState([]);
     const [pa, SetPa] = useState([]);
+    const enrolleeIdz = localStorage.getItem("enrolleeId");
+    //console.log("enrolleeIdz", enrolleeIdz);
 
     const [diagnoses, setDiagnoses] = useState([
         { id: 1, code: "", description: "", filteredResults: [] },
@@ -90,7 +94,7 @@ const CreateEnroleePACode = () => {
             filteredResults: [],
         },
     ]);
-    console.log("procedurzz", procedures);
+    //  console.log("procedurzz", procedures);
 
     const [proceduresData, setProceduresData] = useState([]);
 
@@ -117,12 +121,12 @@ const CreateEnroleePACode = () => {
         }
         // Otherwise just add the price
 
-        console.log("sum", sum, price);
+        // console.log("sum", sum, price);
         return sum + price;
     }, 0);
 
     const handleAddProceduress = () => {
-        console.log("mmm", selectedData, formValues);
+        // console.log("mmm", selectedData, formValues);
         if (!selectedData || !selectedData.ProcedureCode) {
             alert("Please select a procedure code first.");
             return;
@@ -158,27 +162,27 @@ const CreateEnroleePACode = () => {
     const formatDateForInput = (dateString) => {
         if (!dateString) return "";
 
-        // If it's already in YYYY-MM-DD format, return as is
+        // Already in YYYY-MM-DD format
         if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
             return dateString;
         }
 
         // If it's in MM/DD/YYYY format
         if (dateString.includes("/")) {
-            const datePart = dateString.split(" ")[0]; // Remove time part if present
+            const datePart = dateString.split(" ")[0];
             const [month, day, year] = datePart.split("/");
             return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
         }
 
-        // If it's an ISO date string
+        // ISO format like "1999-10-10T00:00:00"
         if (dateString.includes("T")) {
             return dateString.split("T")[0];
         }
 
-        // Try to parse as Date object
+        // As fallback: try to convert any valid date
         try {
             const date = new Date(dateString);
-            return date.toISOString().split("T")[0];
+            return isNaN(date) ? "" : date.toISOString().split("T")[0];
         } catch (error) {
             console.error("Date formatting error:", error);
             return "";
@@ -189,12 +193,12 @@ const CreateEnroleePACode = () => {
         setFetchingData(true);
         setShowPATable(true);
         try {
-            console.log("Daignosess Check0", selectedProc);
+            //  console.log("Daignosess Check0", selectedProc);
 
             // Format the visit date for the date input
             const formattedDate = formatDateForInput(selectedProc.Visitdate);
             const providerIds = selectedProc.PROVIDER_ID;
-            console.log("provDetails", providerIds);
+            //    console.log("provDetails", providerIds);
 
             // Update the encounter date state
             const matchingVisitType = service.find(
@@ -278,17 +282,17 @@ const CreateEnroleePACode = () => {
 
             setLoadedDiagnosis(automaticDiagnosesForVisit);
 
-            console.log(
-                "automaticDiagnosesForVisit",
-                automaticDiagnosesForVisit,
-            );
+            // console.log(
+            //     "automaticDiagnosesForVisit",
+            //     automaticDiagnosesForVisit,
+            // );
 
             const visitId = selectedProc.visitid;
             const providerMatch = filteredProvider.find(
                 (item) => item.ProviderCode === selectedProc.providercode,
             );
 
-            console.log("providerMatch", providerMatch);
+            // console.log("providerMatch", providerMatch);
             if (!providerMatch || !providerMatch.provider_id) {
                 alert("Provider ID not found.");
                 return;
@@ -317,8 +321,8 @@ const CreateEnroleePACode = () => {
                     },
                 }));
 
-            console.log("Procedures for selected visit:", proceduresForVisit);
-            console.log("Daignosess Check1", allDiagnosesForVisit);
+            // console.log("Procedures for selected visit:", proceduresForVisit);
+            // console.log("Daignosess Check1", allDiagnosesForVisit);
 
             // ✅ Set the procedures to render them in the selected table
             setSelectedProcedures(proceduresForVisit);
@@ -343,7 +347,7 @@ const CreateEnroleePACode = () => {
                 ]);
             }
 
-            console.log("diagnoses", diagnoses);
+            // console.log("diagnoses", diagnoses);
             // Optional: You can also set other fields if you have state for them
             // setVisitId(selectedProc.visitid);
             // setDiagnosisCode(selectedProc.diagcode);
@@ -357,14 +361,14 @@ const CreateEnroleePACode = () => {
                 setFetchingData(false); // Hide modal when done
             }
 
-            console.log("Daignosess Check2", diagnoses);
-            console.log("Selected procedure:", selectedProc);
-            console.log("Formatted date:", formattedDate);
+            // console.log("Daignosess Check2", diagnoses);
+            // console.log("Selected procedure:", selectedProc);
+            // console.log("Formatted date:", formattedDate);
         } catch (error) {
             console.log("Daignosess Check3", error);
         }
     };
-    console.log("paaa", pa);
+    // console.log("paaa", pa);
     // const handleAddProcedures = async () => {
     //     setShowPATable(true);
 
@@ -483,13 +487,13 @@ const CreateEnroleePACode = () => {
         GetPAHistory();
     };
 
-    console.log("providerId", paProviderId);
+    // console.log("providerId", paProviderId);
 
-    console.log("loadedDiagnosis", JSON.stringify(loadedDiagnosis, null, 2));
+    // console.log("loadedDiagnosis", JSON.stringify(loadedDiagnosis, null, 2));
     const handleSubmitPA = async (procedure) => {
         setSubmitLoader(true);
-        console.log("Daignosess Check12", data);
-        console.log("loadedDiagnosis3", loadedDiagnosis);
+        // console.log("Daignosess Check12", data);
+        // console.log("loadedDiagnosis3", loadedDiagnosis);
         const checkVisitId = data.VisitID || visitid;
         if (!checkVisitId) {
             alert("VisitID is missing from API response!");
@@ -548,7 +552,7 @@ const CreateEnroleePACode = () => {
                 setMsg(apiResponse.Message || "An error occurred");
                 setAlertType("error");
             }
-            console.log("PA API Response", apiResponse);
+            //   console.log("PA API Response", apiResponse);
 
             const responseApi = {
                 VisitID: apiResponse?.VisitID || "N/A",
@@ -574,7 +578,7 @@ const CreateEnroleePACode = () => {
         }
     };
 
-    console.log("apiResponse", apiResponse);
+    // console.log("apiResponse", apiResponse);
     // const handleAddProcedures = () => {
     //     console.log("mmm", selectedData, formValues);
     //     if (!selectedData || !formValues.ExtensionRemarks) {
@@ -615,7 +619,7 @@ const CreateEnroleePACode = () => {
         setSelectedProcedures(selectedProcedures.filter((_, i) => i !== index));
     };
 
-    console.log("getpros:", JSON.stringify(selectedProcedures, null, 2));
+    //  console.log("getpros:", JSON.stringify(selectedProcedures, null, 2));
 
     const addProcedures = () => {
         setProceduress((prev) => [
@@ -644,7 +648,7 @@ const CreateEnroleePACode = () => {
         });
     };
 
-    console.log("encounter:", JSON.stringify(encounterDate, null, 2));
+    // console.log("encounter:", JSON.stringify(encounterDate, null, 2));
 
     const handleSelects = (e) => {
         const remark = e.target.value;
@@ -747,15 +751,20 @@ const CreateEnroleePACode = () => {
             selectedProviders?.provider_id || ProvId
         }&procedurecode=${procedureCodes}&cifnumber=0`;
 
-        console.log("priceUrl", priceUrl);
+        //  console.log("priceUrl", priceUrl);
 
         try {
-            const response = await fetch(priceUrl, {
-                method: "GET",
-            });
+            const response = await fetch(
+                `${apiUrl}api/ProviderNetwork/GetProviderProcedureTarrifAmount?providerid=${
+                    selectedProviders?.provider_id || ProvId
+                }&procedurecode=${procedureCodes}&cifnumber=0`,
+                {
+                    method: "GET",
+                },
+            );
 
             const data = await response.json();
-            console.log("procedure price", data.TarifAmount);
+            //     console.log("procedure price", data.TarifAmount);
             setPrice(data.TarifAmount);
         } catch (error) {
             console.error("Error fetching procedure price", error);
@@ -769,7 +778,7 @@ const CreateEnroleePACode = () => {
             });
 
             const response = await states.json();
-            console.log("states", response);
+            //   console.log("states", response);
             SetStates(response);
         } catch (error) {
             console.error("Error fetching states", error);
@@ -786,18 +795,20 @@ const CreateEnroleePACode = () => {
             );
 
             const response = await lga.json();
-            console.log("Lga", response);
+            //   console.log("Lga", response);
             setLga(response);
         } catch (error) {
             console.error("Error fetching lga", error);
         }
     }
-    console.log("providerCheck FilterProvider", filteredProvider);
+    // console.log("providerCheck FilterProvider", filteredProvider);
     async function GetProvider() {
         try {
-            console.log("providerCheck0");
+            // console.log("providerCheck0");
             const provider = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=0&LGAID=0&enrolleeid=${enrollee.Member_EnrolleeID}&provider_id=0`,
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=0&LGAID=0&enrolleeid=${
+                    enrollee.Member_EnrolleeID || enrolleeIdz
+                } }&provider_id=0`,
                 {
                     method: "GET",
                 },
@@ -932,7 +943,7 @@ const CreateEnroleePACode = () => {
         // }));
         // SetAllDiagnosis(diag);
 
-        console.log("daignosis:", JSON.stringify(diag, null, 2));
+        //  console.log("daignosis:", JSON.stringify(diag, null, 2));
     };
 
     useEffect(() => {
@@ -982,7 +993,7 @@ const CreateEnroleePACode = () => {
             VisitType: selectedVisitType?.label || "", // Use label safely
         };
 
-        console.log("getvisitID:", JSON.stringify(postData, null, 2));
+        // console.log("getvisitID:", JSON.stringify(postData, null, 2));
         try {
             const response = await fetch(
                 `${apiUrl}api/ProviderNetwork/Verify_Enrollee`,
@@ -1009,7 +1020,7 @@ const CreateEnroleePACode = () => {
             }
 
             SetData(data);
-            console.log("Success:", data);
+            // console.log("Success:", data);
         } catch (error) {
             console.error("Error submitting data:", error);
         } finally {
@@ -1201,7 +1212,10 @@ const CreateEnroleePACode = () => {
 
     const location = useLocation();
     const enrollee = location.state?.enrollee;
+    const enrolleeID =
+        location.state?.enrollee.enrolleeID || enrollee?.enrolleeID;
 
+    console.log("enrolleeID", enrolleeID);
     const [claimsPaid, setClaimsPaid] = useState("");
 
     const [procedurex, setProcedurex] = useState([]);
@@ -1231,7 +1245,7 @@ const CreateEnroleePACode = () => {
             // ✅ Update Select All status
             setSelectAll(updated.length === selectedProcedures.length);
 
-            console.log("Item selected:", item);
+            //  console.log("Item selected:", item);
 
             // if (!isSelected) {
             //     const payload = {
@@ -1263,7 +1277,7 @@ const CreateEnroleePACode = () => {
                 VisitDetailIDs: [{ visitdetail_id: item.VisitDetailsID }],
             };
 
-            console.log("Sending to API:", requestData);
+            //  console.log("Sending to API:", requestData);
 
             try {
                 const response = await fetch(
@@ -1276,7 +1290,7 @@ const CreateEnroleePACode = () => {
                 );
 
                 const data = await response.json();
-                console.log("API Response:", data);
+                // console.log("API Response:", data);
 
                 if (data.status == 200) {
                     setMsg(data.message);
@@ -1295,7 +1309,7 @@ const CreateEnroleePACode = () => {
                     pacode: data.pacode,
                 });
             } catch (error) {
-                console.error("API Error:", error);
+                //  console.error("API Error:", error);
                 responses.push({
                     visitdetail_id: item.VisitDetailsID,
                     status: "Error",
@@ -1322,7 +1336,7 @@ const CreateEnroleePACode = () => {
                 VisitDetailIDs: [{ visitdetail_id: item.VisitDetailsID }],
             };
 
-            console.log("Sending to API:", requestData);
+            //  console.log("Sending to API:", requestData);
 
             try {
                 const response = await fetch(
@@ -1335,7 +1349,7 @@ const CreateEnroleePACode = () => {
                 );
 
                 const data = await response.json();
-                console.log("API Response:", data);
+                // console.log("API Response:", data);
 
                 if (data.status == 200) {
                     setMsg(data.message);
@@ -1354,7 +1368,7 @@ const CreateEnroleePACode = () => {
                     pacode: data.pacode,
                 });
             } catch (error) {
-                console.error("API Error:", error);
+                //  console.error("API Error:", error);
                 responses.push({
                     visitdetail_id: item.VisitDetailsID,
                     status: "Error",
@@ -1381,7 +1395,7 @@ const CreateEnroleePACode = () => {
                 VisitDetailid: item.VisitDetailsID,
             };
 
-            console.log("Sent Dataz:", JSON.stringify(requestData, null, 2));
+            //  console.log("Sent Dataz:", JSON.stringify(requestData, null, 2));
 
             try {
                 const response = await fetch(
@@ -1394,7 +1408,7 @@ const CreateEnroleePACode = () => {
                 );
 
                 const data = await response.json();
-                console.log("API Responsez:", data);
+                //  console.log("API Responsez:", data);
 
                 if (data.status == 200) {
                     setMsg(data.ReturnMessage);
@@ -1521,12 +1535,17 @@ const CreateEnroleePACode = () => {
             </select>
         );
     }
-
+    console.log("loadedPa", loadedPa[0]?.Member_MemberUniqueID);
     async function GetBenefit() {
         console.log(
             "benefit",
             fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}`,
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${
+                    enrollee.Member_MemberUniqueID ||
+                    loadedPa[0]?.Member_MemberUniqueID
+                }&schemeid=${enrollee.Member_PlanID}&serviceid=${
+                    selectedVisitType?.value
+                }`,
                 {
                     method: "GET",
                 },
@@ -1534,7 +1553,12 @@ const CreateEnroleePACode = () => {
         );
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}`,
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${
+                    enrollee.Member_MemberUniqueID ||
+                    loadedPa[0]?.Member_MemberUniqueID
+                }&schemeid=${enrollee.Member_PlanID}&serviceid=${
+                    selectedVisitType?.value
+                }`,
                 {
                     method: "GET",
                 },
@@ -1547,7 +1571,7 @@ const CreateEnroleePACode = () => {
             console.error("Error getting benefits", error);
         }
     }
-    console.log("states", selectedState?.Value);
+    // console.log("states", selectedState?.Value);
     // console.log(
     //     "getprovdetails",
     //     fetch(
@@ -1567,7 +1591,7 @@ const CreateEnroleePACode = () => {
             );
 
             const data = await response.json();
-            console.log("gettingID", data.result[0].Email);
+            // console.log("gettingID", data.result[0].Email);
             SetEmailProvider(data.result[0].Email);
         } catch (error) {
             console.error("Error getting benefits", error);
@@ -1597,7 +1621,7 @@ const CreateEnroleePACode = () => {
     //     ),
     // );
 
-    console.log("Checkingpovid1", ProvId);
+    // console.log("Checkingpovid1", ProvId);
     async function GetProcedure() {
         try {
             const response = await fetch(
@@ -1611,8 +1635,8 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("Checkingpovid2:", JSON.stringify(data, null, 2));
-            console.log("Checkingpovid3", response);
+            // console.log("Checkingpovid2:", JSON.stringify(data, null, 2));
+            // console.log("Checkingpovid3", response);
 
             setProceduresData(data.result);
         } catch (error) {
@@ -1621,9 +1645,21 @@ const CreateEnroleePACode = () => {
     }
 
     async function CalculateAllAmountSpentOnEnrollee() {
+        const response = fetch(
+            `${apiUrl}/api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${
+                enrollee.Member_EnrolleeID || enrollee?.enrolleeID
+            }&fromdate=2010-12-31&todate=2025-12-31&network_type=`,
+            {
+                method: "GET",
+            },
+        );
+
+        // console.log("amountspent", response);
         try {
             const response = await fetch(
-                `${apiUrl}/api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.Member_EnrolleeID}&fromdate=2010-12-31&todate=2025-12-31&network_type=`,
+                `${apiUrl}/api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${
+                    enrollee.Member_EnrolleeID || enrollee?.enrolleeID
+                }&fromdate=2010-12-31&todate=2025-12-31&network_type=`,
                 {
                     method: "GET",
                 },
@@ -1645,6 +1681,7 @@ const CreateEnroleePACode = () => {
                     (sum, item) => sum + (item.ClaimLine_AmtPaid || 0),
                     0,
                 );
+                //  console.log("amountspent", getAllClaimsPaid);
 
                 const nuber = allClaimsPaid.length;
 
@@ -1678,7 +1715,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            // console.log("service:", data.result);
+            console.log("service:", data.result);
 
             setService(data.result);
         } catch (error) {
@@ -1711,7 +1748,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("EnrolleesProviders:", JSON.stringify(data, null, 2));
+            // console.log("EnrolleesProviders:", JSON.stringify(data, null, 2));
 
             setAllEnrolleeProvider(data.result);
         } catch (error) {
@@ -1734,7 +1771,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("Providers:", JSON.stringify(providers, null, 2));
+            // console.log("Providers:", JSON.stringify(providers, null, 2));
 
             setAllProvider(data.result);
         } catch (error) {
@@ -1813,16 +1850,46 @@ const CreateEnroleePACode = () => {
         if (selectedState.value) GetLGA();
     }, [selectedState.value]);
 
-    console.log("visitType", selectedVisitType);
-    console.log("State", selectedState);
-    console.log("State2", selectedState.value);
-    console.log("local", selectedLga.value);
+    useEffect(() => {
+        GetBiodata();
+
+        GetLoadedPAHistoryFromDashboard();
+        if (loadedPa[0]?.Member_MemberUniqueID) {
+            GetPAHistory();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (
+            enrollee?.Member_MemberUniqueID ||
+            loadedPa[0]?.Member_MemberUniqueID
+        ) {
+            console.log("GetPAHistoryzz is called");
+            console.log(
+                "GetPAHistoryzz is called",
+                enrollee?.Member_MemberUniqueID ||
+                    loadedPa[0]?.Member_MemberUniqueID,
+            );
+
+            GetPAHistory();
+        }
+    }, [enrollee?.Member_MemberUniqueID || loadedPa[0]?.Member_MemberUniqueID]);
+
+    // console.log("visitType", selectedVisitType);
+    // console.log("State", selectedState);
+    // console.log("State2", selectedState.value);
+    // console.log("local", selectedLga.value);
 
     async function GetAllBenefits() {
         try {
             setLoading(true);
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${enrollee.Member_MemberUniqueID}&schemeid=${enrollee.Member_PlanID}&serviceid=${selectedVisitType?.value}
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${
+                    enrollee.Member_MemberUniqueID ||
+                    loadedPa[0]?.Member_MemberUniqueID
+                }&schemeid=${enrollee.Member_PlanID}&serviceid=${
+                    selectedVisitType?.value
+                }
 `,
                 {
                     method: "GET",
@@ -1835,11 +1902,11 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log(
-                "ConsoleALLBenefits:",
-                JSON.stringify(response, null, 2),
-            );
-            console.log("ALLBenefits:", data);
+            // console.log(
+            //     "ConsoleALLBenefits:",
+            //     JSON.stringify(response, null, 2),
+            // );
+            // console.log("ALLBenefits:", data);
 
             setAllBenefits(data);
         } catch (error) {
@@ -1848,46 +1915,76 @@ const CreateEnroleePACode = () => {
             setLoading(false);
         }
     }
+    // console.log("frank", loadedPa[0]?.Member_MemberUniqueID);
+
+    // async function GetPAHistoryzz() {
+    //     setPaginatedLoader(true);
+
+    //     console.log("vvppss", loadedPa[0]?.Member_MemberUniqueID);
+    //     const response = `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${
+    //         enrollee?.Member_MemberUniqueID ||
+    //         loadedPa[0]?.Member_MemberUniqueID
+    //     }&PAStatus&visitid`;
+
+    //     console.log("vvppss", response);
+
+    //     const responses = await fetch(
+    //         `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${
+    //             enrollee?.Member_MemberUniqueID ||
+    //             loadedPa[0]?.Member_MemberUniqueID
+    //         }&PAStatus&visitid`,
+    //         {
+    //             method: "GET",
+    //         },
+    //     );
+
+    //     const data = await responses.json();
+    //     setReloadedPa(data.result);
+    //     // setPaginatedLoader(false);
+    //     console.log("vvppx", data.result);
+    // }
 
     async function GetPAHistory() {
         setPaginatedLoader(true);
 
-        const response = fetch(
-            `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid`,
-            {
-                method: "GET",
-            },
-        );
+        console.log("vvvv", loadedPa[0]?.Member_MemberUniqueID);
+        const response = `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${
+            enrollee?.Member_MemberUniqueID ||
+            loadedPa[0]?.Member_MemberUniqueID
+        }&PAStatus&visitid`;
 
-        console.log("lll", response);
+        console.log("lllzz", response);
         try {
             const response = await fetch(
-                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${enrollee.Member_MemberUniqueID}&PAStatus&visitid`,
+                `${apiUrl}/api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=&Todate=&cifno=${
+                    enrollee?.Member_MemberUniqueID ||
+                    loadedPa[0]?.Member_MemberUniqueID
+                }&PAStatus&visitid`,
                 {
                     method: "GET",
                 },
             );
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+            // if (!response.ok) {
+            //     throw new Error(`HTTP error! Status: ${response.status}`);
+            // }
 
             const data = await response.json();
 
-            console.log("pasel", data.result);
+            console.log("paselqq", data.result);
 
             SetPa(data.result);
             //SetPaProvider(data.result.issuedBy);
             setPaProviderId(data.PROVIDER_ID);
-            setPaginatedUniqueResults(getUniqueVisitIds(data?.result));
+            setPaginatedUniGesults(getUniqueVisitIds(data?.result));
         } catch (error) {
-            //  console?.error("Error getting PA:", error);
-        } finally {
-            setPaginatedLoader(false);
+            console?.error("Error getting PA:", error);
         }
+        setPaginatedLoader(false);
     }
 
-    console.log("sss", visitid);
+    // console.log("sss", visitid);
+
     async function GetLoadedPAHistory(visit_id) {
         setLoading(true);
 
@@ -1897,7 +1994,7 @@ const CreateEnroleePACode = () => {
                 method: "GET",
             },
         );
-        console.log("pasels", response);
+        // console.log("pasels", response);
 
         try {
             const response = await fetch(
@@ -1913,9 +2010,49 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("paselectedhistory", data.result);
+            // console.log("paselectedhistory", data.result);
 
             SetSelectedPa(data.result);
+            //SetPaProvider(data.result.issuedBy);
+            // setPaProviderId(data.PROVIDER_ID);
+            // setPaginatedUniqueResults(getUniqueVisitIds(data.result));
+        } catch (error) {
+            console.error("Error getting PA:", error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    async function GetLoadedPAHistoryFromDashboard() {
+        setLoading(true);
+
+        const response = fetch(
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrolleeIdz}`,
+            {
+                method: "GET",
+            },
+        );
+        console.log("paselssx", response);
+        try {
+            const response = await fetch(
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrolleeIdz}`,
+                {
+                    method: "GET",
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            //  console.log("paselss", data.result[0]?.Member_MemberUniqueID);
+
+            // if (response.ok) {
+            //     console.log("testing", response);
+            //     GetPAHistory(data.result[0]?.Member_MemberUniqueID);
+            // }
+            SetLoadedPa(data.result);
             //SetPaProvider(data.result.issuedBy);
             // setPaProviderId(data.PROVIDER_ID);
             // setPaginatedUniqueResults(getUniqueVisitIds(data.result));
@@ -1941,7 +2078,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("paselectedhistory", data.result);
+            //   console.log("paselectedhistory", data.result);
 
             SetSelectedPa(data.result);
             //SetPaProvider(data.result.issuedBy);
@@ -1963,11 +2100,6 @@ const CreateEnroleePACode = () => {
         });
     }
 
-    useEffect(() => {
-        GetBiodata();
-        GetPAHistory();
-    }, []);
-
     // useEffect(() => {
     //     if (isModalOpen) fetchProviders();
     // }, [isModalOpen]);
@@ -1983,7 +2115,7 @@ const CreateEnroleePACode = () => {
             const dateB = new Date(b.Visitdate).getTime();
             return dateB - dateA; // Earliest first
         });
-
+        //   console.log("pax", pa);
         // Then get first (earliest) occurrence of each enrolleeID
         const seenIDs = new Set();
         const uniqueArray = [];
@@ -2029,7 +2161,9 @@ const CreateEnroleePACode = () => {
     async function GetBiodata() {
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrollee.Member_EnrolleeID}
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${
+                    enrollee.Member_EnrolleeID || enrollee.enrolleeID
+                }
 `,
                 {
                     method: "GET",
@@ -2042,7 +2176,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            console.log("Allbiodata:", data);
+            // console.log("Allbiodata:", data.result);
 
             setBiodata(data);
         } catch (error) {
@@ -2102,7 +2236,10 @@ const CreateEnroleePACode = () => {
                                     />
                                     <div className=" items-center mt-2 rounded-full flex gap-2 ">
                                         {enrollee?.Member_MemberStatus_Description ===
-                                        "Active" ? (
+                                            "Active" ||
+                                        loadedPa[0]
+                                            ?.Member_MemberStatus_Description ===
+                                            "Active" ? (
                                             <FaFlag className="text-green-500 w-[3rem] h-[3rem]" />
                                         ) : (
                                             <FaFlag className="text-red-500 w-[3rem] h-[3rem]" />
@@ -2117,7 +2254,9 @@ const CreateEnroleePACode = () => {
                                                 Name
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.Member_CustomerName}
+                                                {enrollee?.Member_CustomerName ||
+                                                    loadedPa[0]
+                                                        ?.Member_CustomerName}
                                             </span>
                                         </div>
                                         <div>
@@ -2125,13 +2264,13 @@ const CreateEnroleePACode = () => {
                                                 Date of Birth
                                             </span>
                                             <span className="block font-medium">
-                                                {
+                                                {/* {
                                                     new Date(
                                                         enrollee.Member_DateOfBirth,
                                                     )
                                                         .toISOString()
                                                         .split("T")[0]
-                                                }
+                                                } */}
                                             </span>
                                         </div>
                                         <div>
@@ -2139,7 +2278,9 @@ const CreateEnroleePACode = () => {
                                                 Enrollee ID
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.Member_EnrolleeID}
+                                                {enrollee?.Member_EnrolleeID ||
+                                                    loadedPa[0]
+                                                        ?.Member_EnrolleeID}
                                             </span>
                                         </div>
                                         <div>
@@ -2147,8 +2288,13 @@ const CreateEnroleePACode = () => {
                                                 Phone Number
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.Member_Phone_One}
-                                                {enrollee.Member_Phone_Two}
+                                                {enrollee?.Member_Phone_One ||
+                                                    loadedPa[0]
+                                                        ?.Member_Phone_One}{" "}
+                                                ||
+                                                {enrollee?.Member_Phone_Two ||
+                                                    loadedPa[0]
+                                                        ?.Member_Phone_Two}
                                             </span>
                                         </div>
                                         <div>
@@ -2156,7 +2302,9 @@ const CreateEnroleePACode = () => {
                                                 Group
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.Client_ClientName}
+                                                {enrollee?.Client_ClientName ||
+                                                    loadedPa[0]
+                                                        ?.Client_ClientName}
                                             </span>
                                         </div>
 
@@ -2165,7 +2313,9 @@ const CreateEnroleePACode = () => {
                                                 Email Address
                                             </span>
                                             <span className="block font-medium break-words">
-                                                {enrollee.Client_EmailAddress}
+                                                {enrollee?.Client_EmailAddress ||
+                                                    loadedPa[0]
+                                                        ?.Client_EmailAddress}
                                             </span>
                                         </div>
                                         <div>
@@ -2173,7 +2323,9 @@ const CreateEnroleePACode = () => {
                                                 Scheme
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.client_schemename}
+                                                {enrollee?.client_schemename ||
+                                                    loadedPa[0]
+                                                        ?.client_schemename}
                                             </span>
                                         </div>
 
@@ -2182,7 +2334,8 @@ const CreateEnroleePACode = () => {
                                                 Age
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.Member_Age}
+                                                {enrollee?.Member_Age ||
+                                                    loadedPa[0]?.Member_Age}
                                             </span>
                                         </div>
                                         <div>
@@ -2190,7 +2343,9 @@ const CreateEnroleePACode = () => {
                                                 Member Type
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.Member_Membertype}
+                                                {enrollee?.Member_Membertype ||
+                                                    loadedPa[0]
+                                                        ?.Member_Membertype}
                                             </span>
                                         </div>
                                         {/* <div>
@@ -2228,7 +2383,9 @@ const CreateEnroleePACode = () => {
                                                 Next of Kin
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.Client_ContactPerson}
+                                                {enrollee?.Client_ContactPerson ||
+                                                    loadedPa[0]
+                                                        ?.Client_ContactPerson}
                                             </span>
                                         </div>
                                         <div>
@@ -2236,7 +2393,9 @@ const CreateEnroleePACode = () => {
                                                 NOK Phone Number
                                             </span>
                                             <span className="block font-medium">
-                                                {enrollee.Client_ContactPhone1}
+                                                {enrollee?.Client_ContactPhone1 ||
+                                                    loadedPa[0]
+                                                        ?.Client_ContactPhone1}
                                             </span>
                                         </div>
 
@@ -2248,7 +2407,9 @@ const CreateEnroleePACode = () => {
                                             <span className=" block font-medium break-words text-[15px] leading-tight">
                                                 {
                                                     new Date(
-                                                        enrollee.Client_DateAccepted,
+                                                        enrollee?.Client_DateAccepted ||
+                                                            loadedPa[0]
+                                                                ?.Client_DateAccepted,
                                                     ).toLocaleDateString(
                                                         "en-GB",
                                                     ) // Formats the date as day/month/year
@@ -2272,7 +2433,9 @@ const CreateEnroleePACode = () => {
                                             <span className=" block font-medium break-words text-[15px] leading-tight">
                                                 {
                                                     new Date(
-                                                        enrollee.Client_Expiry_date,
+                                                        enrollee?.Client_Expiry_date ||
+                                                            loadedPa[0]
+                                                                ?.Client_Expiry_date,
                                                     ).toLocaleDateString(
                                                         "en-GB",
                                                     ) // Formats the date as day/month/year

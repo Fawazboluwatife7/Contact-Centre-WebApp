@@ -82,28 +82,29 @@ const attachmentsArray = [
 
 // Tabs for table filters
 const tabs = [
-    "Pending PA",
-    "Hospital Visits",
+    // "Pending PA",
     "Benefits",
-    "Concessions",
     "PA History",
+    "Concessions",
     "Exclusions",
+    "Hospital Visits",
+
     "Flags",
 ];
 const headers = {
-    "Pending PA": [
-        "Select",
-        "Date",
-        "Provider",
-        "Diagnosis",
-        "Description",
-        "Price",
+    // "Pending PA": [
+    //     "Select",
+    //     "Date",
+    //     "Provider",
+    //     "Diagnosis",
+    //     "Description",
+    //     "Price",
 
-        "Preauth code",
-        "Visit Type",
+    //     "Preauth code",
+    //     "Visit Type",
 
-        "Status",
-    ],
+    //     "Status",
+    // ],
     "PA History": [
         "Select",
         "Date",
@@ -140,7 +141,7 @@ const headers = {
         "Issuer",
         "Status",
     ],
-    Concessions: ["Date", "Concession"],
+    Concessions: ["Date", "Concession", "FlaggedBy"],
     Exclusions: ["Approver", "Preauth code", "Reason"],
     Vaccine: ["Vaccine"],
     Flags: [],
@@ -278,7 +279,7 @@ const CsPatientHistory = () => {
     };
 
     const tabIcons = [
-        MdPendingActions,
+        // MdPendingActions,
         PiCrossLight,
 
         BiHome,
@@ -358,7 +359,7 @@ const CsPatientHistory = () => {
     }
 
     async function GetHospitalHistory() {
-        const hospital = `${apiUrl}api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.Member_EnrolleeID}&fromdate=2010-12-31&todate=2090-12-31&network_type=`;
+        const hospital = `${apiUrl}api/EnrolleeClaims/GetEnrolleeClaimList?enrolleeid=${enrollee.Member_EnrolleeID}&fromdate=2010-12-31&todate=2030-12-31&network_type=`;
         console.log("hoz", hospital);
         try {
             const response = await fetch(
@@ -768,7 +769,7 @@ const CsPatientHistory = () => {
 
             const data = await response.json();
 
-            console.log("Concession:", data.result);
+            console.log("Concession:", data);
 
             setConcession(data.result);
         } catch (error) {
@@ -889,7 +890,7 @@ const CsPatientHistory = () => {
                             {enrollee?.Member_CustomerName} - Enrollee #
                             {enrollee?.Member_EnrolleeID}
                         </span>
-                        <div className=" flex gap-3">
+                        {/* <div className=" flex gap-3">
                             <button
                                 className="flex items-center justify-center gap-2 bg-[#C61531] py-2 px-4 rounded-md text-white"
                                 onClick={() =>
@@ -899,7 +900,7 @@ const CsPatientHistory = () => {
                                 <HiOutlinePlus className=" text-white" />
                                 Generate new PA
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                     <PatientInformation
                         selectedStatus={selectedStatus}
@@ -971,7 +972,7 @@ const CsPatientHistory = () => {
                                     )}
                                 </tr>
 
-                                <tbody>
+                                {/* <tbody>
                                     {activeTab === "Pending PA" && (
                                         <>
                                             {loading ? (
@@ -1078,7 +1079,7 @@ const CsPatientHistory = () => {
                                             )}
                                         </>
                                     )}
-                                </tbody>
+                                </tbody> */}
 
                                 {activeTab === "PA History" && (
                                     <>
@@ -1683,8 +1684,7 @@ const CsPatientHistory = () => {
                                 )}
 
                                 {activeTab === "Concessions" &&
-                                    (concession &&
-                                    concession.toString.length > 0 ? (
+                                    (concession && concession.length > 0 ? (
                                         concession.map((item, index) => (
                                             <tr
                                                 key={index}
@@ -1697,6 +1697,9 @@ const CsPatientHistory = () => {
                                                 </td>
                                                 <td className="border px-4 py-2">
                                                     {item.FlagDescription}
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {item.FlaggedByUsername}
                                                 </td>
                                             </tr>
                                         ))
@@ -1955,7 +1958,7 @@ const CsPatientHistory = () => {
                                     </div>
                                 </div>
                             )}
-                            {activeTab === "Pending PA" &&
+                            {/* {activeTab === "Pending PA" &&
                                 sortedUniqueData.length > itemsPerPage && (
                                     <div className="flex justify-center mt-3 items-center gap-4">
                                         <button
@@ -1987,7 +1990,7 @@ const CsPatientHistory = () => {
                                             Next
                                         </button>
                                     </div>
-                                )}
+                                )} */}
                             {activeTab === "PA History" &&
                                 sortedPAHistoryUniqueData.length >
                                     itemsPAHistoryPerPage && (
@@ -2065,7 +2068,7 @@ const CsPatientHistory = () => {
                                     </div>
                                 )}
 
-                            {/* {selectedItems.length > 0 && (
+                            {selectedItems.length > 0 && (
                                 <div className="mt-4 flex justify-between items-center w-full">
                                     <button
                                         onClick={() =>
@@ -2090,10 +2093,9 @@ const CsPatientHistory = () => {
                                         Authorize PA
                                     </button>
                                 </div>
-                            )} */}
+                            )}
 
-                            {(activeTab === "PA History" ||
-                                activeTab === "Pending PA") &&
+                            {/* {activeTab === "Pending PA" &&
                                 selectedItems.length > 0 && (
                                     <div className="mt-4 flex justify-between items-center w-full">
                                         <button
@@ -2119,7 +2121,7 @@ const CsPatientHistory = () => {
                                             Authorize PA
                                         </button>
                                     </div>
-                                )}
+                                )} */}
                         </div>
                     </div>
                 </div>

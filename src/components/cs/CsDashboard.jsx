@@ -8,6 +8,7 @@ import Header from "../../components/cs/Header";
 
 import { useNavigate } from "react-router-dom";
 import { CiCalendar } from "react-icons/ci";
+import { useQuery } from "@tanstack/react-query";
 
 function CsDashboard() {
     const navigate = useNavigate();
@@ -16,15 +17,18 @@ function CsDashboard() {
     };
 
     const handleNavigatee = (enrollee) => {
-        const enrolleeRequests = pendingPA.filter(
-            (req) => req.enrolleeID === enrollee.enrolleeID,
-        );
-
-        navigate("/csenrolleepage", { state: { enrollee, enrolleeRequests } });
+        navigate("/createpacode", {
+            state: {
+                enrollee,
+                enrolleeID: enrollee.enrolleeID, // Pass the ID
+            },
+        });
+        localStorage.setItem("enrolleeId", enrollee.enrolleeID);
+        navigate("/createpacode");
     };
 
     const user = JSON.parse(localStorage.getItem("user"));
-    const [data, setData] = useState([]);
+    // const [data, setData] = useState([]);
     const [declined, setDeclinedPA] = useState([]);
     const [
         authorizationApprovedClaimPending,
@@ -37,7 +41,7 @@ function CsDashboard() {
     const combinedOpenPA = [...openPAOne, ...openPATwo];
     const [totalPA, TotalPA] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    // const [error, setError] = useState(null);
     const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [todayDate, setTodayDate] = useState("");
@@ -62,40 +66,7 @@ function CsDashboard() {
     const seenIDs = new Set();
 
     // Use useMemo to create and sort uniqueResults efficiently
-    const uniqueResults = useMemo(() => {
-        if (!combinedOpenPA || combinedOpenPA.length === 0) {
-            return [];
-        }
 
-        // First, sort entire array by Visitdate
-        const sortedData = [...combinedOpenPA].sort((a, b) => {
-            const dateA = new Date(a.Visitdate).getTime();
-            const dateB = new Date(b.Visitdate).getTime();
-            return dateA - dateB; // Earliest first
-        });
-
-        // Then get first (earliest) occurrence of each enrolleeID
-        const seenIDs = new Set();
-        const uniqueArray = [];
-
-        for (const item of sortedData) {
-            if (!seenIDs.has(item.enrolleeID)) {
-                seenIDs.add(item.enrolleeID);
-                uniqueArray.push(item);
-            }
-        }
-
-        return uniqueArray;
-    }, [combinedOpenPA]); // Only recalculate when combinedOpenPA changes
-
-    // Pagination logic
-    const itemsPerPage = 10; // Adjust to your actual value
-    const totalPages = Math.ceil(uniqueResults.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedUniqueResults = uniqueResults.slice(
-        startIndex,
-        startIndex + itemsPerPage,
-    );
     function formatISOToCustom(dateString) {
         if (!dateString) return ""; // Handle cases where DateIssued might be undefined/null
 
@@ -133,95 +104,189 @@ function CsDashboard() {
     // Run getDailyPA only when currentDate updates
     useEffect(() => {
         if (currentDate) {
-            getDailyPA();
         }
     }, [currentDate]); // Dependency on currentDate
 
-    async function getDailyPA() {
-        setLoading(true);
-        try {
-            const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
-                {
-                    method: "GET",
-                },
-            );
+    // async function getDailyPA() {
+    //     setLoading(true);
+    //     try {
+    //         const response = await fetch(
+    //             `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
+    //             {
+    //                 method: "GET",
+    //             },
+    //         );
 
-            const data = await response.json();
-            console.log("xp", data.result);
+    //         const data = await response.json();
+    //         console.log("xp", data.result);
 
-            TotalPA(data.result.length);
+    //         TotalPA(data.result.length);
 
-            if (data.status === 200) {
-                const validStatuses = [
-                    "Authorization Pending",
-                    "Authorisation pending",
-                    "Approved",
-                    "Declined",
-                ];
+    //         if (data.status === 200) {
+    //             const validStatuses = [
+    //                 "Authorization Pending",
+    //                 "Authorisation pending",
+    //                 "Approved",
+    //                 "Declined",
+    //             ];
 
-                const filteredData = data.result.filter((item) =>
-                    validStatuses.includes(item.PAStatus),
-                );
+    //             const filteredData = data.result.filter((item) =>
+    //                 validStatuses.includes(item.PAStatus),
+    //             );
 
-                const PendingPA = filteredData.filter(
-                    (item) =>
-                        item.PAStatus.toLowerCase() === "authorization pending",
-                );
+    //             const PendingPA = filteredData.filter(
+    //                 (item) =>
+    //                     item.PAStatus.toLowerCase() === "authorization pending",
+    //             );
 
-                const uniqueMemberNumbers = new Set(
-                    PendingPA.map((item) => item.MemberNumber),
-                );
+    //             const uniqueMemberNumbers = new Set(
+    //                 PendingPA.map((item) => item.MemberNumber),
+    //             );
 
-                const uniqueMemberCount = uniqueMemberNumbers.size;
+    //             const uniqueMemberCount = uniqueMemberNumbers.size;
 
-                console.log("count", uniqueMemberCount);
+    //             console.log("count", uniqueMemberCount);
 
-                const PendingPATwo = filteredData.filter(
-                    (item) =>
-                        item.PAStatus.toLowerCase() === "authorisation pending",
-                );
+    //             const PendingPATwo = filteredData.filter(
+    //                 (item) =>
+    //                     item.PAStatus.toLowerCase() === "authorisation pending",
+    //             );
 
-                const uniqueMember = new Set(
-                    PendingPATwo.map((item) => item.MemberNumber),
-                );
+    //             const uniqueMember = new Set(
+    //                 PendingPATwo.map((item) => item.MemberNumber),
+    //             );
 
-                const uniqueMembercc = uniqueMember.size;
+    //             const uniqueMembercc = uniqueMember.size;
 
-                console.log("counttwo", uniqueMembercc);
+    //             console.log("counttwo", uniqueMembercc);
 
-                setPeopleWaiting(uniqueMembercc + uniqueMemberCount);
+    //             setPeopleWaiting(uniqueMembercc + uniqueMemberCount);
 
-                const ClaimPending = filteredData.filter(
-                    (item) => item.PAStatus.toLowerCase() === "approved",
-                );
-                const DeclinedPA = filteredData.filter(
-                    (item) => item.PAStatus.toLowerCase() === "declined",
-                );
+    //             const ClaimPending = filteredData.filter(
+    //                 (item) => item.PAStatus.toLowerCase() === "approved",
+    //             );
+    //             const DeclinedPA = filteredData.filter(
+    //                 (item) => item.PAStatus.toLowerCase() === "declined",
+    //             );
 
-                const allPendingPa = [...PendingPA, ...PendingPATwo];
-                setPendingPA(allPendingPa);
-                setOpenPAOne(PendingPA);
-                setOpenPATwo(PendingPATwo);
+    //             const allPendingPa = [...PendingPA, ...PendingPATwo];
+    //             setPendingPA(allPendingPa);
+    //             setOpenPAOne(PendingPA);
+    //             setOpenPATwo(PendingPATwo);
 
-                setAuthorizationPending(PendingPA.length);
-                setAuthorisationPending(PendingPATwo.length);
-                setAuthorizationApprovedClaimPending(ClaimPending.length);
-                setDeclinedPA(DeclinedPA.length);
+    //             setAuthorizationPending(PendingPA.length);
+    //             setAuthorisationPending(PendingPATwo.length);
+    //             setAuthorizationApprovedClaimPending(ClaimPending.length);
+    //             setDeclinedPA(DeclinedPA.length);
 
-                setAdjudicated(filteredData.length); // Fix: adjudicatedItems wasn't defined
-            } else {
-                console.error(
-                    "Failed to fetch data or unexpected response format.",
-                );
-            }
-        } catch (error) {
-            console.error("get pa:", error);
-            setDailyPA([]);
-        } finally {
-            setLoading(false);
+    //             setAdjudicated(filteredData.length); // Fix: adjudicatedItems wasn't defined
+    //         } else {
+    //             console.error(
+    //                 "Failed to fetch data or unexpected response format.",
+    //             );
+    //         }
+    //     } catch (error) {
+    //         console.error("get pa:", error);
+    //         setDailyPA([]);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
+
+    const fetchDailyPA = async ({ queryKey }) => {
+        const [_, apiUrl, currentDate] = queryKey;
+
+        const responses = fetch(
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
+        );
+
+        console.log("daignosis:", JSON.stringify(responses, null, 2));
+
+        const response = await fetch(
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
+        );
+        const data = await response.json();
+
+        console.log("data", data);
+
+        if (data.status !== 200) {
+            throw new Error("API Error: Failed to fetch preauthorizations.");
         }
-    }
+
+        if (!data.result || data.result.length === 0) {
+            return undefined;
+        }
+
+        const validStatuses = [
+            "Authorization Pending",
+            "Authorisation pending",
+            "Approved",
+            "Declined",
+        ];
+
+        const filteredData = data.result.filter((item) =>
+            validStatuses.includes(item.PAStatus),
+        );
+
+        const PendingPA = filteredData.filter(
+            (item) => item.PAStatus.toLowerCase() === "authorization pending",
+        );
+        const uniqueMemberNumbers = new Set(
+            PendingPA.map((i) => i.MemberNumber),
+        );
+
+        const PendingPATwo = filteredData.filter(
+            (item) => item.PAStatus.toLowerCase() === "authorisation pending",
+        );
+        const uniqueMemberTwo = new Set(
+            PendingPATwo.map((i) => i.MemberNumber),
+        );
+
+        const ClaimPending = filteredData.filter(
+            (item) => item.PAStatus.toLowerCase() === "approved",
+        );
+
+        const approvedMembers = new Set(
+            ClaimPending.map((i) => i.MemberNumber),
+        );
+        const DeclinedPA = filteredData.filter(
+            (item) => item.PAStatus.toLowerCase() === "declined",
+        );
+
+        const declinedMembers = new Set(DeclinedPA.map((i) => i.MemberNumber));
+
+        return {
+            all: data.result,
+            valid: filteredData,
+            pendingPA: PendingPA,
+            pendingPATwo: PendingPATwo,
+            combinedPending: [...PendingPA, ...PendingPATwo],
+            approved: ClaimPending,
+            declined: DeclinedPA,
+            approvedMember: approvedMembers,
+            declinedMember: declinedMembers,
+            stats: {
+                authorizationPending: PendingPA.length,
+                authorisationPending: PendingPATwo.length,
+                approvedClaimPending: ClaimPending.length,
+                declinedPA: DeclinedPA.length,
+                peopleWaiting: uniqueMemberNumbers.size + uniqueMemberTwo.size,
+                adjudicated: filteredData.length,
+                totalPA: data.result.length,
+                approvedEnrolles: approvedMembers.size,
+                declinedEnrolles: declinedMembers.size,
+            },
+        };
+    };
+
+    const { data, isLoading, isFetching, error } = useQuery({
+        queryKey: ["dailyPa", apiUrl, currentDate], // make it dynamic
+        queryFn: fetchDailyPA,
+        refetchInterval: 2 * 60 * 1000,
+        staleTime: 5 * 60 * 1000,
+        keepPreviousData: true,
+        refetchOnWindowFocus: false,
+    });
 
     useEffect(() => {
         const today = new Date().toISOString().split("T")[0]; // Gets YYYY-MM-DD
@@ -234,31 +299,6 @@ function CsDashboard() {
     const handleSeeAll = () => {
         navigate("/ticket", { state: { filter: "Escalation" } });
     };
-
-    // Dummy data for Escalations
-    const escalations = [
-        {
-            description: "Escalation 1: Issue with the server not responding.",
-        },
-        {
-            description:
-                "Escalation 2: User unable to access their account due to login error.",
-        },
-        {
-            description:
-                "Escalation 3: Critical bug in the production environment affecting users.",
-        },
-    ];
-
-    if (error) {
-        return (
-            <div className="w-full p-5 bg-lightblue mt-10">
-                <p className="text-red-500">{error}</p>
-            </div>
-        );
-    }
-
-    const paginateData = showAll ? data : data.slice(0, 7);
 
     function getTodayDate() {
         const today = new Date();
@@ -275,125 +315,131 @@ function CsDashboard() {
         setTodayDate(getTodayDate());
     }, []);
 
+    const uniqueResults = useMemo(() => {
+        if (!data?.combinedPending || data.combinedPending.length === 0) {
+            return [];
+        }
+
+        // First, sort entire array by Visitdate
+        const sortedData = [...data.combinedPending].sort((a, b) => {
+            const dateA = new Date(a.Visitdate).getTime();
+            const dateB = new Date(b.Visitdate).getTime();
+            return dateA - dateB; // Earliest first
+        });
+
+        // Then get first (earliest) occurrence of each enrolleeID
+        const seenIDs = new Set();
+        const uniqueArray = [];
+
+        for (const item of sortedData) {
+            if (!seenIDs.has(item.enrolleeID)) {
+                seenIDs.add(item.enrolleeID);
+                uniqueArray.push(item);
+            }
+        }
+
+        return uniqueArray;
+    }, [data?.combinedPending]); // Only recalculate when combinedOpenPA changes
+
+    // Pagination logic
+    const itemsPerPage = 10; // Adjust to your actual value
+    const totalPages = Math.ceil(uniqueResults.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedUniqueResults = uniqueResults.slice(
+        startIndex,
+        startIndex + itemsPerPage,
+    );
+
+    useEffect(() => {
+        getLabel();
+    }, []);
+
+    async function getLabel() {
+        const response = await fetch(
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleePreauthorizations?Fromdate=${currentDate}&Todate=${currentDate}&cifno=0&PAStatus&visitid`,
+        );
+
+        console.log("daignosis:", JSON.stringify(response, null, 2));
+    }
+
     return (
         <div>
             <Sidebar />
-            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-full">
+            <div className="bg-[#F0F2FA] w-[82%] ml-auto h-[120vh]">
                 <Header />
 
                 <div className=" px-3 ">
                     <div className=" px-2  ">
                         <div className="flex justify-between w-full mt-3 ">
-                            <span>Hi, {user?.result[0]?.UserName}</span>
+                            <span className="font-bold">
+                                Hi, {user?.result[0]?.UserName}
+                            </span>
 
                             <div className="bg-white rounded-md w-[10rem] py-2 flex gap-2">
                                 <CiCalendar className=" text-[20px] mt-0.5 ml-1" />
                                 <h1 className=" font-medium">{todayDate}</h1>
                             </div>
                         </div>
-                        <h4 className=" mb-2">Your Dashboard</h4>
+                        <h4 className=" mb-2 ">Your Dashboard</h4>
                     </div>
 
-                    <div className="flex w-full bg-lightblue overflow-y-visible ">
-                        <div className=" w-full  flex gap-2 mr-1 ">
-                            <div className=" flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src="./barchat.svg" />
-                                <p className="text-[#7E7E7E]">
-                                    {" "}
-                                    Total PA Request
-                                </p>
-                                <span className="text-[2.3rem] font-bold">
-                                    {totalPA}
-                                </span>
+                    {data && data.stats && (
+                        <>
+                            <div className="flex w-full bg-lightblue overflow-y-visible ">
+                                <div className="w-full flex gap-2 mr-1">
+                                    <div className="flex-1 bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
+                                        <img src="./barchat.svg" />
+                                        <p className="text-[#7E7E7E]">
+                                            Total PA Request
+                                        </p>
+                                        <span className="text-[2.3rem] font-bold">
+                                            {data.stats.totalPA}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex-1 bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
+                                        <img src="./bluechat.svg" />
+                                        <p className="text-[#7E7E7E]">
+                                            Open Tickets/ number of enrollees
+                                        </p>
+                                        <h1 className="text-[2.3rem] font-bold">
+                                            {data.stats.authorizationPending +
+                                                data.stats
+                                                    .authorisationPending}{" "}
+                                            / {data.stats.peopleWaiting}
+                                        </h1>
+                                    </div>
+                                </div>
                             </div>
-                            <div className=" flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src="./bluechat.svg" />
-                                <p className="text-[#7E7E7E]">
-                                    Open Tickets/ number of enrolles
-                                </p>
-                                <h1 className="text-[2.3rem] font-bold ">
-                                    {AuthorisationPending +
-                                        AuthorizationPending}{" "}
-                                    {""} {"/"} {peopleWaiting}
-                                </h1>
-                            </div>
-                        </div>
 
-                        {/* Second Div (Escalations Section) */}
-                        {/* <div className="w-1/2 flex flex-col bg-white">
-                  
-                    <div className="flex  justify-between p-1 bg-white">
-                        <h2 className="text-2xl font-semibold">Escalations</h2>
+                            <div className="w-full flex gap-2 mt-2">
+                                <div className="w-full flex gap-2 mr-1">
+                                    <div className="flex-1 bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
+                                        <img src="./skybluechat.svg" />
+                                        <p className="text-[#7E7E7E]">
+                                            Approved PA Requests
+                                        </p>
+                                        <span className="text-[2.3rem] font-bold">
+                                            {data.stats.approvedClaimPending}/{" "}
+                                            {data.stats.approvedEnrolles}
+                                        </span>
+                                    </div>
 
-                        <button
-                            onClick={handleSeeAll}
-                            className="flex justify-center text-[13px] items-center text-red-500 py-2  rounded-md cursor-pointer"
-                        >
-                            See All
-                            <img src={rightangle} alt="Arrow" />
-                        </button>
-                    </div>
-
-                   
-                    <div>
-                       
-                        {escalations.map((escalation, index) => (
-                            <div
-                                key={index}
-                                className="flex justify-between items-center p-4 border rounded-sm bg-white w-full h-[70px] border-gray-300 font-productSans"
-                            >
-                                <div className="flex gap-1 ">
-                                    <img
-                                        src={eachuser}
-                                        alt="User Image"
-                                        className="w-8 h-8 rounded-full"
-                                    />
-                                    <div className="flex flex-col">
-                                        <span className="text-black text-[13px]">
-                                            {escalation.description}
+                                    <div className="flex-1 bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
+                                        <img src="./orangechat.svg" />
+                                        <p className="text-[#7E7E7E]">
+                                            Declined PA
+                                        </p>
+                                        <span className="text-[2.3rem] font-bold">
+                                            {data.stats.declinedPA} /{" "}
+                                            {data.stats.declinedEnrolles}
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex items-center">
-                                    <button
-                                        className="text-[12px] rounded-sm p-2 flex items-center justify-between gap-1 text-center text-red-500"
-                                        onClick={() =>
-                                            handleNavigate(
-                                                "/escalation-details",
-                                            )
-                                        }
-                                    >
-                                        Take Actions
-                                    </button>
-                                </div>
                             </div>
-                        ))}
-                    </div>
-                </div> */}
-                    </div>
-                    <div className=" w-full flex gap-2 mt-2">
-                        <div className="w-full  flex gap-2 mr-1 ">
-                            <div
-                                className="
-                   flex-1 bg-bl  bg-white w-full h-[7.5rem] rounded-md py-4 px-4"
-                            >
-                                <img src="./skybluechat.svg" />
-                                <p className="text-[#7E7E7E]">
-                                    Approved PA Requests
-                                </p>
-                                <span className="text-[2.3rem] font-bold">
-                                    {authorizationApprovedClaimPending}
-                                </span>
-                            </div>
-                            <div className="flex-1 bg-bl bg-white w-full h-[7.5rem] rounded-md py-4 px-4">
-                                <img src="./orangechat.svg" />
-                                <p className="text-[#7E7E7E]">Declined PA</p>
-                                <span className="text-[2.3rem] font-bold">
-                                    {declined}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                        </>
+                    )}
+
                     {/* Buttons Section */}
                     <div className=" flex justify-between">
                         <div className="mt-3 flex justify-start space-x-4">
@@ -434,32 +480,20 @@ function CsDashboard() {
                                         <th className="py-3 px-4 text-left">
                                             S/N
                                         </th>
-                                        <th className="py-3 px-4 text-left">
-                                            Name
-                                        </th>
-                                        <th className="py-3 px-4  text-left whitespace-nowrap">
+                                        <th className>Name</th>
+                                        <th className="whitespace-nowrap">
                                             Enrollee ID
                                         </th>
-                                        <th className="py-3 px-4 text-left">
-                                            Date
-                                        </th>
-                                        <th className="py-3 px-4 text-left">
-                                            VisitId
-                                        </th>
-                                        <th className="py-3 px-4 text-left">
-                                            Hospital
-                                        </th>
-                                        <th className="py-3 px-4 text-left">
-                                            Diagnosis
-                                        </th>
-                                        <th className="py-3 px-4 text-left">
-                                            Status
-                                        </th>
+                                        <th className>Date / Time</th>
+
+                                        <th className>VisitId</th>
+                                        <th className>Provider</th>
+                                        <th className=" ">visit Type</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    {loading ? (
+                                    {isLoading ? (
                                         <tr>
                                             <td
                                                 colSpan="8"
@@ -478,48 +512,48 @@ function CsDashboard() {
                                                 </div>
                                             </td>
                                         </tr>
-                                    ) : combinedOpenPA &&
-                                      combinedOpenPA.length > 0 ? (
+                                    ) : data &&
+                                      data.combinedPending.length > 0 ? (
                                         paginatedUniqueResults.map(
                                             (enrollee, index) => (
                                                 <tr
                                                     key={index}
                                                     className="bg-white border border-gray-200 hover:bg-gray-200 cursor-pointer"
-                                                    onClick={() =>
-                                                        handleNavigatee(
-                                                            enrollee,
-                                                        )
+                                                    onClick={
+                                                        () =>
+                                                            handleNavigatee(
+                                                                enrollee,
+                                                            )
+                                                        // navigate(
+                                                        //     `/createpacode/${enrollee.enrolleeID}`,
+                                                        // )
                                                     }
                                                 >
                                                     <td className="px-6 py-3">
                                                         {startIndex + index + 1}
                                                     </td>
-                                                    <td className="px-6 py-3">
+                                                    <td className=" py-3">
                                                         {enrollee.surname}{" "}
                                                         {enrollee.firstname}
                                                     </td>
-                                                    <td className="px-6 py-3 whitespace-nowrap">
+                                                    <td className=" py-3 whitespace-nowrap">
                                                         {enrollee.enrolleeID}
                                                     </td>
-                                                    <td className="px-6 py-3">
+                                                    <td className=" py-3">
                                                         {formatISOToCustom(
                                                             enrollee.Visitdate,
                                                         )}
                                                     </td>
-                                                    <td className="px-6 py-3">
+
+                                                    <td className=" py-3">
                                                         {enrollee.visitid}
                                                     </td>
-                                                    <td className="px-6 py-3">
+                                                    <td className=" py-3">
                                                         {enrollee.provider}
                                                     </td>
-                                                    <td className="px-6 py-3">
-                                                        {enrollee.diagcode
-                                                            .split(" ")
-                                                            .slice(1)
-                                                            .join(" ")}
-                                                    </td>
-                                                    <td className="px-1 py-3 text-orange-300">
-                                                        {enrollee.PAStatus}
+
+                                                    <td className=" py-3">
+                                                        {enrollee.visitType}
                                                     </td>
                                                 </tr>
                                             ),

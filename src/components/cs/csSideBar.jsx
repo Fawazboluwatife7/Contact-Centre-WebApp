@@ -9,6 +9,7 @@ import { FaPeopleRobbery } from "react-icons/fa6";
 import { FaHospital } from "react-icons/fa";
 import { TbDatabaseSearch } from "react-icons/tb";
 import { GiCash } from "react-icons/gi";
+import { SiLibreofficewriter } from "react-icons/si";
 
 const CsSidebar = () => {
     const navigate = useNavigate(); // Initialize the navigate function
@@ -89,6 +90,20 @@ const CsSidebar = () => {
                 >
                     <RxDashboard className=" text-[25px]" />
                     <p className="ml-2">Dashboard</p>
+                </div>
+                <div
+                    className={`mt-1 flex px-10 cursor-pointer p-2 
+                        ${
+                            location.pathname.includes(
+                                "createpaenrolleesearch",
+                            ) || location.pathname.includes("createpacode")
+                                ? "bg-[#C61531] text-white"
+                                : "hover:bg-[#C61531] hover:text-white"
+                        }`}
+                    onClick={() => handleNavigate("/createpaenrolleesearch")}
+                >
+                    <SiLibreofficewriter className=" text-[23px]" />
+                    <p className="ml-2 whitespace-nowrap">Issue PA</p>
                 </div>
                 <div
                     className={`mt-1 flex px-10 cursor-pointer p-2 

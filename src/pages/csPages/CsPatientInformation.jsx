@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { FaFlag } from "react-icons/fa";
+import { SiLibreofficewriter } from "react-icons/si";
 
 // Mock Data - Dynamic State Initialization
 const CsPatientInformation = ({ selectedStatus }) => {
@@ -11,6 +12,9 @@ const CsPatientInformation = ({ selectedStatus }) => {
 
     const handleNavigate = (enrollee) => {
         navigate("/csenrolleeprofileupdate", { state: { enrollee } });
+    };
+    const handleNavigatee = (enrollee) => {
+        navigate("/createpacode", { state: { enrollee } });
     };
 
     const [enrolleeData, setEnrolleeData] = useState({
@@ -282,13 +286,19 @@ const CsPatientInformation = ({ selectedStatus }) => {
                         </div>
                         <div></div>
                         <div></div>
-                        <div></div>
+                        <button
+                            className=" text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md flex gap-1 px-3 w-[7rem] py-2  justify-items-end items-end "
+                            onClick={() => handleNavigatee(enrollee)}
+                        >
+                            <SiLibreofficewriter className="h-7" />
+                            Issue PA
+                        </button>
 
                         <button
-                            className=" text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md flex gap-3 px-3 py-2 justify-items-end items-end "
+                            className=" text-[#C61531] border border-[#C61531] bg-[#C615311A] rounded-md flex gap-1 px-1 justify-items-end items-end w-[7rem] py-2 whitespace-nowrap"
                             onClick={() => handleNavigate(enrollee)}
                         >
-                            <img src="handpen.svg" alt="" className=" h-7" />
+                            <img src="handpen.svg" alt="" className=" h-5" />
                             Edit Profile
                         </button>
                     </div>

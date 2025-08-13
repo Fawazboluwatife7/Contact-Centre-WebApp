@@ -151,9 +151,11 @@ const EnrolleesPage = () => {
                         <table className="w-full text-sm text-left rtl:text-right text-black rounded-md">
                             <thead className="text-base uppercase bg-white text-black   border-b-2 border-black ">
                                 <tr>
-                                    <th className="px-2 py-3"></th>
+                                    <th className="px-2 py-3">S/N</th>
                                     <th className="px-6 py-3">Name</th>
-                                    <th className="px-6 py-3">Enrollee ID</th>
+                                    <th className="px-6 py-3 whitespace-nowrap">
+                                        Enrollee ID
+                                    </th>
                                     <th className="px-6 py-3">Scheme</th>
                                     <th className="px-6 py-3">Phone</th>
                                     <th className="px-6 py-3">Email</th>
