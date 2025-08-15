@@ -12,19 +12,13 @@ import { useQuery } from "@tanstack/react-query";
 
 function CsDashboard() {
     const navigate = useNavigate();
-    const handleNavigate = (path) => {
-        navigate(path);
-    };
 
     const handleNavigatee = (enrollee) => {
         navigate("/createpacode", {
-            state: {
-                enrollee,
-                enrolleeID: enrollee.enrolleeID, // Pass the ID
-            },
+            state: { pendingPa: enrollee },
         });
-        localStorage.setItem("enrolleeId", enrollee.enrolleeID);
-        navigate("/createpacode");
+        localStorage.setItem("enrolleeId", pendingPa.enrolleeID);
+        localStorage.setItem("visitId", pendingPa.visitid);
     };
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -519,14 +513,10 @@ function CsDashboard() {
                                                 <tr
                                                     key={index}
                                                     className="bg-white border border-gray-200 hover:bg-gray-200 cursor-pointer"
-                                                    onClick={
-                                                        () =>
-                                                            handleNavigatee(
-                                                                enrollee,
-                                                            )
-                                                        // navigate(
-                                                        //     `/createpacode/${enrollee.enrolleeID}`,
-                                                        // )
+                                                    onClick={() =>
+                                                        handleNavigatee(
+                                                            enrollee,
+                                                        )
                                                     }
                                                 >
                                                     <td className="px-6 py-3">
