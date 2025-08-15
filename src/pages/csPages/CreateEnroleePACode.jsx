@@ -73,7 +73,8 @@ const CreateEnroleePACode = () => {
     const [benefits, setAllBenefits] = useState([]);
     const [pa, SetPa] = useState([]);
     const enrolleeIdz = localStorage.getItem("enrolleeId");
-    //console.log("enrolleeIdz", enrolleeIdz);
+    const visitIdz = localStorage.getItem("visitId");
+    console.log("visitIdz", visitIdz);
 
     const [diagnoses, setDiagnoses] = useState([
         { id: 1, code: "", description: "", filteredResults: [] },
@@ -807,7 +808,7 @@ const CreateEnroleePACode = () => {
             // console.log("providerCheck0");
             const provider = await fetch(
                 `${apiUrl}api/EnrolleeProfile/GetEnrolleeProvidersListsAll?schemeid=0&MinimumID=0&NoOfRecords=10000&pageSize=1000&ProviderName=&TypeID=0&StateID=0&LGAID=0&enrolleeid=${
-                    enrollee.Member_EnrolleeID || enrolleeIdz
+                    enrollee?.Member_EnrolleeID || pendingPa.MemberNumber
                 } }&provider_id=0`,
                 {
                     method: "GET",
@@ -1212,10 +1213,9 @@ const CreateEnroleePACode = () => {
 
     const location = useLocation();
     const enrollee = location.state?.enrollee;
-    const enrolleeID =
-        location.state?.enrollee.enrolleeID || enrollee?.enrolleeID;
+    const pendingPa = location.state?.pendingPa;
 
-    console.log("enrolleeID", enrolleeID);
+    console.log("pendingPa", pendingPa);
     const [claimsPaid, setClaimsPaid] = useState("");
 
     const [procedurex, setProcedurex] = useState([]);
@@ -1541,11 +1541,11 @@ const CreateEnroleePACode = () => {
             "benefit",
             fetch(
                 `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${
-                    enrollee.Member_MemberUniqueID ||
+                    enrollee?.Member_MemberUniqueID ||
                     loadedPa[0]?.Member_MemberUniqueID
-                }&schemeid=${enrollee.Member_PlanID}&serviceid=${
-                    selectedVisitType?.value
-                }`,
+                }&schemeid=${
+                    enrollee?.Member_PlanID || loadedPa[0]?.Member_PlanID
+                }&serviceid=${selectedVisitType?.value}`,
                 {
                     method: "GET",
                 },
@@ -1554,7 +1554,7 @@ const CreateEnroleePACode = () => {
         try {
             const response = await fetch(
                 `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${
-                    enrollee.Member_MemberUniqueID ||
+                    enrollee?.Member_MemberUniqueID ||
                     loadedPa[0]?.Member_MemberUniqueID
                 }&schemeid=${enrollee.Member_PlanID}&serviceid=${
                     selectedVisitType?.value
@@ -1702,7 +1702,12 @@ const CreateEnroleePACode = () => {
     async function GetService() {
         try {
             const response = await fetch(
-                `${apiUrl}api/ListValues/GetSeviceType?cif=${enrollee.Member_MemberUniqueID}&Schemeid=${enrollee.Member_PlanID}             
+                `${apiUrl}api/ListValues/GetSeviceType?cif=${
+                    enrollee?.Member_MemberUniqueID ||
+                    loadedPa[0]?.Member_MemberUniqueID
+                }&Schemeid=${
+                    enrollee?.Member_PlanID || loadedPa[0]?.Member_PlanID
+                }             
 `,
                 {
                     method: "GET",
@@ -1883,18 +1888,13 @@ const CreateEnroleePACode = () => {
     async function GetAllBenefits() {
         try {
             setLoading(true);
-            const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${
-                    enrollee.Member_MemberUniqueID ||
-                    loadedPa[0]?.Member_MemberUniqueID
-                }&schemeid=${enrollee.Member_PlanID}&serviceid=${
-                    selectedVisitType?.value
-                }
-`,
-                {
-                    method: "GET",
-                },
-            );
+            const response = `${apiUrl}api/EnrolleeProfile/GetEnrolleeBenefitServices?cifnumber=${
+                enrollee?.Member_MemberUniqueID ||
+                loadedPa[0]?.Member_MemberUniqueID
+            }&schemeid=${
+                enrollee?.Member_PlanID || loadedPa[0]?.Member_PlanID
+            }&serviceid=${selectedVisitType?.value}
+`;
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1906,7 +1906,7 @@ const CreateEnroleePACode = () => {
             //     "ConsoleALLBenefits:",
             //     JSON.stringify(response, null, 2),
             // );
-            // console.log("ALLBenefits:", data);
+            console.log("ALLBenefits:", response);
 
             setAllBenefits(data);
         } catch (error) {
@@ -2026,7 +2026,7 @@ const CreateEnroleePACode = () => {
         setLoading(true);
 
         const response = fetch(
-            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrolleeIdz}`,
+            `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${pendingPa.MemberNumber}`,
             {
                 method: "GET",
             },
@@ -2034,7 +2034,7 @@ const CreateEnroleePACode = () => {
         console.log("paselssx", response);
         try {
             const response = await fetch(
-                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${enrolleeIdz}`,
+                `${apiUrl}api/EnrolleeProfile/GetEnrolleeBioDataByEnrolleeID?enrolleeid=${pendingPa.MemberNumber}`,
                 {
                     method: "GET",
                 },
@@ -2046,7 +2046,7 @@ const CreateEnroleePACode = () => {
 
             const data = await response.json();
 
-            //  console.log("paselss", data.result[0]?.Member_MemberUniqueID);
+            console.log("paselss", data.result);
 
             // if (response.ok) {
             //     console.log("testing", response);
@@ -2186,6 +2186,24 @@ const CreateEnroleePACode = () => {
         }
     }
     // const base64Image = `data:image/jpeg;base64,${biodata.profilepic}`;
+
+    console.log("pendingPa", pendingPa);
+    console.log("pendingPa2", filteredProvider);
+    useEffect(() => {
+        if (pendingPa && filteredProvider && filteredProvider.length > 0) {
+            handleSelectProcedure(pendingPa);
+        }
+    }, [pendingPa, filteredProvider]);
+
+    //     useEffect(() => {
+    //     // Only run if filteredProvider is ready and not empty
+    //     if (!filteredProvider || filteredProvider.length === 0) return;
+
+    //     // Then check if pendingPa is ready
+    //     if (pendingPa) {
+    //         handleSelectProcedure(pendingPa);
+    //     }
+    // }, [filteredProvider, pendingPa]);
 
     const base64Image = biodata?.profilepic
         ? `data:image/jpeg;base64,${biodata.profilepic}`

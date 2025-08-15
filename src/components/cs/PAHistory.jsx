@@ -18,6 +18,12 @@ const PaHistory = () => {
         navigate("/csenrolleepage", { state: { enrollee, enrolleeRequests } });
     };
 
+    const handleNavigatee = (enrollee) => {
+        navigate("/createpacode", {
+            state: { pendingPa: enrollee },
+        });
+    };
+
     const [selectedTab, setSelectedTab] = useState("Authorization Pending");
     const [allPA, setAllPA] = useState([]);
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -326,12 +332,14 @@ const PaHistory = () => {
                                         </tr>
                                     ) : filteredData.length > 0 ? (
                                         paginatedResults.map(
-                                            (request, index) => (
+                                            (enrollee, index) => (
                                                 <tr
                                                     key={index}
                                                     className=" cursor-pointer text-sm hover:bg-gray-100"
                                                     onClick={() =>
-                                                        handleNavigate(request)
+                                                        handleNavigatee(
+                                                            enrollee,
+                                                        )
                                                     }
                                                 >
                                                     <td className="px-4 border">
@@ -339,37 +347,37 @@ const PaHistory = () => {
                                                     </td>
                                                     <td className="px-4  border">
                                                         {formatISOToCustom(
-                                                            request.Visitdate,
+                                                            enrollee.Visitdate,
                                                         )}
                                                     </td>
                                                     <td className="px-4 border">
-                                                        {request.surname} {""}
-                                                        {request.firstname}
+                                                        {enrollee.surname} {""}
+                                                        {enrollee.firstname}
                                                     </td>
                                                     <td className="px-4 border">
-                                                        {request.visitid}
+                                                        {enrollee.visitid}
                                                     </td>
                                                     <td className="px-4 py-2 border">
-                                                        {request.provider}
+                                                        {enrollee.provider}
                                                     </td>
                                                     <td className="px-4 border whitespace-nowrap">
-                                                        {request.enrolleeID}
+                                                        {enrollee.enrolleeID}
                                                     </td>
                                                     <td className="px-4 border">
-                                                        {request.diagcode
+                                                        {enrollee.diagcode
                                                             .split(" ")
                                                             .slice(1)
                                                             .join(" ")}
                                                     </td>
                                                     <td className="px-4 border">
-                                                        {request.visitType}
+                                                        {enrollee.visitType}
                                                     </td>
                                                     <td
                                                         className={`px-4 border ${getStatusColor(
-                                                            request.PAStatus,
+                                                            enrollee.PAStatus,
                                                         )}`}
                                                     >
-                                                        {request.PAStatus}
+                                                        {enrollee.PAStatus}
                                                     </td>
                                                 </tr>
                                             ),
