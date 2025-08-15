@@ -1701,22 +1701,16 @@ const CreateEnroleePACode = () => {
 
     async function GetService() {
         try {
-            const response = await fetch(
-                `${apiUrl}api/ListValues/GetSeviceType?cif=${
-                    enrollee?.Member_MemberUniqueID ||
-                    loadedPa[0]?.Member_MemberUniqueID
-                }&Schemeid=${
-                    enrollee?.Member_PlanID || loadedPa[0]?.Member_PlanID
-                }             
-`,
-                {
-                    method: "GET",
-                },
-            );
+            const response = `${apiUrl}api/ListValues/GetSeviceType?cif=${
+                enrollee?.Member_MemberUniqueID ||
+                loadedPa[0]?.Member_MemberUniqueID
+            }&Schemeid=${
+                enrollee?.Member_PlanID || loadedPa[0]?.Member_PlanID
+            } `;
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+            // if (!response.ok) {
+            //     throw new Error(`HTTP error! Status: ${response.status}`);
+            // }
 
             const data = await response.json();
 
@@ -3709,9 +3703,6 @@ const CreateEnroleePACode = () => {
                                                     PA Code
                                                 </th>
                                                 <th className="p-2 border">
-                                                    CifNumber
-                                                </th>
-                                                <th className="p-2 border">
                                                     Provider
                                                 </th>
                                                 <th className="p-2 border">
@@ -3787,11 +3778,7 @@ const CreateEnroleePACode = () => {
                                                         <td className="px-4 py-2 border whitespace-nowrap">
                                                             {proc.PACode}
                                                         </td>
-                                                        <td className="px-4 py-2 border">
-                                                            {
-                                                                enrollee?.Member_MemberUniqueID
-                                                            }
-                                                        </td>
+
                                                         <td className="px-4 py-2 border whitespace-nowrap">
                                                             {searchProvider}
                                                         </td>

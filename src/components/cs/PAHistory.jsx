@@ -242,7 +242,7 @@ const PaHistory = () => {
                                 </button>
                             </div>
                         </form>
-                        <div className="ml-[32rem]">
+                        <div className="ml-[31rem]">
                             <label className="block text-sm font-medium text-gray-700">
                                 Search by Provider/ Enrollee's Name
                             </label>
